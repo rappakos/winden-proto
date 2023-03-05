@@ -9,6 +9,10 @@ A prototype app to administering tow winch operation for paragliders
 
 ## "Windenfahrer"
 
+# Running the app
+
+Go to (./WindenProtoApp) and run `npx react-native run-android` ?
+
 
 
 # Ideas 
