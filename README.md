@@ -3,15 +3,51 @@ A prototype app to administering tow winch operation for paragliders
 
 # Models
 
-## "Winde"
+## Winde
 
-## "Pilot"
+### Kerndaten
 
-## "Windenfahrer"
+* Name
+* ...
+
+### Aufbau-Protokoll
+
+List
+
+### Abbau-Protokoll
+
+List
+
+## Pilot
+
+* Name: Text
+* Gewicht: 
+* Status: List EWF, WF, WIA, MG, NVB, G
+* Verein: Text
+* Enthaftungserklärung: Bool
+
+
+## Flug
+
+* Datum
+* Winde
+* Windenfahrer
+* EWF
+
+
 
 # Running the app
 
-# Requirments
+# Storyboard
+
+![Windenaufbau](./storyboard/windenaufbau.PNG)
+
+![Flugkladde](./storyboard/flugkladde.PNG)
+
+![Windenabbau](./storyboard/windenabbau.PNG)
+
+![Datensatzpflege](./storyboard/datensatzpflege.PNG)
+
 
 # Ideas 
 
