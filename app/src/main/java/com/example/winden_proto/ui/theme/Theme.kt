@@ -37,6 +37,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+
 @Composable
 fun WindenProtoTheme(
         darkTheme: Boolean = isSystemInDarkTheme(),
