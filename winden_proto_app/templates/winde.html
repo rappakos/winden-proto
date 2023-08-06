@@ -8,6 +8,13 @@
         {% for key in winde.keys() %}
             <p>{{key}} : {{winde[key]}}</p>
         {% endfor %}
+
+        {% if winde.active %}
+        <a href="/winden/{{winde.winde_id}}/aufbau">Start Flugtag</a>
+        {% else %}
+            <p>Winde muss erst reaktiviert werden.</p>
+        {% endif %}
+
     {% endif %}
 
 {% endblock %}

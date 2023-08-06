@@ -5,16 +5,21 @@
 {% block content %}
 
 {% if protocol: %}
-<form action="/create" method="post">
-    {% for j,frage in protocol %}
+<form action="/winden/{{winde_id}}/aufbau" method="post" class="w3-container">
+    {% for frage in protocol %}
     <p>
         <label for="{{frage.id}}">{{frage.label}}</label>
-        <input id="{{frage.id}}" type="checkbox" />
+        <input id="{{frage.id}}" type="checkbox" name="{{frage.id}}"  class="w3-input" />
     </p>
-    {% end for %}
-    <input type="text" name="Aufgebaut von" />
+    {% endfor %}
+    <label>
+        Kommentar: <input type="textarea" name="kommentar"  class="w3-input" />
+    </label>
+    <label>
+        Aufgebaut von: <input type="text" name="aufgebaut-von"  class="w3-input" />
+    </label>
     <input type="submit" value="submit"/>
 </form>
-
+{% endif %}
 
 {% endblock %}

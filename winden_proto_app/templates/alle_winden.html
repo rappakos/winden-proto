@@ -19,7 +19,10 @@
             <td>{{ winde.baujahr }}</td>
             <td>{{ winde.active }}</td>
             <td>
-                <a href="/winden/{{winde.winde_id}}">Start Flugtag</a>
+                <a href="/winden/{{winde.winde_id}}">Details</a>
+                {% if winde.active %}
+                    <a href="/winden/{{winde.winde_id}}/aufbau">Start Flugtag</a>
+                {% endif %}
             </td>
         </tr>    
     {% endfor %}

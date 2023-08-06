@@ -66,6 +66,10 @@ mock_schlepps = [
         }
     ]
 
+def redirect(router, route_name):
+    location = router[route_name].url_for()
+    return web.HTTPFound(location)
+
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
@@ -89,23 +93,24 @@ async def winde(request):
         return  {'winde': None}
 
 
-# @aiohttp_jinja2.template('aufbau.html')
-# async def aufbau_winde(request):
-#     if request.method == 'POST':
-#         form = await request.post()
-#         # TODO save
-#         print(form['body'])
+@aiohttp_jinja2.template('aufbau.html')
+async def aufbau(request):
+    if request.method == 'POST':
+        form = await request.post()
+        # TODO save
+        for key in form.keys():
+            print(key, form[key])
 
-#         #raise redirect(request.app.router, 'winden')
+        raise redirect(request.app.router, 'winden')
         
-#     # ????
-#     protocol = [
-#         {'id': 'q-1', 'label': 'frage 1'},
-#         {'id': 'q-2', 'label': 'frage 2'},
-#         {'id': 'q-3', 'label': 'frage 3'}
-#     ]
+    if request.method == 'GET':
+        winde_id = request.match_info['winde_id']
+        # 
+        protocol = [{'id': f'q-{j}', 'label': f'frage {j}'} for j in range(10)]
 
-#     return {'protocol': protocol}
+        return {
+                'winde_id': winde_id,
+                'protocol': protocol}
 
 
 @aiohttp_jinja2.template('piloten.html')
