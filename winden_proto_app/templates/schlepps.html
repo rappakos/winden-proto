@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% set title = "Schlepps" %}
+
+{% block content %}
+{% if schlepps %}
+    <table>
+    {% for schlepp in schlepps %}
+        <tr>
+            <td>{{ schlepp.winden_id }}</td>
+            <td>{{ schlepp.wf_id }}</td>
+            <td>{{ schlepp.ewf_id }}</td>
+            <td>{{ schlepp.pilot_id }}</td>
+            <td>{{ schlepp.datum }}</td>
+            <td>{{ schlepp.status }}</td>
+
+        </tr>    
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No schlepps.</p>
+{% endif %}
+{% endblock %}

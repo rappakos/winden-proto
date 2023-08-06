@@ -6,7 +6,7 @@
 {% if menu %}
     <ul>
     {% for menuitem in menu %}
-    <li>{{ menuitem }}</li>
+        <li><a href="{{ url(menuitem.lower()) }}">{{ menuitem }}</a></li>    
     {% endfor %}
     </ul>
 {% else %}

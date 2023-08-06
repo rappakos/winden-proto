@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% set title = "Winden" %}
+
+{% block content %}
+{% if winden %}
+    <table>
+    {% for winde in winden %}
+        <tr>
+            <td>{{ winde.winde_id }}</td>
+            <td>{{ winde.name }}</td>
+            <td>{{ winde.baujahr }}</td>
+            <td>{{ winde.active }}</td>
+        </tr>    
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No winches.</p>
+{% endif %}
+{% endblock %}

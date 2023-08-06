@@ -7,8 +7,10 @@ A prototype app to administering tow winch operation for paragliders
 
 ### Kerndaten
 
+* ID
 * Name
-* ...
+* Baujahr
+* Status 
 
 ### Aufbau-Protokoll
 
@@ -22,19 +24,21 @@ List
 
 * Name: Text
 * Gewicht: 
-* Status: List EWF, WF, WIA, MG, NVB, G
+* Status: List EWF, WF, WIA, MG (default?), NVB, G, INACTIV
 * Verein: Text
 * Enthaftungserklärung: Bool
 
 
-## Flug
+## Schlepp
 
 * Datum
 * Winde
 * Windenfahrer
 * EWF
-* Status: List started, finished, canceled
-
+* Pilot
+* Status: List started (default), finished, canceled
+* SchleppStart
+* StatusDate
 
 
 # Running the app
