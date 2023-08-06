@@ -43,6 +43,10 @@ List
 
 # Running the app
 
+* Install requirements, eg `py -m pip install -r .\requirements.txt`
+* Start application, eg `py app.py`
+* Open url in browser, eg `http://localhost:3978`, check the [config.py](./config.py) for the actual port.
+
 # Storyboard
 
 ![Windenaufbau](./storyboard/windenaufbau.PNG)
