@@ -33,6 +33,7 @@ List
 * Winde
 * Windenfahrer
 * EWF
+* Status: List started, finished, canceled
 
 
 
