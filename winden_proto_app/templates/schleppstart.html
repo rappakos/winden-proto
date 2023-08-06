@@ -12,7 +12,9 @@
      </label>
     <label>
         Windenfahrer [Hinweis: von der letzten Schlepp vorbefüllt sonst Autocomplete]
-        <input type="text" name="windenfahrer"  class="w3-input" />
+        <div class="autocomplete"  style="width: 100%;">
+            <input type="text" name="windenfahrer"  class="w3-input" id="ax-windenfahrer" />
+        </div>
      </label>
      <label>
         EWF [Hinweis: wenn WF WiA ist ]
@@ -20,7 +22,9 @@
      </label>     
     <label>
        Pilot [Hinweis: Autocomplete]
-       <input type="text" name="pilot"  class="w3-input" />
+       <div class="autocomplete" style="width: 100%;">
+            <input type="text" name="pilot"  class="w3-input" id="ax-piloten" />
+        </div>
     </label>
     <label>
         Gewicht [kg] 
@@ -28,6 +32,22 @@
      </label>    
     <input type="submit" value="submit" disabled/>
 </form>
+<script>
+    var el = document.getElementById('ax-windenfahrer');
+    var windenfahrer = [{% for wf in data.windenfahrer %}
+                            '{{wf.id}}', 
+                        {% endfor %}
+                        ];
+    autocomplete(el,  windenfahrer );
+
+    var el = document.getElementById('ax-piloten');
+    var piloten = [{% for p in data.piloten %}
+                            '{{p.id}}', 
+                    {% endfor %}
+                ];
+    autocomplete(el,  piloten );
+
+</script>
 {% endif %}
 
 {% endblock %}
