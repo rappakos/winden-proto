@@ -10,6 +10,7 @@
             <th>Name</th>
             <th>Baujahr</th>
             <th>Status</th>
+            <th>Aktion</th>
         </tr>
     {% for winde in winden %}
         <tr>
@@ -17,6 +18,9 @@
             <td>{{ winde.name }}</td>
             <td>{{ winde.baujahr }}</td>
             <td>{{ winde.active }}</td>
+            <td>
+                <a href="/winden/{{winde.winde_id}}">Start Flugtag</a>
+            </td>
         </tr>    
     {% endfor %}
     </table>

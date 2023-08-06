@@ -75,9 +75,35 @@ async def index(request):
 
 @aiohttp_jinja2.template('alle_winden.html')
 async def alle_winden(request):
-    # mock
     winden = mock_winden
     return {'winden': winden}
+
+@aiohttp_jinja2.template('winde.html')
+async def winde(request):
+    # TODO get winden_id from route
+    winde_id = request.match_info['winde_id']
+    winden = mock_winden
+    return {'winde': winden[0]}
+
+
+# @aiohttp_jinja2.template('aufbau_winde.html')
+# async def aufbau_winde(request):
+#     if request.method == 'POST':
+#         form = await request.post()
+#         # TODO save
+#         print(form['body'])
+
+#         #raise redirect(request.app.router, 'winden')
+        
+#     # ????
+#     protocol = [
+#         {'id': 'q-1', 'label': 'frage 1'},
+#         {'id': 'q-2', 'label': 'frage 2'},
+#         {'id': 'q-3', 'label': 'frage 3'}
+#     ]
+
+#     return {'protocol': protocol}
+
 
 @aiohttp_jinja2.template('piloten.html')
 async def piloten(request):
