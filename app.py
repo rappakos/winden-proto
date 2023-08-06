@@ -7,6 +7,7 @@ from aiohttp import web
 
 
 from winden_proto_app.routes import setup_routes
+from winden_proto_app.middlewares import setup_middlewares
 
 
 from config import DefaultConfig
@@ -33,7 +34,7 @@ async def init_app(argv=None):
     # setup views and routes
     setup_routes(app)
 
-    #setup_middlewares(app)
+    setup_middlewares(app)
 
     return app
 

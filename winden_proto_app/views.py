@@ -90,7 +90,7 @@ async def winde(request):
         if w['winde_id']==winde_id:
             return {'winde': w}
     else:
-        return  {'winde': None}
+       raise web.HTTPNotFound(text=f'{winde_id} not found')
 
 
 @aiohttp_jinja2.template('aufbau.html')
