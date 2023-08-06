@@ -79,14 +79,17 @@ async def alle_winden(request):
     return {'winden': winden}
 
 @aiohttp_jinja2.template('winde.html')
-async def winde(request):
-    # TODO get winden_id from route
+async def winde(request):    
     winde_id = request.match_info['winde_id']
-    winden = mock_winden
-    return {'winde': winden[0]}
+    #print('requested',winde_id)
+    for w in mock_winden:
+        if w['winde_id']==winde_id:
+            return {'winde': w}
+    else:
+        return  {'winde': None}
 
 
-# @aiohttp_jinja2.template('aufbau_winde.html')
+# @aiohttp_jinja2.template('aufbau.html')
 # async def aufbau_winde(request):
 #     if request.method == 'POST':
 #         form = await request.post()

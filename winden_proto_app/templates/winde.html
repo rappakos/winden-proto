@@ -4,6 +4,10 @@
 
 {% block content %}
 
-    TODO Details
+    {% if winde %}
+        {% for key in winde.keys() %}
+            <p>{{key}} : {{winde[key]}}</p>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}
