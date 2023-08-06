@@ -4,7 +4,15 @@
 
 {% block content %}
 {% if schlepps %}
-    <table>
+    <table class="w3-table w3-bordered">
+        <tr>
+            <th>Winde</th>
+            <th>Windenfahrer</th>
+            <th>EWF</th>
+            <th>Pilot</th>
+            <th>Flugtag</th>
+            <th>Status</th>
+        </tr>        
     {% for schlepp in schlepps %}
         <tr>
             <td>{{ schlepp.winden_id }}</td>

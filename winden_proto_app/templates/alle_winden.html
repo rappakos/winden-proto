@@ -4,7 +4,13 @@
 
 {% block content %}
 {% if winden %}
-    <table>
+    <table class="w3-table w3-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Baujahr</th>
+            <th>Status</th>
+        </tr>
     {% for winde in winden %}
         <tr>
             <td>{{ winde.winde_id }}</td>

@@ -4,11 +4,11 @@
 
 {% block content %}
 {% if menu %}
-    <ul>
+    <div class="w3-bar w3-black">
     {% for menuitem in menu %}
-        <li><a href="{{ url(menuitem.lower()) }}">{{ menuitem }}</a></li>    
+        <a href="{{ url(menuitem.lower()) }}">{{ menuitem }}</a>
     {% endfor %}
-    </ul>
+    </div>
 {% else %}
     <p>No menu.</p>
 {% endif %}

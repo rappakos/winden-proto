@@ -4,7 +4,12 @@
 
 {% block content %}
 {% if piloten %}
-    <table>
+    <table class="w3-table w3-bordered">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
     {% for pilot in piloten %}
         <tr>
             <td>{{ pilot.id }}</td>
