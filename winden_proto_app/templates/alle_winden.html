@@ -17,7 +17,7 @@
             <td>{{ winde.winde_id }}</td>
             <td>{{ winde.name }}</td>
             <td>{{ winde.baujahr }}</td>
-            <td>{{ winde.active }}</td>
+            <td>{{ 'Aktiv' if winde.active else 'Inaktiv' }}</td>
             <td>
                 <a href="/winden/{{winde.winde_id}}">Details</a>
                 {% if winde.active %}

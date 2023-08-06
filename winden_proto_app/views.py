@@ -40,7 +40,22 @@ mock_piloten = [
             'id': 'Helmut',
             'name': 'Helmut',
             'status': 'EWF'
-        }
+        },
+        {
+            'id': 'Beate',
+            'name': 'Beate',
+            'status': 'M'
+        },   
+        {
+            'id': 'Tommy',
+            'name': 'Tommy',
+            'status': 'N'
+        },                   
+        {
+            'id': 'Markus',
+            'name': 'Markus',
+            'status': 'G'
+        }        
     ]
 
 mock_schlepps = [
@@ -123,3 +138,18 @@ async def schlepps(request):
     # mock
     schlepps = mock_schlepps
     return {'schlepps': schlepps}
+
+@aiohttp_jinja2.template('schleppstart.html')
+async def schlepp_start(request):
+
+    piloten = mock_piloten
+    windenfahrer = [p for p in mock_piloten if p['status'] in ['W','EWF','WIA'] ]
+
+    #
+    data = {
+        'winde_id': 'Elowin',
+        'windenfahrer': windenfahrer,
+        'piloten': piloten
+    }
+
+    return {'data': data}

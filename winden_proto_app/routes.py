@@ -1,6 +1,6 @@
 import pathlib
 
-from .views import index, alle_winden, winde,aufbau, piloten,schlepps
+from .views import index, alle_winden, winde,aufbau, piloten,schlepps,schlepp_start
 
 
 PROJECT_ROOT = pathlib.Path(__file__).parent
@@ -16,7 +16,9 @@ def setup_routes(app):
 
     app.router.add_get('/piloten',piloten, name='piloten')
     app.router.add_get('/schlepps',schlepps, name='schlepps')
+    app.router.add_get('/schlepps/start',schlepp_start, name='schleppstart')
     # ...
+    
     setup_static_routes(app)
 
 
