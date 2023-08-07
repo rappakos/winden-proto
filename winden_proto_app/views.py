@@ -2,7 +2,7 @@
 import aiohttp_jinja2
 from aiohttp import web
 
-#from . import db
+from . import db
 
 mock_menu =  [
             'Winden',
@@ -23,39 +23,6 @@ mock_winden =  [
             'baujahr': '2022',
             'active': True
         },
-    ]
-
-mock_piloten = [
-        {
-            'id': 'Akos',
-            'name': 'Akos',
-            'status': 'W'
-        },
-        {
-            'id': 'Orsi',
-            'name': 'Orsi',
-            'status': 'W'
-        },        
-        {
-            'id': 'Helmut',
-            'name': 'Helmut',
-            'status': 'EWF'
-        },
-        {
-            'id': 'Beate',
-            'name': 'Beate',
-            'status': 'M'
-        },   
-        {
-            'id': 'Tommy',
-            'name': 'Tommy',
-            'status': 'N'
-        },                   
-        {
-            'id': 'Markus',
-            'name': 'Markus',
-            'status': 'G'
-        }        
     ]
 
 mock_schlepps = [
@@ -130,8 +97,7 @@ async def aufbau(request):
 
 @aiohttp_jinja2.template('piloten.html')
 async def piloten(request):
-    piloten = mock_piloten
-    return {'piloten': piloten}
+    return {'piloten': await db.get_piloten()}
 
 @aiohttp_jinja2.template('schlepps.html')
 async def schlepps(request):
@@ -141,10 +107,8 @@ async def schlepps(request):
 
 @aiohttp_jinja2.template('schleppstart.html')
 async def schlepp_start(request):
-
-    piloten = mock_piloten
-    windenfahrer = [p for p in mock_piloten if p['status'] in ['W','EWF','WIA'] ]
-
+    piloten = await db.get_piloten()
+    windenfahrer = [p for p in piloten if p['status'] in ['W','EWF','WIA'] ]
     #
     data = {
         'winde_id': 'Elowin',

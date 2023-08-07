@@ -8,6 +8,7 @@ from aiohttp import web
 
 from winden_proto_app.routes import setup_routes
 from winden_proto_app.middlewares import setup_middlewares
+from winden_proto_app.db import setup_db
 
 
 from config import DefaultConfig
@@ -28,8 +29,8 @@ async def init_app(argv=None):
     aiohttp_jinja2.setup(
         app, loader=jinja2.PackageLoader('winden_proto_app', 'templates'))
 
-    # create db connection on startup, shutdown on exit
-    #app.cleanup_ctx.append(pg_context)
+    # ???
+    await setup_db(app)
 
     # setup views and routes
     setup_routes(app)
