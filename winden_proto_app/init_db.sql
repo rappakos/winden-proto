@@ -31,6 +31,8 @@ VALUES
 ('ELOWIN','ELOWIN',1,2022)
 ,('Kella','Kella',0,1975);
 
+--DROP TABLE schlepps; -- reset
+
 CREATE TABLE IF NOT EXISTS schlepps (
 			[schlepp_id] integer primary key autoincrement,
 	     	[winden_id] text not null,
@@ -41,7 +43,7 @@ CREATE TABLE IF NOT EXISTS schlepps (
             [status] text not null default 'started',
             [schlepp_start] datetime default current_timestamp,
             [status_date] datetime default current_timestamp,
-			FOREIGN KEY(winden_id) REFERENCES winden(winden_id)
+			FOREIGN KEY(winden_id) REFERENCES winden(winde_id)
 			FOREIGN KEY(wf_id) REFERENCES piloten(pilot_id)
 			FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
 );

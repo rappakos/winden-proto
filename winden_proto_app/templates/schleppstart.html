@@ -8,7 +8,7 @@
 <form action="/schlepps" method="post" class="w3-container" autocomplete="off">
     <label>
         Winde [Hinweis: darf nur eine mit offenem Flugtag geben - disabled]
-        <input type="text" name="winden_id"  class="w3-input" value="{{data.winde_id}}" disabled />
+        <input type="text" name="winden_id"  class="w3-input" value="{{data.winde_id}}" style="pointer-events:none; background:grey;" />
      </label>
     <label>
         Windenfahrer [Hinweis: von der letzten Schlepp vorbefüllt sonst Autocomplete]
@@ -30,7 +30,7 @@
         Gewicht [kg] 
         <input type="number" name="gewicht"  class="w3-input" />
      </label>    
-    <input type="submit" value="submit" disabled/>
+    <input type="submit" value="submit" />
 </form>
 <script>
     var el = document.getElementById('ax-windenfahrer');
