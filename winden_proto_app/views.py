@@ -10,21 +10,6 @@ mock_menu =  [
             'Schlepps'
             ]
 
-mock_winden =  [
-        {   
-            'winde_id': 'Kella',
-            'name': 'Kella',
-            'baujahr': '1975',
-            'active': False
-        },
-        {   
-            'winde_id': 'Elowin',
-            'name': 'Elowin',
-            'baujahr': '2022',
-            'active': True
-        },
-    ]
-
 mock_schlepps = [
         {
             'winden_id': 'Elowin',
@@ -61,14 +46,14 @@ async def index(request):
 
 @aiohttp_jinja2.template('alle_winden.html')
 async def alle_winden(request):
-    winden = mock_winden
+    winden = await db.get_winden()
     return {'winden': winden}
 
 @aiohttp_jinja2.template('winde.html')
 async def winde(request):    
     winde_id = request.match_info['winde_id']
     #print('requested',winde_id)
-    for w in mock_winden:
+    for w in await db.get_winden():
         if w['winde_id']==winde_id:
             return {'winde': w}
     else:

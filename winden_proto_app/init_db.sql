@@ -17,4 +17,16 @@ VALUES
 ,('Beate','Beate','M')
 ,('Martin','Martin','M')
 ,('Tommi','Tommi','NG')
-,('Markus','Markus','G')
+,('Markus','Markus','G');
+
+CREATE TABLE IF NOT EXISTS winden (
+	winde_id TEXT NOT NULL UNIQUE PRIMARY KEY,
+	[name] TEXT NOT NULL,
+	[active] BIT NOT NULL,
+    [baujahr] int not null
+);
+
+INSERT OR IGNORE INTO winden (winde_id,[name],[active],[baujahr])
+VALUES
+('ELOWIN','ELOWIN',1,2022)
+,('Kella','Kella',0,1975);

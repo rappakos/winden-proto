@@ -33,3 +33,17 @@ async def get_piloten():
                         'status':row[2]
                         })
     return res
+
+async def get_winden():
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        async with db.execute("SELECT * FROM winden") as cursor:
+            async for row in cursor:
+                #print(row)
+                res.append({
+                        'winde_id':row[0],
+                        'name':row[1],
+                        'active':row[2],
+                        'baujahr':row[3]
+                        })
+    return res
