@@ -47,3 +47,25 @@ async def get_winden():
                         'baujahr':row[3]
                         })
     return res
+
+async def get_schlepps():
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        async with db.execute("""
+                            SELECT * 
+                            FROM schlepps s
+                            ORDER BY schlepp_id DESC,
+                            LIMIT 20
+                            """) as cursor:
+            async for row in cursor:
+                #print(row)
+                res.append({
+                        'schlepp_id':row[0],
+                        'winde_id':row[1],
+                        'wf_id':row[2],
+                        'ewf_id':row[3],
+                        'pilot_id': row[4],
+                        'datum': row[5],
+                        'status': row[6]
+                    })
+    return res

@@ -10,29 +10,6 @@ mock_menu =  [
             'Schlepps'
             ]
 
-mock_schlepps = [
-        {
-            'winden_id': 'Elowin',
-            'wf_id': 'Orsi',
-            'ewf_id': None,
-            'pilot_id': 'Akos',
-            'datum': '2023-08-05',
-            'status': 'finished',
-            'schlepp_start': '2023-08-05T12:34:56.789Z',
-            'status_date': '2023-08-05T12:36:56.789Z',
-        },
-        {
-            'winden_id': 'Elowin',
-            'wf_id': 'Orsi',
-            'ewf_id': None,
-            'pilot_id': 'Helmut',
-            'datum': '2023-08-05',
-            'status': 'finished',
-            'schlepp_start': '2023-08-05T12:45:56.789Z',
-            'status_date': '2023-08-05T12:47:56.789Z',
-        }
-    ]
-
 def redirect(router, route_name):
     location = router[route_name].url_for()
     return web.HTTPFound(location)
@@ -86,9 +63,7 @@ async def piloten(request):
 
 @aiohttp_jinja2.template('schlepps.html')
 async def schlepps(request):
-    # mock
-    schlepps = mock_schlepps
-    return {'schlepps': schlepps}
+    return {'schlepps': await db.get_schlepps()}
 
 @aiohttp_jinja2.template('schleppstart.html')
 async def schlepp_start(request):

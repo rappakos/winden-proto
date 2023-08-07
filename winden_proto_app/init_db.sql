@@ -30,3 +30,18 @@ INSERT OR IGNORE INTO winden (winde_id,[name],[active],[baujahr])
 VALUES
 ('ELOWIN','ELOWIN',1,2022)
 ,('Kella','Kella',0,1975);
+
+CREATE TABLE IF NOT EXISTS schlepps (
+			[schlepp_id] integer primary key autoincrement,
+	     	[winden_id] text not null,
+            [wf_id] text not null,
+            [ewf_id] text null,
+            [pilot_id]  text not null,
+            [datum] text not null, -- ISO YYYY-MM-DD
+            [status] text not null default 'started',
+            [schlepp_start] datetime default current_timestamp,
+            [status_date] datetime default current_timestamp,
+			FOREIGN KEY(winden_id) REFERENCES winden(winden_id)
+			FOREIGN KEY(wf_id) REFERENCES piloten(pilot_id)
+			FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
+);
