@@ -49,6 +49,34 @@ async def get_winden():
                         })
     return res
 
+async def get_aufbau_fragen(winde_id:str):
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        async with db.execute("""SELECT question_id, question 
+                                 FROM protocolquestions 
+                                 WHERE [type]='aufbau' 
+                                 ORDER BY question_id """) as cursor:
+            async for row in cursor:
+                res.append({
+                        'id':f'q-{row[0]}',
+                        'question':row[1]
+                        })
+    return res
+
+async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):
+    async with aiosqlite.connect(DB_NAME) as db:
+        protocol_id = await db.execute_insert("""
+                INSERT INTO protocol (winden_id, pilot_id, type, kommentar)
+                VALUES (?,?,?,?)
+            """, (winde_id, pilot_id, type, kommentar))
+        print(protocol_id)
+        for q in questions:
+            await db.execute_insert("""
+                INSERT INTO protocolanswers (protocol_id, question, answer)
+                VALUES (?,?,?)
+            """, (protocol_id, q[0], q[1]))
+
+
 async def get_schlepps():
     res = []
     async with aiosqlite.connect(DB_NAME) as db:

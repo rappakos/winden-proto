@@ -17,6 +17,7 @@ def redirect(router, route_name):
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
+    #print(request.app) we could use the app keys ...
     menu = mock_menu
     return {'menu': menu}
 
@@ -39,21 +40,30 @@ async def winde(request):
 
 @aiohttp_jinja2.template('aufbau.html')
 async def aufbau(request):
+    winde_id = request.match_info['winde_id']
+    # is this a good design? same route, different methods?
     if request.method == 'POST':
         form = await request.post()
-        # TODO save
-        for key in form.keys():
-            print(key, form[key])
+        # ? validate       
+        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
+        #
+        type = 'aufbau'
+        questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
+        kommentar = form['kommentar']
+        pilot_id = form['aufgebaut-von']
+        # 
+        await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
 
         raise redirect(request.app.router, 'winden')
         
     if request.method == 'GET':
-        winde_id = request.match_info['winde_id']
         # 
-        protocol = [{'id': f'q-{j}', 'label': f'frage {j}'} for j in range(10)]
+        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
+        piloten = await db.get_piloten()
 
         return {
                 'winde_id': winde_id,
+                'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
                 'protocol': protocol}
 
 
@@ -74,7 +84,7 @@ async def schlepp(request):
         #print(winden_id)
         wf_id = data['windenfahrer'] # compare to DB
         ewf_id = data['ewf'] # compare to DB
-        pilot_id = data['pilot'] # compare to DB
+        pilot_id = data['pilot'] # compare to DB? could be new
         gewicht = data['gewicht'] # compare to DB
     except (KeyError, TypeError, ValueError) as e:
         raise web.HTTPBadRequest(

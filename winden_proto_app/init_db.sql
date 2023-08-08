@@ -47,3 +47,63 @@ CREATE TABLE IF NOT EXISTS schlepps (
 			FOREIGN KEY(wf_id) REFERENCES piloten(pilot_id)
 			FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
 );
+
+CREATE TABLE IF NOT EXISTS protocolquestions (
+	[id] integer primary key autoincrement,
+	[question_id] integer not null,
+	[type] text not null, -- aufbau / abbau
+	[question] text not null,
+	CONSTRAINT PK_protocolquestions UNIQUE([question_id],[type])
+
+);
+
+--DELETE FROM protocolquestions;
+
+INSERT OR IGNORE INTO protocolquestions ([question_id],[type],[question])
+VALUES
+(1,'aufbau','Anh&auml;nger zum Startplatz ausgerichtet ?'),
+(2,'aufbau','Handbremse angezogen ?'),
+(3,'aufbau','Seitlichen St&uuml;tzen ausgefahren ?'),
+(4,'aufbau','St&uuml;tzrad ausgefahren ?'),
+(5,'aufbau','Falls abgekoppelt: Bremskeile untergelegt ?'),
+(6,'aufbau','Plane sicher gelagert ?'),
+(7,'aufbau','Signallampe eingesteckt ?'),
+(8,'aufbau','Erdung hergestellt ?'),
+(9,'aufbau','Hauptschalter oder Schl&uuml;sselschalter (wenn vorhanden) auf AUS ?'),
+(10,'aufbau','Winde frei von losen Teilen oder Verunreinigungen ?'),
+(11,'aufbau','Bewegliche Teile (Rollen, Trommeln etc.) g&auml;ngig ?'),
+(12,'aufbau','Hauptschalter jetzt eingeschaltet ?'),
+(13,'aufbau','Kappvorrichtungen getestet ?'),
+(14,'aufbau','Schleppseile richtig eingef&auml;delt (Umlenkrollen-F&uuml;hrung!) ?'),
+(15,'aufbau','Vorseile/Seilfallschirm/Sollbruchstelle richtig montiert ?'),
+(16,'aufbau','Hauptschalter oder Schl&uuml;sselschalter (wenn vorhanden) jetzt eingeschaltet ?'),
+(17,'aufbau','Steuerpult-Anzeige (beide Trommeln) OK'),
+(1,'abbau','Kappvorrichtungen entspannt bzw. gesichert?'),
+(2,'abbau','Seilfallschirme; Vorseile, Kapphebel in Box verstauen'),
+(3,'abbau','Lasten sicher verstaut?'),
+(4,'abbau','Spriegelplanen richtig montiert (Seilspinnen!) ?'),
+(5,'abbau','Anh&auml;nger korrekt angekuppelt (St&uuml;tzlast mind. 50kg, St&uuml;tzen & St&uuml;tzrad hoch, Abrißseil befestigt, Handbremse gel&ouml;t, el. Steckverbindung funktionsf&auml;hig)?'),
+(6,'abbau','Handlungsbedarfe notiert (z.B. „Kappmesser wechseln“) ?'),
+(1,'abstellen','Ladezustand der Batterie ?'),
+(2,'abstellen','Hauptschalter aus ?'),
+(3,'abstellen','Ladeger&auml;t angeschlossen / aktiviert ?  Bei 70% F&uuml;llstand nicht laden');
+
+DROP TABLE protocol;
+
+CREATE TABLE IF NOT EXISTS protocol (
+	[protocol_id] integer primary key autoincrement,
+	[winden_id] text not null,
+	[pilot_id] text not null,
+	[type] text not null,
+	[kommentar] text null,
+	[timestamp] datetime default current_timestamp,
+	FOREIGN KEY(winden_id) REFERENCES winden(winde_id),
+	FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
+);
+
+CREATE TABLE IF NOT EXISTS protocolanswers (
+	[protocol_id] integer integer not null,
+	[question] text not null, -- actual question text
+	[answer] bit not null,
+	FOREIGN KEY(protocol_id) REFERENCES protocol(protocol_id)
+);
