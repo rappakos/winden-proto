@@ -58,7 +58,8 @@ List
 * In current prompt `~`: `pkg install git`
 * In current prompt `~`: `pkg install python`
 * pkg i python-numpy
-* pip install pandas > requiremetns
+* pkg i python-pandas
+* pip install xlsxwriter
 * In current prompt `~`: `pkg install libexpat` ?
 * In current prompt `~`: `mkdir github`
 * In current prompt `~`: `cd github`
