@@ -3,8 +3,9 @@ import aiohttp_jinja2
 from aiohttp import web
 
 from os import listdir, remove
-from os.path import isfile, join,getsize,getctime
+from os.path import isfile, join,getsize,getctime,dirname
 from datetime import datetime
+from shutil import copy
 
 from .views import redirect
 
@@ -26,10 +27,12 @@ async def backups(request):
 
 async def create_backup(request):
     db_name = request.app['DB_NAME']
-    backup_folder = join(request.app['PROJECT_ROOT'], BACKUP_FOLDER)
-    #db_folder = join(str(request.app['PROJECT_ROOT']).split('/')[:-1])
-    print(backup_folder, f'{db_name}.{datetime.now().strftime("%Y%d%m.%H%M%S")}.bak' )
+    source = join(dirname(request.app['PROJECT_ROOT']),db_name)
+    target = join(request.app['PROJECT_ROOT'], BACKUP_FOLDER, f'{db_name}.{datetime.now().strftime("%Y%d%m.%H%M%S")}.bak' )
 
+    print(source,target)
+    copy(source,target)
+    
     # done
     raise redirect(request.app.router, 'backups')
 
