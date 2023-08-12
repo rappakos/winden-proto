@@ -1,6 +1,7 @@
 import pathlib
 
 from .views import index, alle_winden, winde,aufbau, piloten,schlepps,schlepp_start, schlepp
+from .admin_views import backups, create_backup, remove_backup
 
 
 PROJECT_ROOT = pathlib.Path(__file__).parent
@@ -20,10 +21,19 @@ def setup_routes(app):
     app.router.add_get('/schlepps/start',schlepp_start, name='schleppstart')
     # ...
     
+    # ADMIN?
+    app.router.add_get('/backups',backups, name='backups')
+    app.router.add_get('/backups/create',create_backup, name='create_backup')
+    app.router.add_get('/backups/remove',remove_backup, name='remove_backup')
+
     setup_static_routes(app)
 
 
 def setup_static_routes(app):
+    app['PROJECT_ROOT'] = PROJECT_ROOT
     app.router.add_static('/static/',
                           path=PROJECT_ROOT / 'static',
                           name='static')
+    app.router.add_static('/backups_dl/',
+                          path=PROJECT_ROOT / 'backups',
+                          name='backups_dl')

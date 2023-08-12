@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% set title = "Backups" %}
+
+{% block content %}
+<a href="backups/create" class="w3-button">Create</a>
+{% if files %}
+<table class="w3-table w3-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Size [kB]</th>
+        <th>Datum</th>
+        <th>Aktions</th>
+    </tr>
+{% for file in files %} 
+    <tr>
+        <td> {{file.name}}</td>
+        <td> {{file.size / 1024}}</td>
+        <td> {{file.created}}</td>
+        <td>
+            <a href="backups_dl/{{file.name}}" class="w3-button">Download</a>
+            <a href="backups/remove?name={{file.name}}" onclick="return confirm('Are you sure?')" class="w3-button">Remove</a> 
+        </td>
+    </tr>   
+{% endfor %}
+</table>
+{% else %}
+ <p>No backups found.</p>
+{% endif %}
+
+{% endblock %}

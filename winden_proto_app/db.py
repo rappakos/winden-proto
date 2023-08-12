@@ -5,6 +5,7 @@ DB_NAME = './winde-demo.db'
 INIT_SCRIPT = './winden_proto_app/init_db.sql'
 
 async def setup_db(app):
+    app['DB_NAME'] = DB_NAME
     async with aiosqlite.connect(DB_NAME) as db:
         # only test
         async with db.execute("SELECT 'check'") as cursor:
