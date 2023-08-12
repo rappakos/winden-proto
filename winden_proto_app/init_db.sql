@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS piloten (
 	pilot_id TEXT NOT NULL UNIQUE PRIMARY KEY,
 	[name] TEXT NOT NULL,
 	[status_txt] TEXT NOT NULL, -- could be FK to status 
-    [gewicht] int null,
+    [zugkraft] int null,
 	verein TEXT NULL
 );
 
@@ -20,7 +20,7 @@ VALUES
 ,('Markus','Markus','G');
 
 CREATE TABLE IF NOT EXISTS winden (
-	winde_id TEXT NOT NULL UNIQUE PRIMARY KEY,
+	[winde_id] TEXT NOT NULL UNIQUE PRIMARY KEY,
 	[name] TEXT NOT NULL,
 	[active] BIT NOT NULL,
     [baujahr] int not null
@@ -35,7 +35,7 @@ VALUES
 
 CREATE TABLE IF NOT EXISTS schlepps (
 			[schlepp_id] integer primary key autoincrement,
-	     	[winden_id] text not null,
+	     	[winde_id] text not null,
             [wf_id] text not null,
             [ewf_id] text null,
             [pilot_id]  text not null,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS schlepps (
             [status] text not null default 'started',
             [schlepp_start] datetime default current_timestamp,
             [status_date] datetime default current_timestamp,
-			FOREIGN KEY(winden_id) REFERENCES winden(winde_id)
+			FOREIGN KEY(winde_id) REFERENCES winden(winde_id)
 			FOREIGN KEY(wf_id) REFERENCES piloten(pilot_id)
 			FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
 );
@@ -88,16 +88,16 @@ VALUES
 (2,'abstellen','Hauptschalter aus ?'),
 (3,'abstellen','Ladeger&auml;t angeschlossen / aktiviert ?  Bei 70% F&uuml;llstand nicht laden');
 
-DROP TABLE protocol;
+--DROP TABLE protocol;
 
 CREATE TABLE IF NOT EXISTS protocol (
 	[protocol_id] integer primary key autoincrement,
-	[winden_id] text not null,
+	[winde_id] text not null,
 	[pilot_id] text not null,
 	[type] text not null,
 	[kommentar] text null,
 	[timestamp] datetime default current_timestamp,
-	FOREIGN KEY(winden_id) REFERENCES winden(winde_id),
+	FOREIGN KEY(winde_id) REFERENCES winden(winde_id),
 	FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
 );
 

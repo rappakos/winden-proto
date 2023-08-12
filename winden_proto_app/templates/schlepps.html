@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<a href="/schlepps/start">Neuen Schlepp starten</a>
+<a href="/schlepps/start" class="w3-button">Neuen Schlepp starten</a>
 {% if schlepps %}
     <table class="w3-table w3-bordered">
         <tr>
@@ -19,7 +19,7 @@
         </tr>        
     {% for schlepp in schlepps %}
         <tr>
-            <td>{{ schlepp.winden_id }}</td>
+            <td>{{ schlepp.winde_id }}</td>
             <td>{{ schlepp.wf_id }}</td>
             <td>{{ schlepp.ewf_id }}</td>
             <td>{{ schlepp.pilot_id }}</td>

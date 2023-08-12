@@ -5,16 +5,16 @@
 {% block content %}
 
     {% if winde %}
-        {% for key in winde.keys() %}
-            <p>{{key}} : {{winde[key]}}</p>
-        {% endfor %}
-
         {% if winde.active %}
-        <a href="/winden/{{winde.winde_id}}/aufbau">Start Flugtag</a>
+            <a href="/winden/{{winde.winde_id}}/aufbau" class="w3-button">Start Flugtag</a>
         {% else %}
             <p>Winde muss erst reaktiviert werden.</p>
         {% endif %}
 
-    {% endif %}
+        {% for key in winde.keys() %}
+            <p>{{key}} : {{winde[key]}}</p>
+        {% endfor %}
+
+   {% endif %}
 
 {% endblock %}

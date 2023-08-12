@@ -64,17 +64,18 @@ async def get_aufbau_fragen(winde_id:str):
     return res
 
 async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):
+    #print(winde_id, pilot_id, type, kommentar)
     async with aiosqlite.connect(DB_NAME) as db:
         protocol_id = await db.execute_insert("""
-                INSERT INTO protocol (winden_id, pilot_id, type, kommentar)
+                INSERT INTO protocol (winde_id, pilot_id, type, kommentar)
                 VALUES (?,?,?,?)
             """, (winde_id, pilot_id, type, kommentar))
-        print(protocol_id)
+        #print(protocol_id)
         for q in questions:
             await db.execute_insert("""
                 INSERT INTO protocolanswers (protocol_id, question, answer)
                 VALUES (?,?,?)
-            """, (protocol_id, q[0], q[1]))
+            """, (protocol_id[0], q[0], q[1]))
 
 
 async def get_schlepps():
@@ -90,7 +91,7 @@ async def get_schlepps():
                 #print(row)
                 res.append({
                         'schlepp_id':row[0],
-                        'winden_id':row[1],
+                        'winde_id':row[1],
                         'wf_id':row[2],
                         'ewf_id':row[3],
                         'pilot_id': row[4],
@@ -99,11 +100,11 @@ async def get_schlepps():
                     })
     return res
 
-async def add_schlepp(winden_id:str, wf_id:str, ewf_id:str, pilot_id:str, gewicht:int):
+async def add_schlepp(winde_id:str, wf_id:str, ewf_id:str, pilot_id:str, zugkraft:int):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("""
-            INSERT INTO schlepps ([winden_id],[wf_id],[ewf_id],[pilot_id],[datum])
+            INSERT INTO schlepps ([winde_id],[wf_id],[ewf_id],[pilot_id],[datum])
             VALUES (?,?,?,?,?)
-            """, (winden_id,wf_id,ewf_id,pilot_id,datetime.today().strftime('%Y-%m-%d')))
+            """, (winde_id,wf_id,ewf_id,pilot_id,datetime.today().strftime('%Y-%m-%d')))
         
         await db.commit()

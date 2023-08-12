@@ -19,9 +19,9 @@
             <td>{{ winde.baujahr }}</td>
             <td>{{ 'Aktiv' if winde.active else 'Inaktiv' }}</td>
             <td>
-                <a href="/winden/{{winde.winde_id}}">Details</a>
+                <a href="/winden/{{winde.winde_id}}" class="w3-button">Details</a>
                 {% if winde.active %}
-                    <a href="/winden/{{winde.winde_id}}/aufbau">Start Flugtag</a>
+                    <a href="/winden/{{winde.winde_id}}/aufbau" class="w3-button">Start Flugtag</a>
                 {% endif %}
             </td>
         </tr>    

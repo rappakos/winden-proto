@@ -4,11 +4,7 @@ from aiohttp import web
 
 from . import db
 
-mock_menu =  [
-            'Winden',
-            'Piloten',
-            'Schlepps'
-            ]
+
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -17,9 +13,7 @@ def redirect(router, route_name):
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
-    #print(request.app) we could use the app keys ...
-    menu = mock_menu
-    return {'menu': menu}
+    return {'status': 'OK'}
 
 
 @aiohttp_jinja2.template('alle_winden.html')
@@ -80,17 +74,17 @@ async def schlepp(request):
     print(data)
     # validate
     try:
-        winden_id = data['winden_id'] # compare to DB
-        #print(winden_id)
+        winde_id = data['winde_id'] # compare to DB
+        #print(winde_id)
         wf_id = data['windenfahrer'] # compare to DB
         ewf_id = data['ewf'] # compare to DB
         pilot_id = data['pilot'] # compare to DB? could be new
-        gewicht = data['gewicht'] # compare to DB
+        gewicht = data['zugkraft'] # compare to DB
     except (KeyError, TypeError, ValueError) as e:
         raise web.HTTPBadRequest(
                text='Some values are not correct') from e
     # save
-    await db.add_schlepp(winden_id, wf_id, ewf_id, pilot_id, gewicht)
+    await db.add_schlepp(winde_id, wf_id, ewf_id, pilot_id, gewicht)
     # redirect
     router = request.app.router
     url = router['schlepps'].url_for()
