@@ -8,12 +8,12 @@
 <form action="/schlepps" method="post" class="w3-container" autocomplete="off">
     <label>
         Winde [Hinweis: darf nur eine mit offenem Flugtag geben - disabled]
-        <input type="text" name="winden_id"  class="w3-input" value="{{data.winde_id}}" style="pointer-events:none; background:grey;" />
+        <input type="text" name="winde_id"  class="w3-input" value="{{data.winde_id}}" style="pointer-events:none; background:grey;" />
      </label>
     <label>
         Windenfahrer [Hinweis: von der letzten Schlepp vorbefüllt sonst Autocomplete]
         <div class="autocomplete"  style="width: 100%;">
-            <input type="text" name="windenfahrer"  class="w3-input" id="ax-windenfahrer" />
+            <input type="text" name="windenfahrer"  class="w3-input" id="ax-windenfahrer" value="{{data.wf_id}}" />
         </div>
      </label>
      <label>

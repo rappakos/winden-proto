@@ -5,7 +5,12 @@
 {% block content %}
 
 <a href="/schlepps/start" class="w3-button">Neuen Schlepp starten</a>
-{% if schlepps %}
+
+    <div>
+        <span>Aktuelle Winde: {{ winde_id }} </span>
+        <span>Aktueller WF: {{ wf_id }} </span>
+    </div>
+    {% if schlepps %}
     <table class="w3-table w3-bordered">
         <tr>
             <th>Winde</th>
@@ -17,7 +22,7 @@
             <th>Starts heute</th>
             <th>Betrag</th>
         </tr>        
-    {% for schlepp in schlepps %}
+        {% for schlepp in schlepps %}
         <tr>
             <td>{{ schlepp.winde_id }}</td>
             <td>{{ schlepp.wf_id }}</td>
@@ -25,14 +30,14 @@
             <td>{{ schlepp.pilot_id }}</td>
             <td>{{ schlepp.datum }}</td>
             <td>{{ schlepp.status }}</td>
-            <td>0</td>
+            <td>#{{ schlepp.schlepp_no }} / {{ schlepp.schlepps_heute }}</td>
             <td>0</td>
         </tr>    
     {% endfor %}
     </table>
-{% else %}
-    <p>No schlepps.</p>
-{% endif %}
+    {% else %}
+        <p>No schlepps.</p>
+    {% endif %}
 
 
 {% endblock %}

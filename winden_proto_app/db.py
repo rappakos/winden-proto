@@ -82,9 +82,26 @@ async def get_schlepps():
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
         async with db.execute("""
-                            SELECT * 
+                            SELECT 
+                                s.schlepp_id
+                                ,s.winde_id
+                                ,s.wf_id
+                                ,s.ewf_id
+                                ,s.pilot_id
+                                ,s.datum
+                                ,s.status
+                                , count(s2.schlepp_id) [schlepps_heute]
+                                , dense_rank() over(partition by s.pilot_id order by s.schlepp_id ) [schlepp_no]
                             FROM schlepps s
-                            ORDER BY schlepp_id DESC
+                            LEFT JOIN schlepps s2 ON s2.pilot_id=s.pilot_id and s.datum=s2.datum
+                            GROUP BY s.schlepp_id
+                                ,s.winde_id
+                                ,s.wf_id
+                                ,s.ewf_id
+                                ,s.pilot_id
+                                ,s.datum
+                                ,s.status
+                            ORDER BY s.schlepp_id DESC
                             LIMIT 20
                             """) as cursor:
             async for row in cursor:
@@ -96,9 +113,30 @@ async def get_schlepps():
                         'ewf_id':row[3],
                         'pilot_id': row[4],
                         'datum': row[5],
-                        'status': row[6]
+                        'status': row[6],
+                        'schlepps_heute': row[7],
+                        'schlepp_no':  row[8]
                     })
     return res
+
+
+async def get_last_schlepp_data():
+    async with aiosqlite.connect(DB_NAME) as db:
+        winde_id, wf_id=None, None
+        async with db.execute("""
+                            SELECT s.winde_id,s.wf_id
+                            FROM schlepps s
+                            WHERE s.[datum] = ?
+                            ORDER BY schlepp_id DESC
+                            LIMIT 1
+                            """, (str(datetime.today().strftime('%Y-%m-%d')),)) as cursor:
+            async for row in cursor:
+                winde_id, wf_id = row[0], row[1]
+        if not winde_id:
+            print("no schlepps today")
+            # todo load from protocol?!
+    return winde_id, wf_id
+        
 
 async def add_schlepp(winde_id:str, wf_id:str, ewf_id:str, pilot_id:str, zugkraft:int):
     async with aiosqlite.connect(DB_NAME) as db:

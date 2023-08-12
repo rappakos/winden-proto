@@ -67,11 +67,16 @@ async def piloten(request):
 
 @aiohttp_jinja2.template('schlepps.html')
 async def schlepps(request):
-    return {'schlepps': await db.get_schlepps()}
+    winde_id, wf_id = await db.get_last_schlepp_data()
+    return {
+        'winde_id': winde_id ,
+        'wf_id': wf_id,
+        'schlepps': await db.get_schlepps()
+        }
 
 async def schlepp(request):
     data = await request.post()
-    print(data)
+    #print(data)
     # validate
     try:
         winde_id = data['winde_id'] # compare to DB
@@ -79,12 +84,12 @@ async def schlepp(request):
         wf_id = data['windenfahrer'] # compare to DB
         ewf_id = data['ewf'] # compare to DB
         pilot_id = data['pilot'] # compare to DB? could be new
-        gewicht = data['zugkraft'] # compare to DB
+        zugkraft = data['zugkraft'] # compare to DB
     except (KeyError, TypeError, ValueError) as e:
         raise web.HTTPBadRequest(
-               text='Some values are not correct') from e
+               text=f'Some values are not correct\n {e}') from e
     # save
-    await db.add_schlepp(winde_id, wf_id, ewf_id, pilot_id, gewicht)
+    await db.add_schlepp(winde_id, wf_id, ewf_id, pilot_id, zugkraft)
     # redirect
     router = request.app.router
     url = router['schlepps'].url_for()
@@ -94,9 +99,11 @@ async def schlepp(request):
 async def schlepp_start(request):
     piloten = await db.get_piloten()
     windenfahrer = [p for p in piloten if p['status'] in ['W','EWF','WIA'] ]
+    winde_id, wf_id = await db.get_last_schlepp_data()
     #
     data = {
-        'winde_id': 'ELOWIN',
+        'winde_id': winde_id ,
+        'wf_id': wf_id,
         'windenfahrer': windenfahrer,
         'piloten': piloten
     }
