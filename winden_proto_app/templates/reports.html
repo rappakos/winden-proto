@@ -23,7 +23,9 @@
 {% if selected_report %} 
     <h2>{{selected_report.display_name}}</h2>
     <div class="w3-bar w3-grey">
-        <a href="" class="w3-button">Export als XLS</a>
+        <form method="get" action="/reports/{{selected_report.report_id}}/export">
+            <button type="submit" class="w3-button">Export</button>
+         </form>
     </div>
    <table class="w3-table w3-bordered">
     <tr>

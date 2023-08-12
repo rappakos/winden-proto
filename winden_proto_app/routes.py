@@ -1,7 +1,7 @@
 import pathlib
 
 from .views import index, alle_winden, winde,aufbau, piloten,schlepps,schlepp_start, schlepp
-from .report_views import reports, report
+from .report_views import reports, report, export
 from .admin_views import backups, create_backup, remove_backup
 
 
@@ -24,6 +24,7 @@ def setup_routes(app):
     
     app.router.add_get('/reports',reports, name='reports')
     app.router.add_get('/reports/{report_id}',report, name='report')
+    app.router.add_get('/reports/{report_id}/export',export, name='export')
     
     # ADMIN?
     app.router.add_get('/backups',backups, name='backups')
