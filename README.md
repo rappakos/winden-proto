@@ -23,7 +23,7 @@ List
 ## Pilot
 
 * Name: Text
-* Gewicht: 
+* Zugkraft: 
 * Status: List EWF, WF, WIA, MG (default?), NVB, G, INACTIV
 * Verein: Text
 * Enthaftungserklärung: Bool
