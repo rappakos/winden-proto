@@ -3,13 +3,5 @@
 {% set title = "Main" %}
 
 {% block content %}
-{% if menu %}
-    <div class="w3-bar w3-black">
-    {% for menuitem in menu %}
-        <a href="{{ url(menuitem.lower()) }}">{{ menuitem }}</a>
-    {% endfor %}
-    </div>
-{% else %}
-    <p>No menu ;( .</p>
-{% endif %}
+
 {% endblock %}
