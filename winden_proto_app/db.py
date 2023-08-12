@@ -147,3 +147,14 @@ async def add_schlepp(winde_id:str, wf_id:str, ewf_id:str, pilot_id:str, zugkraf
             """, (winde_id,wf_id,ewf_id,pilot_id,datetime.today().strftime('%Y-%m-%d')))
         
         await db.commit()
+
+
+async def get_report_data(columns, sql:str):
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+         async with db.execute(sql) as cursor:
+             async for row in cursor:
+                datarow = [row[j] for j,_ in enumerate(columns) ]
+                res.append(datarow)
+
+    return res

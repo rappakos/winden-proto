@@ -1,6 +1,7 @@
 import pathlib
 
 from .views import index, alle_winden, winde,aufbau, piloten,schlepps,schlepp_start, schlepp
+from .report_views import reports, report
 from .admin_views import backups, create_backup, remove_backup
 
 
@@ -20,6 +21,9 @@ def setup_routes(app):
     app.router.add_post('/schlepps',schlepp, name='schlepp')
     app.router.add_get('/schlepps/start',schlepp_start, name='schleppstart')
     # ...
+    
+    app.router.add_get('/reports',reports, name='reports')
+    app.router.add_get('/reports/{report_id}',report, name='report')
     
     # ADMIN?
     app.router.add_get('/backups',backups, name='backups')

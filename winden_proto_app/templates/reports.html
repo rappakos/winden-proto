@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% set title = "Reports" %}
+
+{% block content %}
+
+{% if reports %} 
+    <form>
+        <label for="sel_reports">Report auswählen</label>
+        <select id="sel_reports" onchange="self.location=this.options[this.selectedIndex].value">
+            <option value="/reports">Auswählen ... </option>
+        {% for key in reports.keys() %}
+            <option value="/reports/{{key}}">{{reports[key]}}</option>
+        {% endfor %}
+        </select>
+    </form>
+
+{% else %}
+ <p>No reports</p>
+{% endif %}
+
+
+{% if selected_report %} 
+    <h2>{{selected_report.display_name}}</h2>
+    <div class="w3-bar w3-grey">
+        <a href="" class="w3-button">Export als XLS</a>
+    </div>
+   <table class="w3-table w3-bordered">
+    <tr>
+        {% for c in selected_report.columns %} 
+            <th>{{c}}</th>
+        {% endfor %}
+    </tr>
+        {% for row in selected_report.data %} 
+            <tr>
+                {% for field in row %} 
+                <th>{{field}}</th>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+   </table>
+
+{% endif %}
+
+{% endblock %}
