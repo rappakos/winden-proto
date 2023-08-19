@@ -1,6 +1,7 @@
 # views.py
 import aiohttp_jinja2
 from aiohttp import web
+import numpy as np
 
 from . import db
 
@@ -13,7 +14,26 @@ def redirect(router, route_name):
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
-    return {'status': 'OK'}
+    from datetime import date, timedelta
+    time_now = date.today()
+    statuses = ['yes','no','maybe']
+    days = [time_now + timedelta(days=i) for i in range(7)]
+    piloten = await db.get_piloten()
+    entries = []
+    for day in days:
+        # TODO add frueh/spaet
+        entries.extend([(
+                day,
+                p,
+                np.random.choice(statuses, p=[0.5,0.3,0.2])
+            ) for p in np.random.choice([p['id'] for p in piloten],5,replace=False)
+        ])
+
+    return {
+        'days': days,
+        'piloten': piloten,
+        'entries': entries
+        }
 
 
 @aiohttp_jinja2.template('alle_winden.html')

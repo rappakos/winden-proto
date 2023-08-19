@@ -1,7 +1,53 @@
 {% extends "base.html" %}
 
+
 {% set title = "Main" %}
 
 {% block content %}
+<style>
+    span.yes {
+        background-color: green;
+        display: block;
+     }
+     span.no {
+        background-color: red;
+        display: block;
+     } 
+     span.maybe {
+        background-color: orange;
+        display: block;
+     }  
+</style>
+<table class="w3-table w3-bordered">
+    <tr>
+        <th>&nbsp;</th>        
+        <th>&nbsp;</th>
+        {% for day in days %}
+            <th>{{ day.strftime('%m.%d.') }}</th>
+        {% endfor %}
+    </tr>
+    {% for row in ['Schleppbetrieb','Wetter','Gastpiloten'] %}
+    <tr>
+        <th>{{row}}</th>
+        {% for day in days %}
+            <td></td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    {% for pilot in piloten %}
+    <tr>
+        <th>{{pilot.id}}</th>
+        <td>{{pilot.status}}</td>
+        {% for day in days %}
+            <td>
+                {% for e in entries if e[0]==day and e[1]==pilot.id %}
+                <span class="{{ e[2] }}">{{ e[2] }}</span>
+                {% endfor %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}    
+<table>
+
 
 {% endblock %}
