@@ -93,7 +93,7 @@ async def get_schlepps():
                                 ,s.datum
                                 ,s.status
                                 , count(s2.schlepp_id) [schlepps_heute]
-                                , dense_rank() over(partition by s.pilot_id order by s.schlepp_id ) [schlepp_no]
+                                , dense_rank() over(partition by s.pilot_id, s.datum order by s.schlepp_id ) [schlepp_no]
                             FROM schlepps s
                             LEFT JOIN schlepps s2 ON s2.pilot_id=s.pilot_id and s.datum=s2.datum
                             GROUP BY s.schlepp_id
