@@ -1,7 +1,8 @@
-     /*
+/*
           Source https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_autocomplete
       */
           function autocomplete(inp, arr) {
+            const event = new Event("pilot-selected");
             //console.log(inp);
             //console.log(arr);
             /*the autocomplete function takes two arguments,
@@ -23,7 +24,7 @@
                 /*for each item in the array...*/
                 for (i = 0; i < arr.length; i++) {
                   /*check if the item starts with the same letters as the text field value:*/
-                  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                  if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase() || val.length == 0) {
                     /*create a DIV element for each matching element:*/
                     b = document.createElement("DIV");
                     /*make the matching letters bold:*/
@@ -38,6 +39,8 @@
                         /*close the list of autocompleted values,
                         (or any other open lists of autocompleted values:*/
                         closeAllLists();
+
+                        inp.dispatchEvent(event);
                     });
                     a.appendChild(b);
                   }
@@ -76,7 +79,7 @@
               if (currentFocus >= x.length) currentFocus = 0;
               if (currentFocus < 0) currentFocus = (x.length - 1);
               /*add class "autocomplete-active":*/
-              x[currentFocus].classList.add("autocomplete-active");
+              x[currentFocus].classList.add("autocomplete-active");              
             }
             function removeActive(x) {
               /*a function to remove the "active" class from all autocomplete items:*/

@@ -26,13 +26,14 @@ async def setup_db(app):
 async def get_piloten():
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
-        async with db.execute("SELECT * FROM piloten") as cursor:
+        async with db.execute("SELECT [pilot_id],[name],[status_txt],[zugkraft] FROM piloten") as cursor:
             async for row in cursor:
                 #print(row)
                 res.append({
                         'id':row[0],
                         'name':row[1],
-                        'status':row[2]
+                        'status':row[2],
+                        'zugkraft':row[3]
                         })
     return res
 
@@ -145,6 +146,10 @@ async def add_schlepp(winde_id:str, wf_id:str, ewf_id:str, pilot_id:str, zugkraf
             INSERT INTO schlepps ([winde_id],[wf_id],[ewf_id],[pilot_id],[datum])
             VALUES (?,?,?,?,?)
             """, (winde_id,wf_id,ewf_id,pilot_id,datetime.today().strftime('%Y-%m-%d')))
+        await db.execute("""
+            UPDATE piloten SET zugkraft = :zugkraft
+            WHERE pilot_id=:pilot_id and (zugkraft is null or zugkraft <> :zugkraft)
+            """, (zugkraft,pilot_id))
         
         await db.commit()
 
