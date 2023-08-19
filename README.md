@@ -54,13 +54,12 @@ List
 * Install F-Droid
 * From F-Driod, install Termux
 * Start Termux
-* In current prompt `~`: `pkg update` 
+* In current prompt `~`: `pkg update` ? `pkg upgrade`
 * In current prompt `~`: `pkg install git`
 * In current prompt `~`: `pkg install python`
-* pkg i python-numpy
-* pkg i python-pandas
-* pip install xlsxwriter
-* In current prompt `~`: `pkg install libexpat` ?
+* In current prompt `~`: `pkg install python-numpy`
+* In current prompt `~`: `pkg install python-pandas`
+* In current prompt `~`: `pkg install libexpat` ???
 * In current prompt `~`: `mkdir github`
 * In current prompt `~`: `cd github`
 * Once in `~/github`: `git clone https://github.com/rappakos/winden-proto.git`
