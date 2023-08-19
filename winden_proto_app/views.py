@@ -80,6 +80,8 @@ async def schlepp(request):
     # validate
     try:
         winde_id = data['winde_id'] # compare to DB
+        if not winde_id or winde_id=="None":
+            raise ValueError("Invalid winde_id: must not be empty")
         #print(winde_id)
         wf_id = data['windenfahrer'] # compare to DB
         ewf_id = data['ewf'] # compare to DB
@@ -100,10 +102,11 @@ async def schlepp_start(request):
     piloten = await db.get_piloten()
     windenfahrer = [p for p in piloten if p['status'] in ['W','EWF','WIA'] ]
     winde_id, wf_id = await db.get_last_schlepp_data()
-    #
+    winden = await db.get_winden()
     data = {
         'winde_id': winde_id ,
         'wf_id': wf_id,
+        'aktive_winden': [w for w in winden if w['active']],
         'windenfahrer': windenfahrer,
         'piloten': piloten
     }

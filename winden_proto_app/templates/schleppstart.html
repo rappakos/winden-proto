@@ -8,7 +8,13 @@
 <form action="/schlepps" method="post" class="w3-container" autocomplete="off">
     <label>
         Winde [Hinweis: darf nur eine mit offenem Flugtag geben - disabled]
-        <input type="text" name="winde_id"  class="w3-input" value="{{data.winde_id}}" style="pointer-events:none; background:grey;" />
+        {% if data.winde_id %}
+            <input type="text" name="winde_id"  class="w3-input" value="{{data.winde_id}}" style="pointer-events:none; background:grey;" />
+        {% else %}
+            <div class="autocomplete"  style="width: 100%;">
+                <input type="text" name="winde_id"  class="w3-input" id="ax-winde" />
+            </div>
+        {% endif %}
      </label>
     <label>
         Windenfahrer [Hinweis: von der letzten Schlepp vorbefüllt sonst Autocomplete]
@@ -28,24 +34,33 @@
     </label>
     <label>
         Zugkraft [kg] 
-        <input type="number" name="zugkraft"  class="w3-input" />
+        <input type="number" name="zugkraft"  class="w3-input" id="ax-zugkraft" />
      </label>    
     <input type="submit" value="submit" class="w3-button" />
 </form>
 <script>
-    var el = document.getElementById('ax-windenfahrer');
-    var windenfahrer = [{% for wf in data.windenfahrer %}
+    const el_wi = document.getElementById('ax-winde');
+    //console.log(el_wi);
+    const winden = [{% for w in data.aktive_winden %}
+                            '{{w.winde_id}}', 
+                    {% endfor %}
+                    ];
+    //console.log(winden);
+    autocomplete(el_wi,  winden );
+
+    const el_wf = document.getElementById('ax-windenfahrer');
+    const windenfahrer = [{% for wf in data.windenfahrer %}
                             '{{wf.id}}', 
                         {% endfor %}
                         ];
-    autocomplete(el,  windenfahrer );
+    autocomplete(el_wf,  windenfahrer );
 
-    var el = document.getElementById('ax-piloten');
-    var piloten = [{% for p in data.piloten %}
+    const el_piloten = document.getElementById('ax-piloten');
+    const piloten = [{% for p in data.piloten %}
                             '{{p.id}}', 
                     {% endfor %}
                 ];
-    autocomplete(el,  piloten );
+    autocomplete(el_piloten,  piloten );
 
 </script>
 {% endif %}
