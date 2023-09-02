@@ -2,6 +2,8 @@
 import aiohttp_jinja2
 from aiohttp import web
 import numpy as np
+import pandas as pd
+import json
 
 from . import db
 
@@ -18,21 +20,35 @@ async def index(request):
     time_now = date.today()
     statuses = ['yes','no','maybe']
     days = [time_now + timedelta(days=i) for i in range(7)]
+    dayparts = ["10:00","13:00"] # could be some hours too
     piloten = await db.get_piloten()
     entries = []
+    # should come from DB
     for day in days:
-        # TODO add frueh/spaet
-        entries.extend([(
-                day,
-                p,
-                np.random.choice(statuses, p=[0.5,0.3,0.2])
-            ) for p in np.random.choice([p['id'] for p in piloten],5,replace=False)
-        ])
+        for daypart in dayparts:
+            entries.extend([(
+                    day,
+                    daypart,
+                    p,
+                    np.random.choice(statuses, p=[0.5,0.3,0.2])
+                ) for p in np.random.choice([p['id'] for p in piloten],5,replace=False)
+            ])
+    # 
+    pilot_map = {p['id']: p['status'] for p in piloten }
+    df = pd.DataFrame(entries,columns=['day','daypart','pilot_id','status'])    
+    df['pilot_type'] = df.apply(lambda p: pilot_map[p['pilot_id']] ,axis=1 )
+    #print(df.head())
+    f = df['status']=='yes'
+    aggr =  df[f][['day','daypart','pilot_type']].pivot_table(index=['day','daypart'],columns=['pilot_type'], aggfunc=len).reset_index()
+    #print(aggr.head())
+    aggr = json.loads(aggr.to_json(orient='records', date_format='iso'))
 
     return {
         'days': days,
+        'dayparts': dayparts,
         'piloten': piloten,
-        'entries': entries
+        'entries': entries,
+        'aggr': aggr
         }
 
 

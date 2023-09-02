@@ -20,30 +20,52 @@
 </style>
 <table class="w3-table w3-bordered">
     <tr>
-        <th>&nbsp;</th>        
-        <th>&nbsp;</th>
+        <th rowspan="2" colspan="2">&nbsp;</th>        
         {% for day in days %}
-            <th>{{ day.strftime('%m.%d.') }}</th>
+            <th colspan="2">{{ day.strftime('%m.%d.') }}</th>
         {% endfor %}
     </tr>
-    {% for row in ['Schleppbetrieb','Wetter','Gastpiloten'] %}
     <tr>
-        <th>{{row}}</th>
         {% for day in days %}
-            <td></td>
+            {% for daypart in dayparts %}
+                <th>{{daypart}}</th>
+            {% endfor %}
         {% endfor %}
+    </tr>
+    {% for row in ['Wetter','Schleppbetrieb','Gastpiloten'] %}
+    <tr>
+        <th colspan="2" >{{row}}</th>        
+            {% for day in days %}
+                {% for daypart in dayparts %}
+                        <td></td>
+                {% endfor %}
+            {% endfor %}
     </tr>
     {% endfor %}
+    <tr>
+        <th colspan="2" >Anmeldungen</th>        
+            {% for day in days %}
+                {% for daypart in dayparts %}
+                    <td>
+                        {% for e in aggr if e['day'][:10]==day.strftime('%Y-%m-%d') and e['daypart']==daypart %}
+                           W:{{e['W']|round|int if e['W'] else 0 }} M:{{e['M']|round|int if e['M'] else 0}} G:{{e['G']|round|int if e['G'] else 0}}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            {% endfor %}
+    </tr>        
     {% for pilot in piloten %}
     <tr>
         <th>{{pilot.id}}</th>
         <td>{{pilot.status}}</td>
         {% for day in days %}
+            {% for daypart in dayparts %}
             <td>
-                {% for e in entries if e[0]==day and e[1]==pilot.id %}
-                <span class="{{ e[2] }}">{{ e[2] }}</span>
+                {% for e in entries if e[0]==day and e[1]==daypart and e[2]==pilot.id %}
+                <span class="{{ e[3] }}">{{ e[3] }}</span>
                 {% endfor %}
             </td>
+            {% endfor %}
         {% endfor %}
     </tr>
     {% endfor %}    
