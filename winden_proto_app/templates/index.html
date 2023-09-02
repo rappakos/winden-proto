@@ -3,18 +3,35 @@
 
 {% set title = "Main" %}
 
+
+{% macro status_select(value='', disabled=True) -%}
+        {% if disabled %}        
+            <select class="{{ value }}" disabled>
+        {% else %}
+            <select class="{{ value }}" >
+        {% endif %}
+        {% for state in ['yes','maybe','no'] %}
+            {% if value==state %}
+                <option value="{{ state }}" class="{{ state }}" selected>{{state|title}}</option>
+            {% else %}
+                <option value="{{ state }}" class="{{ state }}" >{{state|title}}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{%- endmacro %}
+
 {% block content %}
 <style>
-    span.yes {
-        background-color: green;
+    .yes {
+        background-color: rgb(140, 236, 140);
         display: block;
      }
-     span.no {
-        background-color: red;
+     .no {
+        background-color: rgb(237, 148, 148);
         display: block;
      } 
-     span.maybe {
-        background-color: orange;
+     .maybe {
+        background-color: rgb(240, 198, 122);
         display: block;
      }  
 </style>
@@ -37,7 +54,7 @@
         <th colspan="2" >{{row}}</th>        
             {% for day in days %}
                 {% for daypart in dayparts %}
-                        <td></td>
+                        <td>{{ status_select(value='', disabled=True) }}</td>
                 {% endfor %}
             {% endfor %}
     </tr>
@@ -62,7 +79,7 @@
             {% for daypart in dayparts %}
             <td>
                 {% for e in entries if e[0]==day and e[1]==daypart and e[2]==pilot.id %}
-                <span class="{{ e[3] }}">{{ e[3] }}</span>
+                    {{ status_select(value= e[3], disabled= pilot.id!='Akos') }}
                 {% endfor %}
             </td>
             {% endfor %}
