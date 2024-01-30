@@ -6,7 +6,7 @@ import pandas as pd
 import json
 
 from . import db
-
+from .process_model import Process
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -14,11 +14,16 @@ def redirect(router, route_name):
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
+    pr = Process()
+
+    return pr.to_dict()
+
+@aiohttp_jinja2.template('admin.html')
+async def admin(request):
 
     return {
-        'test': 'ok'
+        'test': 'admin'
     }
-
 
 
 #

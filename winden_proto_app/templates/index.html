@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 
-
 {% set title = "Start" %}
 
 {% block content %}
+<div class="w3-row">
+    <div class="w3-col w3-blue w3-container proc" style="width:25%">TAG:{{active_day}}</div>
+    <div class="w3-col w3-blue w3-container proc" style="width:25%">WINDE:{{active_winde}}</div>
+    <div class="w3-col w3-blue w3-container proc" style="width:25%">WF:{{active_wf}}</div>
+    <div class="w3-col w3-blue w3-container proc" style="width:25%"s>EWF:</div>
+</div>
 
-    {{test}}
+<div class="action-area">
+    {% if not active_day %}
+        <div class="w3-container">
+            <button class="action">Flugtag starten</button>
+        </div>
+    {% endif %}
+</div>
 
 {% endblock %}
