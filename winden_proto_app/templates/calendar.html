@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+
+{% set title = "Main" %}
+
+
+{% macro status_select(value='', disabled=True) -%}
+        {% if disabled %}        
+            <select class="{{ value }}" disabled>
+        {% else %}
+            <select class="{{ value }}" >
+        {% endif %}
+        {% for state in ['yes','maybe','no'] %}
+            {% if value==state %}
+                <option value="{{ state }}" class="{{ state }}" selected>{{state|title}}</option>
+            {% else %}
+                <option value="{{ state }}" class="{{ state }}" >{{state|title}}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+{%- endmacro %}
+
+{% block content %}
+<style>
+    .yes {
+        background-color: rgb(140, 236, 140);
+        display: block;
+     }
+     .no {
+        background-color: rgb(237, 148, 148);
+        display: block;
+     } 
+     .maybe {
+        background-color: rgb(240, 198, 122);
+        display: block;
+     }  
+</style>
+<table class="w3-table w3-bordered">
+    <tr>
+        <th rowspan="2" colspan="2">&nbsp;</th>        
+        {% for day in days %}
+            <th colspan="2">{{ day.strftime('%m.%d.') }}</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for day in days %}
+            {% for daypart in dayparts %}
+                <th>{{daypart}}</th>
+            {% endfor %}
+        {% endfor %}
+    </tr>
+    {% for row in ['Wetter','Schleppbetrieb','Gastpiloten'] %}
+    <tr>
+        <th colspan="2" >{{row}}</th>        
+            {% for day in days %}
+                {% for daypart in dayparts %}
+                        <td>{{ status_select(value='', disabled=True) }}</td>
+                {% endfor %}
+            {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <th colspan="2" >Anmeldungen</th>        
+            {% for day in days %}
+                {% for daypart in dayparts %}
+                    <td>
+                        {% for e in aggr if e['day'][:10]==day.strftime('%Y-%m-%d') and e['daypart']==daypart %}
+                           W:{{e['W']|round|int if e['W'] else 0 }} M:{{e['M']|round|int if e['M'] else 0}} G:{{e['G']|round|int if e['G'] else 0}}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            {% endfor %}
+    </tr>        
+    {% for pilot in piloten %}
+    <tr>
+        <th>{{pilot.id}}</th>
+        <td>{{pilot.status}}</td>
+        {% for day in days %}
+            {% for daypart in dayparts %}
+            <td>
+                {% for e in entries if e[0]==day and e[1]==daypart and e[2]==pilot.id %}
+                    {{ status_select(value= e[3], disabled= pilot.id!='Akos') }}
+                {% endfor %}
+            </td>
+            {% endfor %}
+        {% endfor %}
+    </tr>
+    {% endfor %}    
+<table>
+
+
+{% endblock %}

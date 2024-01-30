@@ -8,14 +8,26 @@ import json
 from . import db
 
 
-
 def redirect(router, route_name):
     location = router[route_name].url_for()
     return web.HTTPFound(location)
 
-
 @aiohttp_jinja2.template('index.html')
 async def index(request):
+
+    return {
+        'test': 'ok'
+    }
+
+
+
+#
+#  old views below this
+#
+
+
+@aiohttp_jinja2.template('calendar.html')
+async def calendar(request):
     from datetime import date, timedelta
     time_now = date.today()
     statuses = ['yes','no','maybe']
