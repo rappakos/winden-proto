@@ -6,7 +6,6 @@ import pandas as pd
 import json
 
 from . import db
-from .process_model import Process, WindeStatus
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -14,14 +13,31 @@ def redirect(router, route_name):
 
 @aiohttp_jinja2.template('index.html')
 async def index(request):
-    pr = Process()
-    pr.active_day = '2024-02-04' # temp
-    pr.pilot_list = True # temp
-    pr.active_winde = 'Elowin'
-    pr.winde_status = WindeStatus.AUFGEBAUT
-    pr.active_wf = 'Akos'
+    pr = await db.get_process_status()
 
     return pr.to_dict()
+
+async def start_day(request):
+    if request.method == 'POST':
+        form = await request.post()
+        # 
+        await db.start_day()
+
+        raise web.HTTPFound('/')
+    else:
+        raise NotImplementedError("start_day should be POST")
+
+async def cancel_day(request):
+    if request.method == 'POST':
+        form = await request.post()
+        # 
+        await db.cancel_day()
+
+        raise web.HTTPFound('/')
+    else:
+        raise NotImplementedError("cancel_day should be POST")
+
+
 
 @aiohttp_jinja2.template('admin.html')
 async def admin(request):

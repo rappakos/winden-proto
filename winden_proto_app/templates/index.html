@@ -13,24 +13,32 @@
 <div class="action-area">
     {% if not active_day %}
         <div class="w3-container">
-            <button class="action w3-btn w3-xxlarge w3-green">Flugtag starten</button>
+            <form action="/start_day" method="post" class="w3-container" autocomplete="off">
+                <button class="action w3-btn w3-xxlarge w3-green">Flugtag starten</button>
+            </form>
         </div>
     {% elif pilot_list is none %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
                 <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste aus dem Kalender*</button>
                 <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
-                <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+                <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
+                    <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+                </form>
         </div>
     {% elif not active_winde %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
             <button class="action w3-btn w3-xxlarge w3-green">Elowin</button>
             <button class="action w3-btn w3-xxlarge w3-border">Kella-Winde</button>
-            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+            <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
+                <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+            </form>
         </div>
     {% elif (winde_status|string ) != "WindeStatus.AUFGEBAUT" %}         
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
             <button class="action w3-btn w3-xxlarge w3-green">Aufbau {{active_winde}} starten</button>
-            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+            <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
+                <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+            </form>
         </div>
     {% elif not active_wf %}
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">

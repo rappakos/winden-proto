@@ -1,4 +1,20 @@
 
+--DROP TABLE flying_days;
+CREATE TABLE IF NOT EXISTS flying_days (
+	[flying_day] DATE NOT NULL 
+			CONSTRAINT CHK_flying_day CHECK (flying_day==strftime('%Y-%m-%d',flying_day)),
+	[pilot_list] BIT NOT NULL DEFAULT 0,
+	[active_winde_id] TEXT NULL, -- FK
+	[winde_aufgebaut] BIT NOT NULL DEFAULT 0,
+	[winde_abgebaut] BIT NOT NULL DEFAULT 0,
+	[active_wf] TEXT NULL,
+	[canceled] BIT NOT NULL DEFAULT 0,
+	[create_timestamp] datetime not null default current_timestamp
+);
+
+
+
+/* OLD SCHEMA : */
 
 CREATE TABLE IF NOT EXISTS piloten (
 	pilot_id TEXT NOT NULL UNIQUE PRIMARY KEY,

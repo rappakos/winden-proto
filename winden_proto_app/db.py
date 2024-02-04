@@ -1,6 +1,8 @@
 import aiosqlite
 from datetime import datetime
 
+from .process_model import Process, WindeStatus
+
 DB_NAME = './winde-demo.db'
 INIT_SCRIPT = './winden_proto_app/init_db.sql'
 
@@ -22,6 +24,54 @@ async def setup_db(app):
         #    async for row in cursor:
         #        print(row)
 
+
+async def get_process_status() -> Process:
+    pr = Process()
+    #pr.active_day = '2024-02-04' # temp
+    #pr.pilot_list = True # temp
+    #pr.active_winde = 'Elowin'
+    #pr.winde_status = WindeStatus.AUFGEBAUT
+    #pr.active_wf = 'Akos'
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
+        async with db.execute("""SELECT
+                                [flying_day],
+                                [pilot_list],
+                                [active_winde_id],
+                                [winde_aufgebaut],
+                                [winde_abgebaut],
+                                [active_wf]
+                            FROM [flying_days] d
+                            WHERE d.[flying_day] and d.[canceled]=0
+                              """,params ) as cursor:
+            async for row in cursor:
+                pr.active_day = params['flying_day']
+                pr.pilot_list = row[1]
+
+
+    return pr
+
+async def start_day():
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
+        await db.execute_insert("""
+                            INSERT INTO [flying_days] ([flying_day])
+                            SELECT :flying_day
+                        """, params)
+        await db.commit() #
+
+async def cancel_day():
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
+        await db.execute("""
+                            UPDATE [flying_days] SET canceled=1 WHERE [flying_day] = :flying_day
+                        """, params)
+        await db.commit() #
+
+
+#
+# OLD PROCESS / DB SCHEMA
+#
 
 async def get_piloten():
     res = []

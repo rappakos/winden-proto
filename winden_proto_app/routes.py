@@ -1,6 +1,6 @@
 import pathlib
 
-from .views import index,admin
+from .views import index,start_day,cancel_day, admin
 from .report_views import reports, report, export
 from .admin_views import backups, create_backup, remove_backup
 
@@ -10,6 +10,8 @@ PROJECT_ROOT = pathlib.Path(__file__).parent
 
 def setup_routes(app):
     app.router.add_get('/', index)
+    app.router.add_post('/start_day', start_day)
+    app.router.add_post('/cancel_day', cancel_day)
     app.router.add_get('/admin', admin)
 
     ### old UI
