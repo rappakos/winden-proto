@@ -1,7 +1,8 @@
 
 import os
+from dotenv import load_dotenv
 
 class DefaultConfig:    
-    # TODO use env from loadenv for secrets
+    load_dotenv('.env')
     
-    PORT = 3978
+    PORT = os.environ.get('PORT', 3978)
