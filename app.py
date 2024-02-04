@@ -1,9 +1,14 @@
 
 import sys
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
+
+from git import Repo
 
 
 from winden_proto_app.routes import setup_routes
@@ -28,6 +33,15 @@ async def init_app(argv=None):
     # setup Jinja2 template renderer
     aiohttp_jinja2.setup(
         app, loader=jinja2.PackageLoader('winden_proto_app', 'templates'))
+    
+    # check for updates
+    git = Repo(".").git
+    try:
+        git.fetch()
+        print(git.status())
+    finally:
+        print("git fetch concluded")
+
 
     # ???
     await setup_db(app)
