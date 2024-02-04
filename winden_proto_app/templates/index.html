@@ -19,8 +19,12 @@
         </div>
     {% elif pilot_list is none %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-                <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste aus dem Kalender*</button>
-                <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
+                <form action="/calendar_list" method="get" class="w3-container" autocomplete="off">
+                    <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste aus dem Kalender*</button>
+                </form>
+                <form action="/calendar_list?skip=true" method="get" class="w3-container" autocomplete="off">
+                    <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
+                </form>                    
                 <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
                     <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
                 </form>

@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS flying_days (
 	[flying_day] DATE NOT NULL 
 			CONSTRAINT CHK_flying_day CHECK (flying_day==strftime('%Y-%m-%d',flying_day)),
-	[pilot_list] BIT NOT NULL DEFAULT 0,
+	[pilot_list] BIT NULL,
 	[active_winde_id] TEXT NULL, -- FK
 	[winde_aufgebaut] BIT NOT NULL DEFAULT 0,
 	[winde_abgebaut] BIT NOT NULL DEFAULT 0,

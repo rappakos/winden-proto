@@ -1,9 +1,11 @@
 # views.py
+import os
 import aiohttp_jinja2
 from aiohttp import web
 import numpy as np
 import pandas as pd
 import json
+from datetime import date
 
 from . import db
 
@@ -36,6 +38,44 @@ async def cancel_day(request):
         raise web.HTTPFound('/')
     else:
         raise NotImplementedError("cancel_day should be POST")
+
+def filter_reg(f):
+    today, SET_OKMAYBE= date.today().isoformat(), set(["+","~"])
+    entry = f['tage'][0]
+    #
+    return entry['datum']==today
+    # return entry['datum']==today and not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] )
+    #return entry['datum']==today and (not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] or np.random.random_sample() > 0.7 ))
+
+@aiohttp_jinja2.template('calendar_list.html')
+async def calendar_list(request):
+    import requests
+    from bs4 import BeautifulSoup
+
+    url = os.environ.get('CALENDAR_URL',None)
+
+    skip_pilot_list = request.match_info.get('skip', False)
+
+    pr = await db.get_process_status()
+    calendar_list = []
+    if pr.pilot_list is None and not skip_pilot_list:
+        print('pilot_list is None')
+        if url:
+            #print(url)
+            resp = requests.get(url)
+            soup = BeautifulSoup(resp.content, "html.parser")
+
+            script_data = soup.find('script',attrs={'src': None}) # data not in the table
+            table_data_str=script_data.get_text().replace("var jsonPlanStr='",'').strip()[:-2] # remove  "var ...='" & "';"
+            table_data_json = json.loads(table_data_str)
+
+        calendar_list = [ {'id':f['fahrer']['id'],'name':f['fahrer']['name']} for f in table_data_json['bereitschaften'] if filter_reg(f) ]    
+
+
+    print(calendar_list)
+    res = pr.to_dict()
+    res['calendar_list'] = calendar_list
+    return res
 
 
 
