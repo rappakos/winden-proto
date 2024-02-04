@@ -6,7 +6,7 @@ import pandas as pd
 import json
 
 from . import db
-from .process_model import Process
+from .process_model import Process, WindeStatus
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -15,6 +15,11 @@ def redirect(router, route_name):
 @aiohttp_jinja2.template('index.html')
 async def index(request):
     pr = Process()
+    pr.active_day = '2024-02-04' # temp
+    pr.pilot_list = True # temp
+    pr.active_winde = 'Elowin'
+    pr.winde_status = WindeStatus.AUFGEBAUT
+    pr.active_wf = 'Akos'
 
     return pr.to_dict()
 

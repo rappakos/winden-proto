@@ -2,7 +2,7 @@
 import sys
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 import aiohttp_jinja2
 import jinja2

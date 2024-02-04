@@ -3,18 +3,45 @@
 {% set title = "Start" %}
 
 {% block content %}
-<div class="w3-row">
-    <div class="w3-col w3-blue w3-container proc" style="width:25%">TAG:{{active_day}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:25%">WINDE:{{active_winde}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:25%">WF:{{active_wf}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:25%"s>EWF:</div>
+<div class="w3-row w3-container">
+    <div class="w3-col w3-blue w3-container proc" style="width:24vw">TAG:{{active_day}}</div>
+    <div class="w3-col w3-blue w3-container proc {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}" style="width:24vw">WINDE:{{active_winde}}</div>
+    <div class="w3-col w3-blue w3-container proc" style="width:24vw">WF:{{active_wf}}</div>
+    <div class="w3-col w3-blue w3-container proc" style="width:24vw">EWF:</div>
 </div>
 
 <div class="action-area">
     {% if not active_day %}
         <div class="w3-container">
-            <button class="action">Flugtag starten</button>
+            <button class="action w3-btn w3-xxlarge w3-green">Flugtag starten</button>
         </div>
+    {% elif pilot_list is none %} 
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
+                <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste aus dem Kalender*</button>
+                <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
+                <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+        </div>
+    {% elif not active_winde %} 
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
+            <button class="action w3-btn w3-xxlarge w3-green">Elowin</button>
+            <button class="action w3-btn w3-xxlarge w3-border">Kella-Winde</button>
+            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+        </div>
+    {% elif (winde_status|string ) != "WindeStatus.AUFGEBAUT" %}         
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
+            <button class="action w3-btn w3-xxlarge w3-green">Aufbau {{active_winde}} starten</button>
+            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+        </div>
+    {% elif not active_wf %}
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
+            <button class="action w3-btn w3-xxlarge w3-green">Windenfahrer auswählen</button>
+            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Abbau {{active_winde}} starten </button>
+        </div>
+    {% else %}
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
+            <button class="action w3-btn w3-xxlarge w3-green">Schlepp starten</button>
+            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Abbau {{active_winde}} starten </button>
+        </div>        
     {% endif %}
 </div>
 

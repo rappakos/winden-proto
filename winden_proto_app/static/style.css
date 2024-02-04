@@ -1,25 +1,18 @@
    .proc {
-    font-size: 24px;
+      font-size: 18px;
+      /* width:24vw; does not work without style attr */
    }
    
    .action-area {
-      width: 100%; 
+      width: 100vw; 
       height: 40vh;
       display: flex;
+      padding-top: 15vh;
       align-items: center;
       justify-content: center;
    }
 
-   button.action {
-    display:block;
-    height: 120px;
-    width: 120px;
-    border-radius: 50%;
-    border: 3px solid green;
-   }
-
-
-   
+  
    /*the container must be positioned relative:*/
    .autocomplete {
     position: relative;
