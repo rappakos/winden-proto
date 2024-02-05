@@ -42,7 +42,7 @@ async def get_process_status() -> Process:
                                 [winde_abgebaut],
                                 [active_wf]
                             FROM [flying_days] d
-                            WHERE d.[flying_day] and d.[canceled]=0
+                            WHERE d.[flying_day]=:flying_day and d.[canceled]=0
                               """,params ) as cursor:
             async for row in cursor:
                 pr.active_day = params['flying_day']

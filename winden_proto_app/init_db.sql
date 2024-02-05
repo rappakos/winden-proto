@@ -12,6 +12,45 @@ CREATE TABLE IF NOT EXISTS flying_days (
 	[create_timestamp] datetime not null default current_timestamp
 );
 
+/*
+[{'id': 'f_133', 'name': 'Schleppbetrieb'},
+{'id': 'f_1', 'name': 'Flugwetter'},
+{'id': 'f_106', 'name': 'Gastpiloten'},
+{'id': 'f_26', 'name': 'Akos Rapp'}, 
+{'id': 'f_123', 'name': 'Charlotte P.'}, 
+{'id': 'f_120', 'name': 'Dietmar'}, 
+{'id': 'f_30', 'name': 'Manfred K.'}, 
+{'id': 'f_13', 'name': 'Matthias Beu.'},
+{'id': 'f_7', 'name': 'Michael Hae.'}, 
+{'id': 'f_25', 'name': 'Thomas Heimes'}, 
+{'id': 'f_90', 'name': 'Utz'}, 
+{'id': 'f_147', 'name': 'Wolfgang'}, 
+{'id': 'f_144', 'name': 'Anna G. GSC W.'}, 
+{'id': 'f_34', 'name': 'Beate W.'}, 
+{'id': 'f_125', 'name': 'Christian SZ'}, 
+{'id': 'f_21', 'name': 'Daniel B.'}, 
+{'id': 'f_141', 'name': 'Dirk F.'}, 
+{'id': 'f_55', 'name': 'Hans H. aus F.'}, 
+{'id': 'f_117', 'name': 'Helmut Fischer'}, 
+{'id': 'f_122', 'name': 'Jan'}, 
+{'id': 'f_146', 'name': 'Jan H. GSCL'}, 
+{'id': 'f_143', 'name': 'Jonathan Balke'}, 
+{'id': 'f_129', 'name': 'Jörg GSCL'}, 
+{'id': 'f_142', 'name': 'Martin G. Hannover'}, 
+{'id': 'f_85', 'name': 'Martin.F'}, 
+{'id': 'f_88', 'name': 'Michael Hannover'}, 
+{'id': 'f_27', 'name': 'Orsi P.'}, 
+{'id': 'f_17', 'name': 'Sabine Kl.'}, 
+{'id': 'f_131', 'name': 'Sebastian'}, 
+{'id': 'f_8', 'name': 'Silke F.'}, 
+{'id': 'f_65', 'name': 'Tandem Johannes Meyer'}, 
+{'id': 'f_145', 'name': 'Thomas G. GSC W.'}, 
+{'id': 'f_127', 'name': 'Thoralf'}, 
+{'id': 'f_14', 'name': 'Tina S.'}, 
+{'id': 'f_12', 'name': 'Tommi O.'}]
+
+*/
+
 
 
 /* OLD SCHEMA : */

@@ -43,8 +43,8 @@ def filter_reg(f):
     today, SET_OKMAYBE= date.today().isoformat(), set(["+","~"])
     entry = f['tage'][0]
     #
-    return entry['datum']==today
-    # return entry['datum']==today and not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] )
+    #return entry['datum']==today
+    return entry['datum']==today and not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] )
     #return entry['datum']==today and (not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] or np.random.random_sample() > 0.7 ))
 
 @aiohttp_jinja2.template('calendar_list.html')
