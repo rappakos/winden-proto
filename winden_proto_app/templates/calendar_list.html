@@ -10,24 +10,26 @@
     <div class="w3-col w3-blue w3-container proc" style="width:24vw">EWF:</div>
 </div>
 
-<div>
-    {% if calendar_list %}
-        {% for pilot in calendar_list %} 
-            <span>{{pilot.name}}</span>
-        {% endfor %}
-    {% endif %}
-</div>
 
 <div class="action-area">
     {% if pilot_list is none %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-                <form class="w3-container" autocomplete="off">
+                <div class="w3-container">
+                    {% if calendar_list %}
+                        {% for pilot in calendar_list %} 
+                            <span class="w3-tag w3-round w3-green">{{pilot.name}}</span>
+                        {% endfor %}
+                
+                    {% endif %}
+                </div>
+
+                <form autocomplete="off">
                     <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste übernehmen</button>
                 </form>
-                <form class="w3-container" autocomplete="off">             
+                <form autocomplete="off">             
                     <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
                 </form>                    
-                <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
+                <form action="/cancel_day" method="post" autocomplete="off">
                     <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
                 </form>
         </div>
