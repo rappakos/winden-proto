@@ -52,14 +52,16 @@ async def calendar_list(request):
     import requests
     from bs4 import BeautifulSoup
 
-    url = os.environ.get('CALENDAR_URL',None)
+    skip_pilot_list = request.rel_url.query.get('skip',False)
+    if skip_pilot_list:
+        await db.add_pilot_list([])
+        raise web.HTTPFound('/')
 
-    skip_pilot_list = request.match_info.get('skip', False)
+    url = os.environ.get('CALENDAR_URL',None)
 
     pr = await db.get_process_status()
     calendar_list = []
     if pr.pilot_list is None and not skip_pilot_list:
-        print('pilot_list is None')
         if url:
             #print(url)
             resp = requests.get(url)
@@ -72,12 +74,20 @@ async def calendar_list(request):
         calendar_list = [ {'id':f['fahrer']['id'],'name':f['fahrer']['name']} for f in table_data_json['bereitschaften'] if filter_reg(f) ]    
 
 
-    print(calendar_list) # TODO map
+    #print(calendar_list) # TODO map
     res = pr.to_dict()
     res['calendar_list'] = calendar_list
     return res
 
+async def add_calendar_list(request):
+    if request.method == 'POST':
+        form = await request.post()
+        # 
+        await db.add_pilot_list(form['pilot_list'])
 
+        raise web.HTTPFound('/')
+    else:
+        raise NotImplementedError("start_day should be POST")
 
 @aiohttp_jinja2.template('admin.html')
 async def admin(request):

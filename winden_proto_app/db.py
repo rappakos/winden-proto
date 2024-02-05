@@ -67,6 +67,22 @@ async def cancel_day():
         await db.commit() #
 
 
+async def add_pilot_list(pilot_list):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {
+                    'flying_day': datetime.now().strftime("%Y-%m-%d"),
+                    'pilot_list': len(pilot_list) > 0
+                }
+        await db.execute("""
+                            UPDATE [flying_days] SET pilot_list= :pilot_list WHERE [flying_day] = :flying_day and canceled=0
+                        """, params)
+        
+        # TODO save also pilot_list for the day
+
+        await db.commit() #    
+
+
+
 #
 # OLD PROCESS / DB SCHEMA
 #

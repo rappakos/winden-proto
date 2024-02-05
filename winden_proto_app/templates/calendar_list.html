@@ -23,10 +23,12 @@
                     {% endif %}
                 </div>
 
-                <form autocomplete="off">
+                <form action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
+                    <input type="hidden" name="pilot_list" value="Akos, Orsi" />
                     <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste übernehmen</button>
                 </form>
-                <form autocomplete="off">             
+                <form action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
+                    <input type="hidden" name="pilot_list" value="" />   
                     <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
                 </form>                    
                 <form action="/cancel_day" method="post" autocomplete="off">
