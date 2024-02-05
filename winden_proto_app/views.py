@@ -72,7 +72,7 @@ async def calendar_list(request):
         calendar_list = [ {'id':f['fahrer']['id'],'name':f['fahrer']['name']} for f in table_data_json['bereitschaften'] if filter_reg(f) ]    
 
 
-    print(calendar_list)
+    print(calendar_list) # TODO map
     res = pr.to_dict()
     res['calendar_list'] = calendar_list
     return res

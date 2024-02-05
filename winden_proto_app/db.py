@@ -27,8 +27,6 @@ async def setup_db(app):
 
 async def get_process_status() -> Process:
     pr = Process()
-    #pr.active_day = '2024-02-04' # temp
-    #pr.pilot_list = True # temp
     #pr.active_winde = 'Elowin'
     #pr.winde_status = WindeStatus.AUFGEBAUT
     #pr.active_wf = 'Akos'
