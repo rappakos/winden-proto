@@ -68,6 +68,15 @@ async def cancel_day():
                         """, params)
         await db.commit() #
 
+# TODO this is temp solution 
+async def close_day():
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
+        await db.execute("""
+                        UPDATE [flying_days] SET canceled=1  WHERE [flying_day] = :flying_day
+                    """, params)
+        await db.commit() #
+
 async def activate_winde(winde_id):
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 'winde_id':winde_id}
