@@ -1,6 +1,8 @@
 import pathlib
 
-from .views import index,start_day,cancel_day,activate_winde,calendar_list,add_calendar_list, admin
+from .views import index,start_day,cancel_day,activate_winde, \
+        aufbau, \
+        calendar_list,add_calendar_list, admin
 from .report_views import reports, report, export
 from .admin_views import backups, create_backup, remove_backup
 
@@ -15,13 +17,13 @@ def setup_routes(app):
     app.router.add_post('/activate_winde', activate_winde)
     app.router.add_get('/calendar_list', calendar_list)
     app.router.add_post('/calendar_list/add_calendar_list', add_calendar_list)
+    app.router.add_get('/winden/{winde_id}/aufbau', aufbau, name='aufbau') # to load protocol questions
+    app.router.add_post('/winden/{winde_id}/aufbau', aufbau, name='aufbau') # to submit protocol
     app.router.add_get('/admin', admin)
 
     ### old UI
     #app.router.add_get('/winden',alle_winden, name='winden')
     #app.router.add_get('/winden/{winde_id}',winde, name='winde')
-    #app.router.add_get('/winden/{winde_id}/aufbau', aufbau, name='aufbau') # to load protocol questions
-    #app.router.add_post('/winden/{winde_id}/aufbau', aufbau, name='aufbau') # to submit protocol
     # TODO add abbau
 
     #app.router.add_get('/piloten',piloten, name='piloten')

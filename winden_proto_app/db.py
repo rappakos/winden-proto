@@ -47,6 +47,7 @@ async def get_process_status() -> Process:
                 pr.active_day = params['flying_day']
                 pr.pilot_list = row[1]
                 pr.active_winde = row[2]
+                pr.winde_status = WindeStatus.AUFGEBAUT if row[3] and not row[4] else WindeStatus.GARAGE
 
     return pr
 
@@ -71,10 +72,22 @@ async def activate_winde(winde_id):
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 'winde_id':winde_id}
         await db.execute("""
-                            UPDATE [flying_days] SET active_winde_id=:winde_id WHERE [flying_day] = :flying_day
+                            UPDATE [flying_days] SET active_winde_id=:winde_id 
+                            WHERE [flying_day] = :flying_day and [canceled]=0
                         """, params)
         await db.commit() #
-        
+
+async def set_active_winde_status(status):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 
+                    'winde_aufgebaut': status==WindeStatus.AUFGEBAUT,
+                    'winde_abgebaut': status==WindeStatus.GARAGE }
+        await db.execute("""
+                            UPDATE [flying_days] SET winde_aufgebaut=:winde_aufgebaut, winde_abgebaut=:winde_abgebaut 
+                            WHERE [flying_day] = :flying_day and [canceled]=0
+                        """, params)
+        await db.commit() #    
+    
 
 async def add_pilot_list(pilot_list):
     async with aiosqlite.connect(DB_NAME) as db:
@@ -83,7 +96,8 @@ async def add_pilot_list(pilot_list):
                     'pilot_list': len(pilot_list) > 0
                 }
         await db.execute("""
-                            UPDATE [flying_days] SET pilot_list= :pilot_list WHERE [flying_day] = :flying_day and canceled=0
+                            UPDATE [flying_days] SET pilot_list= :pilot_list 
+                            WHERE [flying_day] = :flying_day and canceled=0
                         """, params)
         
         # TODO save also pilot_list for the day

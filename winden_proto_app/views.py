@@ -8,6 +8,7 @@ import json
 from datetime import date
 
 from . import db
+from .process_model import WindeStatus
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -106,6 +107,36 @@ async def add_calendar_list(request):
         raise NotImplementedError("start_day should be POST")
 
 
+@aiohttp_jinja2.template('aufbau.html')
+async def aufbau(request):
+    winde_id = request.match_info['winde_id']
+    # is this a good design? same route, different methods?
+    if request.method == 'POST':
+        form = await request.post()
+        # ? validate       
+        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
+        #
+        type = 'aufbau'
+        questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
+        kommentar = form['kommentar']
+        pilot_id = form['aufgebaut-von']
+        # 
+        await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
+
+        await db.set_active_winde_status(WindeStatus.AUFGEBAUT)
+
+        raise web.HTTPFound('/')
+        
+    if request.method == 'GET':
+        # 
+        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
+        piloten = await db.get_piloten()
+
+        return {
+                'winde_id': winde_id,
+                'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
+                'protocol': protocol}
+
 
 
 
@@ -174,35 +205,6 @@ async def winde(request):
             return {'winde': w}
     else:
        raise web.HTTPNotFound(text=f'{winde_id} not found')
-
-
-@aiohttp_jinja2.template('aufbau.html')
-async def aufbau(request):
-    winde_id = request.match_info['winde_id']
-    # is this a good design? same route, different methods?
-    if request.method == 'POST':
-        form = await request.post()
-        # ? validate       
-        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
-        #
-        type = 'aufbau'
-        questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
-        kommentar = form['kommentar']
-        pilot_id = form['aufgebaut-von']
-        # 
-        await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
-
-        raise redirect(request.app.router, 'winden')
-        
-    if request.method == 'GET':
-        # 
-        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
-        piloten = await db.get_piloten()
-
-        return {
-                'winde_id': winde_id,
-                'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
-                'protocol': protocol}
 
 
 @aiohttp_jinja2.template('piloten.html')
