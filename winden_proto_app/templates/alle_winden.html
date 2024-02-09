@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% set title = "Winden" %}
-
+{% include "./_admin_menu.html" %}
 {% block content %}
 {% if winden %}
     <table class="w3-table w3-bordered">
@@ -20,9 +20,9 @@
             <td>{{ 'Aktiv' if winde.active else 'Inaktiv' }}</td>
             <td>
                 <a href="/winden/{{winde.winde_id}}" class="w3-button">Details</a>
-                {% if winde.active %}
+                <!-- {% if winde.active %}
                     <a href="/winden/{{winde.winde_id}}/aufbau" class="w3-button">Start Flugtag</a>
-                {% endif %}
+                {% endif %} -->
             </td>
         </tr>    
     {% endfor %}

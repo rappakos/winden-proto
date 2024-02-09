@@ -3,14 +3,8 @@
 {% set title =  winde.name %}
 
 {% block content %}
-
+    {% include "./_admin_menu.html" %}  
     {% if winde %}
-        {% if winde.active %}
-            <a href="/winden/{{winde.winde_id}}/aufbau" class="w3-button">Start Flugtag</a>
-        {% else %}
-            <p>Winde muss erst reaktiviert werden.</p>
-        {% endif %}
-
         {% for key in winde.keys() %}
             <p>{{key}} : {{winde[key]}}</p>
         {% endfor %}
