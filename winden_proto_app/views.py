@@ -17,7 +17,12 @@ def redirect(router, route_name):
 async def index(request):
     pr = await db.get_process_status()
 
-    return pr.to_dict()
+    res = pr.to_dict()
+
+    # always?
+    res['winden'] = await db.get_winden()
+
+    return res
 
 async def start_day(request):
     if request.method == 'POST':
@@ -34,6 +39,17 @@ async def cancel_day(request):
         form = await request.post()
         # 
         await db.cancel_day()
+
+        raise web.HTTPFound('/')
+    else:
+        raise NotImplementedError("cancel_day should be POST")
+
+async def activate_winde(request):
+    if request.method == 'POST':
+        form = await request.post()
+        winde_id = form['winde_id']
+        # 
+        await db.activate_winde(winde_id)
 
         raise web.HTTPFound('/')
     else:
@@ -88,6 +104,10 @@ async def add_calendar_list(request):
         raise web.HTTPFound('/')
     else:
         raise NotImplementedError("start_day should be POST")
+
+
+
+
 
 @aiohttp_jinja2.template('admin.html')
 async def admin(request):

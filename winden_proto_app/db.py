@@ -35,17 +35,18 @@ async def get_process_status() -> Process:
         async with db.execute("""SELECT
                                 [flying_day],
                                 [pilot_list],
-                                [active_winde_id],
+                                w.winde_id [active_winde_id],
                                 [winde_aufgebaut],
                                 [winde_abgebaut],
                                 [active_wf]
                             FROM [flying_days] d
+                            LEFT JOIN winden w ON w.winde_id=d.active_winde_id --could be removed if FK is there
                             WHERE d.[flying_day]=:flying_day and d.[canceled]=0
                               """,params ) as cursor:
             async for row in cursor:
                 pr.active_day = params['flying_day']
                 pr.pilot_list = row[1]
-
+                pr.active_winde = row[2]
 
     return pr
 
@@ -66,6 +67,14 @@ async def cancel_day():
                         """, params)
         await db.commit() #
 
+async def activate_winde(winde_id):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 'winde_id':winde_id}
+        await db.execute("""
+                            UPDATE [flying_days] SET active_winde_id=:winde_id WHERE [flying_day] = :flying_day
+                        """, params)
+        await db.commit() #
+        
 
 async def add_pilot_list(pilot_list):
     async with aiosqlite.connect(DB_NAME) as db:
@@ -81,7 +90,19 @@ async def add_pilot_list(pilot_list):
 
         await db.commit() #    
 
-
+async def get_winden():
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        async with db.execute("SELECT * FROM winden") as cursor:
+            async for row in cursor:
+                #print(row)
+                res.append({
+                        'winde_id':row[0],
+                        'name':row[1],
+                        'active':row[2],
+                        'baujahr':row[3]
+                        })
+    return res
 
 #
 # OLD PROCESS / DB SCHEMA
@@ -101,19 +122,7 @@ async def get_piloten():
                         })
     return res
 
-async def get_winden():
-    res = []
-    async with aiosqlite.connect(DB_NAME) as db:
-        async with db.execute("SELECT * FROM winden") as cursor:
-            async for row in cursor:
-                #print(row)
-                res.append({
-                        'winde_id':row[0],
-                        'name':row[1],
-                        'active':row[2],
-                        'baujahr':row[3]
-                        })
-    return res
+
 
 async def get_aufbau_fragen(winde_id:str):
     res = []
