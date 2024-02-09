@@ -3,7 +3,8 @@
 {% set title = "Backups" %}
 
 {% block content %}
-<a href="backups/create" class="w3-button">Create</a>
+{% include "./_admin_menu.html" %}
+<a href="backups/create" class="w3-button w3-border w3-green">Backup erstellen</a>
 {% if files %}
 <table class="w3-table w3-bordered">
     <tr>
@@ -14,12 +15,12 @@
     </tr>
 {% for file in files %} 
     <tr>
-        <td> {{file.name}}</td>
-        <td> {{file.size / 1024}}</td>
-        <td> {{file.created}}</td>
-        <td>
+        <td class="w3-cell-middle"> {{file.name}}</td>
+        <td class="w3-cell-middle"> {{file.size / 1024}}</td>
+        <td class="w3-cell-middle"> {{file.created}}</td>
+        <td class="w3-cell-middle">
             <a href="backups_dl/{{file.name}}" class="w3-button">Download</a>
-            <a href="backups/remove?name={{file.name}}" onclick="return confirm('Are you sure?')" class="w3-button">Remove</a> 
+            <a href="backups/remove?name={{file.name}}" onclick="return confirm('Are you sure?')" class="w3-button">Löschen</a> 
         </td>
     </tr>   
 {% endfor %}

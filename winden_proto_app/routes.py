@@ -38,9 +38,9 @@ def setup_routes(app):
     #app.router.add_get('/reports/{report_id}/export',export, name='export')
     
     # ADMIN?
-    #app.router.add_get('/backups',backups, name='backups')
-    #app.router.add_get('/backups/create',create_backup, name='create_backup')
-    #app.router.add_get('/backups/remove',remove_backup, name='remove_backup')
+    app.router.add_get('/backups',backups, name='backups')
+    app.router.add_get('/backups/create',create_backup, name='create_backup')
+    app.router.add_get('/backups/remove',remove_backup, name='remove_backup')
 
     setup_static_routes(app)
 
