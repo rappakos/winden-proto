@@ -4,3 +4,4 @@ aiosqlite
 xlsxwriter
 python-dotenv
 GitPython
+dataclasses-json
