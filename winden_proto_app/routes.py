@@ -33,9 +33,9 @@ def setup_routes(app):
     #app.router.add_get('/schlepps/start',schlepp_start, name='schleppstart')
     # ...
     
-    #app.router.add_get('/reports',reports, name='reports')
-    #app.router.add_get('/reports/{report_id}',report, name='report')
-    #app.router.add_get('/reports/{report_id}/export',export, name='export')
+    app.router.add_get('/reports',reports, name='reports')
+    app.router.add_get('/reports/{report_id}',report, name='report')
+    app.router.add_get('/reports/{report_id}/export',export, name='export')
     
     # ADMIN?
     app.router.add_get('/backups',backups, name='backups')

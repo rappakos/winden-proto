@@ -3,11 +3,11 @@
 {% set title = "Reports" %}
 
 {% block content %}
-
+{% include "./_admin_menu.html" %}
 {% if reports %} 
     <form>
         <label for="sel_reports">Report auswählen</label>
-        <select id="sel_reports" onchange="self.location=this.options[this.selectedIndex].value">
+        <select class="w3-select" id="sel_reports" onchange="self.location=this.options[this.selectedIndex].value">
             <option value="/reports">Auswählen ... </option>
         {% for key in reports.keys() %}
             <option value="/reports/{{key}}">{{reports[key]}}</option>
