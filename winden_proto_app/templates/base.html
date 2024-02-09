@@ -7,6 +7,7 @@
               href="{{ url('static', filename='style.css') }}" />
         <script src= "{{ url('static', filename='autocomplete.js') }}" ></script>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-green.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/x-icon" href= "{{ url('static', filename='cropped-GSC-SH-Logo-80px-32x32.png') }}" sizes="32x32" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -14,12 +15,12 @@
     {% endblock %}
   </head>
   <body>
-    <div class="w3-container">
-      <header>
+      <header class="w3-top w3-theme-d2">
         {% include "./_menu.html" %}
       </header>
+      <div class="w3-content" style="margin-top:41px;">
       {% block content %}
       {% endblock %}
-    </div>
+     </div>
   </body>
 </html>

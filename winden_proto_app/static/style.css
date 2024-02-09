@@ -1,15 +1,9 @@
-   .proc {
-      font-size: 18px;
-      /* width:24vw; does not work without style attr */
-   }
-   
+ 
    .action-area {
-      width: 100vw; 
-      height: 40vh;
       display: flex;
-      padding-top: 15vh;
       align-items: center;
       justify-content: center;
+      min-height: 30vh;
    }
 
   

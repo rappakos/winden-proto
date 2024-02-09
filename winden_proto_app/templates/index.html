@@ -3,57 +3,57 @@
 {% set title = "Start" %}
 
 {% block content %}
-<div class="w3-row w3-container">
-    <div class="w3-col w3-blue w3-container proc" style="width:24vw">TAG:{{active_day}}</div>
-    <div class="w3-col w3-blue w3-container proc {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}" style="width:24vw">WINDE:{{active_winde}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:24vw">WF:{{active_wf}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:24vw">EWF:</div>
+<div class="w3-row">
+    <div class="w3-col s3"><span><i class="glyphicon glyphicon-calendar"></i></span><span>{{active_day}}</span></div>
+    <div class="w3-col s3 {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}"><span><i class="glyphicon glyphicon-send"></i></span><span>{{active_winde}}</span></div>
+    <div class="w3-col s3 w3-container"><span><i class="glyphicon glyphicon-user"></i></span><span>{{active_wf}}</span></div>
+    <div class="w3-col s3 w3-container"><span>EWF:</span><span></span></div>
 </div>
 
 <div class="action-area">
     {% if not active_day %}
         <div class="w3-container">
-            <form action="/start_day" method="post" class="w3-container" autocomplete="off">
-                <button class="action w3-btn w3-xxlarge w3-green">Flugtag starten</button>
+            <form  class="w3-auto" action="/start_day" method="post" autocomplete="off">
+                <button class="action w3-btn w3-green">Flugtag starten</button>
             </form>
         </div>
     {% elif pilot_list is none %} 
-        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-                <form action="/calendar_list" method="get" class="w3-container" autocomplete="off">
-                    <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste aus dem Kalender*</button>
+        <div class="w3-container w3-auto" style="display:flex;flex-direction: column;gap:5vh;">
+                <form class="w3-auto" action="/calendar_list" method="get" autocomplete="off">
+                    <button class="action w3-btn w3-green">Pilotenliste aus dem Kalender*</button>
                 </form>
-                <form action="/calendar_list" method="get" class="w3-container" autocomplete="off">
+                <form class="w3-auto" action="/calendar_list" method="get" autocomplete="off">
                     <input type="hidden" name="skip" value="true" />
-                    <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
+                    <button class="action w3-btn w3-border">Pilotenliste überspringen</button>
                 </form>                    
-                <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
-                    <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+                <form  class="w3-auto" action="/cancel_day" method="post" autocomplete="off">
+                    <button class="action w3-btn w3-border w3-border-red">Flugtag stornieren</button>
                 </form>
         </div>
     {% elif not active_winde %} 
-        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-            <button class="action w3-btn w3-xxlarge w3-green">Elowin</button>
-            <button class="action w3-btn w3-xxlarge w3-border">Kella-Winde</button>
-            <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
-                <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
+            <button class="action w3-btn w3-green">Elowin</button>
+            <button class="action w3-btn w3-border">Kella-Winde</button>
+            <form action="/cancel_day" method="post" autocomplete="off">
+                <button class="action w3-btn w3-border w3-border-red">Flugtag stornieren</button>
             </form>
         </div>
     {% elif (winde_status|string ) != "WindeStatus.AUFGEBAUT" %}         
-        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-            <button class="action w3-btn w3-xxlarge w3-green">Aufbau {{active_winde}} starten</button>
-            <form action="/cancel_day" method="post" class="w3-container" autocomplete="off">
-                <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
+            <button class="action w3-btn w3-green">Aufbau {{active_winde}} starten</button>
+            <form action="/cancel_day" method="post" autocomplete="off">
+                <button class="action w3-btn w3-border w3-border-red">Flugtag stornieren</button>
             </form>
         </div>
     {% elif not active_wf %}
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-            <button class="action w3-btn w3-xxlarge w3-green">Windenfahrer auswählen</button>
-            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Abbau {{active_winde}} starten </button>
+            <button class="action w3-btn w3-green">Windenfahrer auswählen</button>
+            <button class="action w3-btn w3-border w3-border-red">Abbau {{active_winde}} starten </button>
         </div>
     {% else %}
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-            <button class="action w3-btn w3-xxlarge w3-green">Schlepp starten</button>
-            <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Abbau {{active_winde}} starten </button>
+            <button class="action w3-btn w3-green">Schlepp starten</button>
+            <button class="action w3-btn w3-border w3-border-red">Abbau {{active_winde}} starten </button>
         </div>        
     {% endif %}
 </div>

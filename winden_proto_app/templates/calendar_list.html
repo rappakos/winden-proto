@@ -3,17 +3,17 @@
 {% set title = "Start" %}
 
 {% block content %}
-<div class="w3-row w3-container">
-    <div class="w3-col w3-blue w3-container proc" style="width:24vw">TAG:{{active_day}}</div>
-    <div class="w3-col w3-blue w3-container proc {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}" style="width:24vw">WINDE:{{active_winde}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:24vw">WF:{{active_wf}}</div>
-    <div class="w3-col w3-blue w3-container proc" style="width:24vw">EWF:</div>
+<div class="w3-row">
+    <div class="w3-col s3"><span><i class="glyphicon glyphicon-calendar"></i></span><span>{{active_day}}</span></div>
+    <div class="w3-col s3 {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}"><span><i class="glyphicon glyphicon-send"></i></span><span>{{active_winde}}</span></div>
+    <div class="w3-col s3 w3-container"><span<i class="glyphicon glyphicon-user"></i></span><span>{{active_wf}}</span></div>
+    <div class="w3-col s3 w3-container"><span>EWF:</span><span></span></div>
 </div>
 
 
 <div class="action-area">
     {% if pilot_list is none %} 
-        <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
                 <div class="w3-container">
                     {% if calendar_list %}
                         {% for pilot in calendar_list %} 
@@ -23,16 +23,16 @@
                     {% endif %}
                 </div>
 
-                <form action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
+                <form class="w3-auto" action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
                     <input type="hidden" name="pilot_list" value="Akos, Orsi" />
-                    <button class="action w3-btn w3-xxlarge w3-green">Pilotenliste übernehmen</button>
+                    <button class="action w3-btn w3-large w3-green">Pilotenliste übernehmen</button>
                 </form>
-                <form action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
+                <form class="w3-auto" action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
                     <input type="hidden" name="pilot_list" value="" />   
-                    <button class="action w3-btn w3-xxlarge w3-border">Pilotenliste überspringen</button>
+                    <button class="action w3-btn w3-large w3-border">Pilotenliste überspringen</button>
                 </form>                    
-                <form action="/cancel_day" method="post" autocomplete="off">
-                    <button class="action w3-btn w3-xxlarge w3-border w3-border-red">Flugtag stornieren</button>
+                <form class="w3-auto" action="/cancel_day" method="post" autocomplete="off">
+                    <button class="action w3-btn w3-large w3-border w3-border-red">Flugtag stornieren</button>
                 </form>
         </div>
     {% endif %}
