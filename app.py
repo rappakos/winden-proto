@@ -35,12 +35,12 @@ async def init_app(argv=None):
         app, loader=jinja2.PackageLoader('winden_proto_app', 'templates'))
     
     # check for updates
-    git = Repo(".").git
-    try:
-        git.fetch()
-        print(git.status())
-    finally:
-        print("git fetch concluded")
+    #git = Repo(".").git
+    #try:
+    #    git.fetch()
+    #    print(git.status())
+    #finally:
+    #    print("git fetch concluded")
 
 
     # ???
