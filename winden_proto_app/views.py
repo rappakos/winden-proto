@@ -212,6 +212,17 @@ async def schlepp(request):
         router = request.app.router
         url = router['schlepp_active'].url_for()
         raise web.HTTPFound(location=url)
+    
+async def set_schlepp_status(request):
+    schlepp_id=request.match_info['schlepp_id']
+    if request.method == 'POST':
+        data = await request.post()
+        status = data['status']
+
+        await db.set_schlepp_status(schlepp_id, status)
+
+        raise web.HTTPFound('/')
+
 
 @aiohttp_jinja2.template('schlepp_active.html')
 async def schlepp_active(request):

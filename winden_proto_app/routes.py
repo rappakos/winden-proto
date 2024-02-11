@@ -1,7 +1,7 @@
 import pathlib
 
 from .views import index,start_day,cancel_day,activate_winde, \
-        aufbau, select_wf, schlepp_start,schlepp,schlepp_active, abbau, \
+        aufbau, select_wf, schlepp_start,schlepp,schlepp_active, set_schlepp_status, abbau, \
         calendar_list,add_calendar_list, admin, \
         alle_winden, winde, piloten
 from .report_views import reports, report, export
@@ -27,6 +27,7 @@ def setup_routes(app):
     app.router.add_get('/schlepps/start',schlepp_start, name='schleppstart') # could be renamed to select_pilot ...
     app.router.add_post('/schlepps',schlepp, name='schlepp')
     app.router.add_get('/schlepps/active',schlepp_active, name='schlepp_active')
+    app.router.add_post('/schlepps/{schlepp_id}',set_schlepp_status, name='set_schlepp_status')
 
     app.router.add_get('/admin', admin)
     app.router.add_get('/winden',alle_winden, name='winden')

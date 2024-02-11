@@ -169,6 +169,15 @@ async def get_wf_list():
                         })
     return res
 
+async def set_schlepp_status(schlepp_id, status):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'schlepp_id': schlepp_id, 'status':status}
+        await db.execute("""
+                            UPDATE [schlepps] SET status=:status
+                            WHERE [schlepp_id] = :schlepp_id and [status]='started'
+                        """, params)
+        await db.commit() #    
+
 
 async def get_active_schlepp():
     async with aiosqlite.connect(DB_NAME) as db:
@@ -186,6 +195,7 @@ async def get_active_schlepp():
                                 , count(s2.schlepp_id) [schlepps_heute]
                                 , dense_rank() over(partition by s.pilot_id, s.datum order by s.schlepp_id ) [schlepp_no]
                                 , p.zugkraft
+                                ,  p.status_txt
                             FROM schlepps s
                             INNER JOIN piloten p ON s.pilot_id=p.pilot_id
                             LEFT JOIN schlepps s2 ON s2.pilot_id=s.pilot_id and s.datum=s2.datum
@@ -198,6 +208,7 @@ async def get_active_schlepp():
                                 ,s.datum
                                 ,s.status                              
                                 , p.zugkraft
+                                ,  p.status_txt
                             ORDER BY s.schlepp_id DESC
                             LIMIT 1
                             """, params) as cursor:
@@ -212,7 +223,8 @@ async def get_active_schlepp():
                         'status': row[6],
                         'schlepps_heute': row[7],
                         'schlepp_no':  row[8],
-                        'zugkraft': row[9]
+                        'zugkraft': row[9],
+                        'pilot_status': row[10]
                     })
     return res
 

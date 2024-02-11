@@ -10,16 +10,16 @@
             <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
                 <div class="w3-auto">
                     <h2>{{schlepp[0].pilot_id}}</h2>
-                    <h3>TODO add pilot staus</h3>
+                    <h3>{{schlepp[0].pilot_status}}</h3>
                     <label style="white-space: nowrap;">Schlepps heute</label>
                     <div style="font-size: 24pt; text-align: center;">{{schlepp[0].schlepps_heute}}</div>
                     <label>Zugkraft</label>
                     <div style="font-size: 24pt; text-align: center;">{{schlepp[0].zugkraft}}</div>                    
                 </div>
-                <form class="w3-auto" action="/schlepps/{{schlepp_id}}" method="post">
-                    <button class="action w3-btn w3-large w3-green" name="status" value="complete">Schlepp beendet</button>
+                <form class="w3-auto" action="/schlepps/{{schlepp[0].schlepp_id}}" method="post">
+                    <button class="action w3-btn w3-large w3-green" name="status" value="completed">Schlepp beendet</button>
                 </form>
-                <form class="w3-auto" action="/schlepps/{{schlepp_id}}" method="post">
+                <form class="w3-auto" action="/schlepps/{{schlepp[0].schlepp_id}}" method="post">
                     <button class="action w3-btn w3-large w3-border w3-border-red" name="status" value="canceled">Schlepp abbrechen</button>
                 </form>
             </div>
