@@ -8,22 +8,34 @@
     {% if active_winde and active_wf and pilots %}
     <div class="action-area">
         {% if pilots %} 
-            <form class="w3-auto"  action="/active_schlepp" method="post">
-                <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:0.5vh;max-height: 60vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+            <form action="/schlepps/active" method="post">
+                <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
                 {% for pilot in pilots %}
                 <p>
                     <!-- later this should be change to a list + text input -->
-                    <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" {% if loop.index==1 %}checked{% endif %}>
+                    <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" onclick="set_zugkraft('{{pilot.zugkraft}}');" >
                     <label>{{pilot.name}}  - {{pilot.status}}</label>
                 </p>
                 {% endfor %}
                 </div>
+                <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+                    <label>Zugkraft</label>
+                    <input id="txt-zugkraft" class="w3-number" type="number" name="zugkraft" value="" />
+                </div>
+
                 <button class="action w3-btn w3-large w3-green">Start schlepp</button>
             </form>
         {% else %}
             Das sollte nicht passieren - keine Windenfahrer gefunden.
         {% endif %}
     </div>
+    <script>
+        function set_zugkraft(val) {    
+            const el = document.getElementById('txt-zugkraft');
+            el.value = val;
+        }
+
+    </script>    
     {% else  %}
         Das sollte nicht passieren.
     {% endif %}

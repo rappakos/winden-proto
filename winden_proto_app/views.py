@@ -193,6 +193,28 @@ async def schlepp_start(request):
     
     return res
 
+async def schlepp(request):
+    if request.method == 'POST':
+        data = await request.post()
+        pr = await db.get_process_status()
+        try:
+            winde_id = pr.active_winde
+            wf_id = pr.active_wf
+            ewf_id = None # TODO
+            pilot_id = data['pilot_id'] # compare to DB? could be new
+            zugkraft = data['zugkraft'] # compare to DB
+        except (KeyError, TypeError, ValueError) as e:
+            raise web.HTTPBadRequest(
+                text=f'Some values are not correct\n {e}') from e
+        # save
+        await db.add_schlepp(winde_id, wf_id, ewf_id, pilot_id, zugkraft)
+        # redirect
+        router = request.app.router
+        url = router['schlepps/active'].url_for()
+        raise web.HTTPFound(location=url)
+
+
+
 @aiohttp_jinja2.template('admin.html')
 async def admin(request):
 
@@ -273,25 +295,4 @@ async def schlepps(request):
         'schlepps': await db.get_schlepps()
         }
 
-async def schlepp(request):
-    data = await request.post()
-    #print(data)
-    # validate
-    try:
-        winde_id = data['winde_id'] # compare to DB
-        if not winde_id or winde_id=="None":
-            raise ValueError("Invalid winde_id: must not be empty")
-        #print(winde_id)
-        wf_id = data['windenfahrer'] # compare to DB
-        ewf_id = data['ewf'] # compare to DB
-        pilot_id = data['pilot'] # compare to DB? could be new
-        zugkraft = data['zugkraft'] # compare to DB
-    except (KeyError, TypeError, ValueError) as e:
-        raise web.HTTPBadRequest(
-               text=f'Some values are not correct\n {e}') from e
-    # save
-    await db.add_schlepp(winde_id, wf_id, ewf_id, pilot_id, zugkraft)
-    # redirect
-    router = request.app.router
-    url = router['schlepps'].url_for()
-    raise web.HTTPFound(location=url)
+
