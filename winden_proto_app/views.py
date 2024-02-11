@@ -308,10 +308,7 @@ async def piloten(request):
 
 @aiohttp_jinja2.template('schlepps.html')
 async def schlepps(request):
-    winde_id, wf_id = await db.get_last_schlepp_data()
     return {
-        'winde_id': winde_id ,
-        'wf_id': wf_id,
         'schlepps': await db.get_schlepps()
         }
 

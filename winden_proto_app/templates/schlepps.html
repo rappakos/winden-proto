@@ -3,13 +3,7 @@
 {% set title = "Schlepps" %}
 
 {% block content %}
-
-<a href="/schlepps/start" class="w3-button">Neuen Schlepp starten</a>
-
-    <div>
-        <span>Aktuelle Winde: {{ winde_id }} </span>
-        <span>Aktueller WF: {{ wf_id }} </span>
-    </div>
+{% include "./_admin_menu.html" %}
     {% if schlepps %}
     <table class="w3-table w3-bordered">
         <tr>
