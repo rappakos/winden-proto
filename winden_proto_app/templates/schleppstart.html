@@ -5,6 +5,27 @@
 {% block content %}
 {% include "./_process_status.html" %}
 
-
+    {% if active_winde and active_wf and pilots %}
+    <div class="action-area">
+        {% if pilots %} 
+            <form class="w3-auto"  action="/active_schlepp" method="post">
+                <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:0.5vh;max-height: 60vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+                {% for pilot in pilots %}
+                <p>
+                    <!-- later this should be change to a list + text input -->
+                    <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" {% if loop.index==1 %}checked{% endif %}>
+                    <label>{{pilot.name}}  - {{pilot.status}}</label>
+                </p>
+                {% endfor %}
+                </div>
+                <button class="action w3-btn w3-large w3-green">Start schlepp</button>
+            </form>
+        {% else %}
+            Das sollte nicht passieren - keine Windenfahrer gefunden.
+        {% endif %}
+    </div>
+    {% else  %}
+        Das sollte nicht passieren.
+    {% endif %}
 
 {% endblock %}

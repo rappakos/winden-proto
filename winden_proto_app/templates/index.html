@@ -59,7 +59,9 @@
         </div>
     {% else %}
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
-            <button class="action w3-btn w3-green">Schlepp starten</button>
+            <form class="w3-auto" action="/schlepps/start" method="get" autocomplete="off">
+                <button class="action w3-btn w3-green">Schlepp starten</button>
+            </form>
             <form class="w3-auto" action="/winden/{{active_winde}}/abbau" method="get" autocomplete="off">
                 <button class="action w3-btn w3-border w3-border-red">Abbau {{active_winde}} starten </button>
             </form>

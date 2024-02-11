@@ -185,6 +185,14 @@ async def abbau(request):
                 'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
                 'protocol': protocol}    
 
+@aiohttp_jinja2.template('schleppstart.html')
+async def schlepp_start(request):
+    pr = await db.get_process_status()
+    res = pr.to_dict()
+    res['pilots'] = [p for p in await db.get_piloten() if p['id'] != pr.active_wf] # WF should be removed
+    
+    return res
+
 @aiohttp_jinja2.template('admin.html')
 async def admin(request):
 
@@ -287,19 +295,3 @@ async def schlepp(request):
     router = request.app.router
     url = router['schlepps'].url_for()
     raise web.HTTPFound(location=url)
-
-@aiohttp_jinja2.template('schleppstart.html')
-async def schlepp_start(request):
-    piloten = await db.get_piloten()
-    windenfahrer = [p for p in piloten if p['status'] in ['W','EWF','WIA'] ]
-    winde_id, wf_id = await db.get_last_schlepp_data()
-    winden = await db.get_winden()
-    data = {
-        'winde_id': winde_id ,
-        'wf_id': wf_id,
-        'aktive_winden': [w for w in winden if w['active']],
-        'windenfahrer': windenfahrer,
-        'piloten': piloten
-    }
-
-    return {'data': data}
