@@ -177,14 +177,23 @@ async def get_wf_list():
 async def get_piloten():
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
-        async with db.execute("SELECT [pilot_id],[name],[status_txt],[zugkraft] FROM piloten") as cursor:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
+        async with db.execute("""SELECT
+                               p.[pilot_id],p.[name],p.[status_txt]
+                                , IFNULL(p.[zugkraft] ,0) [zugkraft] 
+                               , count(s.schlepp_id) [schlepp_count]
+                              FROM piloten p 
+                              LEFT JOIN schlepps s ON s.[datum]= :datum and s.[pilot_id]=p.[pilot_id]
+                              GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft]
+                              """,params) as cursor:
             async for row in cursor:
                 #print(row)
                 res.append({
                         'id':row[0],
                         'name':row[1],
                         'status':row[2],
-                        'zugkraft':row[3]
+                        'zugkraft':row[3],
+                        'schlepp_count': row[4]
                         })
     return res
 

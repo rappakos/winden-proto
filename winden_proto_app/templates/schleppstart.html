@@ -8,31 +8,45 @@
     {% if active_winde and active_wf and pilots %}
     <div class="action-area">
         {% if pilots %} 
-            <form action="/schlepps/active" method="post">
-                <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
-                {% for pilot in pilots %}
-                <p>
-                    <!-- later this should be change to a list + text input -->
-                    <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" onclick="set_zugkraft('{{pilot.zugkraft}}');" >
-                    <label>{{pilot.name}}  - {{pilot.status}}</label>
-                </p>
-                {% endfor %}
-                </div>
-                <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
-                    <label>Zugkraft</label>
-                    <input id="txt-zugkraft" class="w3-number" type="number" name="zugkraft" value="" />
-                </div>
+            <form class="w3-auto" action="/schlepps/active" method="post">
+                <div class="w3-row">
+                    <div class="w3-auto w3-col s7 w3-border"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+                    {% for pilot in pilots %}
+                    <p>
+                        <!-- later this should be change to a list + text input -->
+                        <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" onclick="set_infos({{pilot}});" >
+                        <label>{{pilot.name}} - {{pilot.status}}</label>
+                    </p>
+                    {% endfor %}
+                    </div>
+                    <div class="w3-auto w3-col s5"  style="display:flex;flex-direction: column;padding:8px;">
+                        <label style="white-space: nowrap;">Schlepps heute</label>
+                        <span id="spn-schlepp-count" style="font-size: 24pt; text-align: center;">0</span>
 
-                <button class="action w3-btn w3-large w3-green">Start schlepp</button>
+                        <label>Zugkraft</label>
+                        <input id="txt-zugkraft"
+                            class="w3-input w3-border w3-round-medium "
+                            style="font-size: 24pt; text-align: center;"
+                            min="0" max="130" step="10"
+                            type="number" name="zugkraft" value="" />
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <button class="action w3-btn w3-large w3-green w3-col s12">Start schlepp</button>
+                </div>
             </form>
         {% else %}
             Das sollte nicht passieren - keine Windenfahrer gefunden.
         {% endif %}
     </div>
     <script>
-        function set_zugkraft(val) {    
-            const el = document.getElementById('txt-zugkraft');
-            el.value = val;
+        function set_infos(pilot) {    
+            //console.log(pilot);
+            const cntr = document.getElementById('spn-schlepp-count');
+            cntr.innerText = pilot.schlepp_count;
+            const el = document.getElementById('txt-zugkraft');            
+            el.value = pilot.zugkraft;
+
         }
 
     </script>    
