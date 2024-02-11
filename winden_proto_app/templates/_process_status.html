@@ -1,0 +1,8 @@
+{# _process_status.html #}
+
+<div class="w3-row">
+    <div class="w3-col s3"><span><i class="glyphicon glyphicon-calendar"></i></span><span>{{active_day}}</span></div>
+    <div class="w3-col s3 {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}"><span>W<span>{{active_winde}}</span></div>
+    <div class="w3-col s3 w3-container"><span>WF</span><span>{{active_wf}}</span></div>
+    <div class="w3-col s3 w3-container"><span>EWF</span><span></span></div>
+</div>

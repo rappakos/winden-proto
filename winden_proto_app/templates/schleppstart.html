@@ -3,80 +3,8 @@
 {% set title = "Neuer Schlepp" %}
 
 {% block content %}
+{% include "./_process_status.html" %}
 
-{% if data: %}
-<form action="/schlepps" method="post" class="w3-container" autocomplete="off">
-    <label>
-        Winde [Hinweis: darf nur eine mit offenem Flugtag geben - disabled]
-        {% if data.winde_id %}
-            <input type="text" name="winde_id"  class="w3-input" value="{{data.winde_id}}" style="pointer-events:none; background:grey;" />
-        {% else %}
-            <div class="autocomplete"  style="width: 100%;">
-                <input type="text" name="winde_id"  class="w3-input" id="ax-winde" />
-            </div>
-        {% endif %}
-     </label>
-    <label>
-        Windenfahrer [Hinweis: von der letzten Schlepp vorbefüllt sonst Autocomplete]
-        <div class="autocomplete"  style="width: 100%;">
-            <input type="text" name="windenfahrer"  class="w3-input" id="ax-windenfahrer" value="{{data.wf_id}}" />
-        </div>
-     </label>
-     <label>
-        EWF [Hinweis: wenn WF WiA ist ]
-        <input type="text" name="ewf"  class="w3-input" />
-     </label>     
-    <label>
-       Pilot [Hinweis: Autocomplete]
-       <div class="autocomplete" style="width: 100%;">
-            <input type="text" name="pilot"  class="w3-input" id="ax-piloten" />
-        </div>
-    </label>
-    <label>
-        Zugkraft [kg] 
-        <input type="number" name="zugkraft"  class="w3-input" id="ax-zugkraft" />
-     </label>    
-    <input type="submit" value="submit" class="w3-button" />
-</form>
-<script>
-    {% if not data.winde_id %}
-    const el_wi = document.getElementById('ax-winde');
-    //console.log(el_wi);
-    const winden = [{% for w in data.aktive_winden %}
-                            '{{w.winde_id}}', 
-                    {% endfor %}
-                    ];
-    //console.log(winden);
-    autocomplete(el_wi,  winden );
-    {% endif %}
 
-    const el_wf = document.getElementById('ax-windenfahrer');
-    const windenfahrer = [{% for wf in data.windenfahrer %}
-                            '{{wf.id}}', 
-                        {% endfor %}
-                        ];
-    autocomplete(el_wf,  windenfahrer );
-
-    const el_piloten = document.getElementById('ax-piloten');
-    const piloten = [{% for p in data.piloten %}
-                            '{{p.id}}', 
-                    {% endfor %}
-                ];
-    autocomplete(el_piloten,  piloten );
-    
-    let zugkraft = {};
-    {% for p in data.piloten if p.zugkraft %}
-        zugkraft["{{p.id}}"] = '{{p.zugkraft}}';
-    {% endfor %}
-    const el_zugkraft = document.getElementById('ax-zugkraft');
-    el_piloten.addEventListener("pilot-selected",(e) => {
-        const p = e.target.value;
-        if(p && p in zugkraft) {
-            el_zugkraft.value = zugkraft[p];
-        }
-    });
-
-</script>
-{% endif %}
 
 {% endblock %}

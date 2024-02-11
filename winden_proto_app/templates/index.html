@@ -3,12 +3,7 @@
 {% set title = "Start" %}
 
 {% block content %}
-<div class="w3-row">
-    <div class="w3-col s3"><span><i class="glyphicon glyphicon-calendar"></i></span><span>{{active_day}}</span></div>
-    <div class="w3-col s3 {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}"><span><i class="glyphicon glyphicon-send"></i></span><span>{{active_winde}}</span></div>
-    <div class="w3-col s3 w3-container"><span><i class="glyphicon glyphicon-user"></i></span><span>{{active_wf}}</span></div>
-    <div class="w3-col s3 w3-container"><span>EWF:</span><span></span></div>
-</div>
+{% include "./_process_status.html" %}
 
 <div class="action-area">
     {% if not active_day %}
@@ -65,7 +60,9 @@
     {% else %}
         <div class="w3-container" style="display:flex;flex-direction: column;gap:10vh;">
             <button class="action w3-btn w3-green">Schlepp starten</button>
-            <button class="action w3-btn w3-border w3-border-red">Abbau {{active_winde}} starten </button>
+            <form class="w3-auto" action="/winden/{{active_winde}}/abbau" method="get" autocomplete="off">
+                <button class="action w3-btn w3-border w3-border-red">Abbau {{active_winde}} starten </button>
+            </form>
         </div>        
     {% endif %}
 </div>
