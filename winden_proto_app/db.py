@@ -6,6 +6,17 @@ from .process_model import Process, WindeStatus
 DB_NAME = './winde-demo.db'
 INIT_SCRIPT = './winden_proto_app/init_db.sql'
 
+PILOT_STATUS = {
+    'G': 'Gast',
+    'NG': 'Nord-Gast',
+    'M': 'Mitglied',
+    'WIA': 'WindenFiA',
+    'W': 'Windenfahrer',
+    'WF': 'Windenfahrer',
+    'EWF': 'EWF',
+}
+
+
 async def setup_db(app):
     app['DB_NAME'] = DB_NAME
     async with aiosqlite.connect(DB_NAME) as db:
@@ -224,7 +235,7 @@ async def get_active_schlepp():
                         'schlepps_heute': row[7],
                         'schlepp_no':  row[8],
                         'zugkraft': row[9],
-                        'pilot_status': row[10]
+                        'pilot_status': PILOT_STATUS[row[10]]
                     })
     return res
 
