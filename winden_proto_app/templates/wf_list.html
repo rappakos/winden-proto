@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% set title = "Start" %}
+
+{% block content %}
+<!-- TODO define for include -->
+<div class="w3-row">
+    <div class="w3-col s3"><span><i class="glyphicon glyphicon-calendar"></i></span><span>{{active_day}}</span></div>
+    <div class="w3-col s3 {%if (winde_status|string ) !='WindeStatus.AUFGEBAUT' %}w3-border w3-border-red{% endif%}"><span><i class="glyphicon glyphicon-send"></i></span><span>{{active_winde}}</span></div>
+    <div class="w3-col s3 w3-container"><span<i class="glyphicon glyphicon-user"></i></span><span>{{active_wf}}</span></div>
+    <div class="w3-col s3 w3-container"><span>EWF:</span><span></span></div>
+</div>
+
+
+<div class="action-area">
+    {% if wf_list %} 
+        <form class="w3-auto"  action="/select_wf" method="post">
+            <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:1vh;max-height: 10vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+            {% for wf in wf_list %}
+            <p>
+                <input class="w3-radio" type="radio" name="active_wf" value="{{wf.id}}" {% if loop.index==1 %}checked{% endif %}>
+                <label>{{loop.index}} {{wf.name}} {{wf.status}}</label>
+            </p>
+            {% endfor %}
+            </div>
+            <button class="action w3-btn w3-large w3-green">Windenfahrer übernehmen</button>
+        </form>
+    {% else %}
+        Das sollte nicht passieren - keine Windenfahrer gefunden.
+    {% endif %}
+</div>
+
+{% endblock %}

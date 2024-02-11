@@ -48,6 +48,7 @@ async def get_process_status() -> Process:
                 pr.pilot_list = row[1]
                 pr.active_winde = row[2]
                 pr.winde_status = WindeStatus.AUFGEBAUT if row[3] and not row[4] else WindeStatus.GARAGE
+                pr.active_wf = row[5]
 
     return pr
 
@@ -139,6 +140,27 @@ async def get_protocol_questions(winde_id:str, type:str):
                 res.append({
                         'id':f'q-{row[0]}',
                         'question':row[1]
+                        })
+    return res
+
+async def get_wf_list():
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        async with db.execute("""SELECT p.[pilot_id],p.[name],p.[status_txt]
+                                --, row_number() over(order by pro.protocol_id desc) [rank]
+                              FROM piloten p
+                              --LEFT JOIN protocol pro ON p.[pilot_id]=pro.[pilot_id] and pro.[type]='aufbau'
+                              WHERE p.[status_txt] in ('W','EWF','WIA') 
+                              --ORDER BY row_number() over(order by pro.protocol_id desc)
+                              
+                        """) as cursor:
+            async for row in cursor:
+                #print(row)
+                res.append({
+                        'id':row[0],
+                        'name':row[1],
+                        'status':row[2],
+                        'ewf': [] # should get filled
                         })
     return res
 

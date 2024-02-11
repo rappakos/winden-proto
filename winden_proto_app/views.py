@@ -106,6 +106,25 @@ async def add_calendar_list(request):
     else:
         raise NotImplementedError("start_day should be POST")
 
+@aiohttp_jinja2.template('wf_list.html')
+async def select_wf(request):
+    pr = await db.get_process_status()
+    res = pr.to_dict()
+    if request.method == 'POST':
+        form = await request.post()
+        pilot_id = form['active_wf']
+        await db.set_active_wf(pilot_id)
+
+        raise web.HTTPFound('/')
+    
+    if request.method == 'GET':
+
+        res['wf_list']= await db.get_wf_list()
+
+        # TODO for WIA set EWF
+
+        return res
+
 
 @aiohttp_jinja2.template('aufbau.html')
 async def aufbau(request):
