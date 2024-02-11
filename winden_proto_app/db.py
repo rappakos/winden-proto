@@ -127,6 +127,22 @@ async def get_winden():
                         })
     return res
 
+async def get_protocol_questions(winde_id:str, type:str):
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        params = {'winde_id':winde_id, 'type':type}
+        async with db.execute("""SELECT question_id, question 
+                                 FROM protocolquestions 
+                                 WHERE [type]=:type 
+                                 ORDER BY question_id """, params) as cursor:
+            async for row in cursor:
+                res.append({
+                        'id':f'q-{row[0]}',
+                        'question':row[1]
+                        })
+    return res
+
+
 #
 # OLD PROCESS / DB SCHEMA
 #
@@ -145,21 +161,6 @@ async def get_piloten():
                         })
     return res
 
-
-
-async def get_aufbau_fragen(winde_id:str):
-    res = []
-    async with aiosqlite.connect(DB_NAME) as db:
-        async with db.execute("""SELECT question_id, question 
-                                 FROM protocolquestions 
-                                 WHERE [type]='aufbau' 
-                                 ORDER BY question_id """) as cursor:
-            async for row in cursor:
-                res.append({
-                        'id':f'q-{row[0]}',
-                        'question':row[1]
-                        })
-    return res
 
 async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):
     #print(winde_id, pilot_id, type, kommentar)

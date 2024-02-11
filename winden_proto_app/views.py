@@ -110,26 +110,26 @@ async def add_calendar_list(request):
 @aiohttp_jinja2.template('aufbau.html')
 async def aufbau(request):
     winde_id = request.match_info['winde_id']
+    type = 'aufbau'
     # is this a good design? same route, different methods?
     if request.method == 'POST':
         form = await request.post()
         # ? validate       
-        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
+        protocol = await db.get_protocol_questions(winde_id=winde_id, type=type)
         #
-        type = 'aufbau'
         questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
         kommentar = form['kommentar']
         pilot_id = form['aufgebaut-von']
         # 
         await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
 
-        # await db.set_active_winde_status(WindeStatus.AUFGEBAUT)
+        await db.set_active_winde_status(WindeStatus.AUFGEBAUT)
 
         raise web.HTTPFound('/')
         
     if request.method == 'GET':
         # 
-        protocol = await db.get_aufbau_fragen(winde_id=winde_id)
+        protocol = await db.get_protocol_questions(winde_id=winde_id, type=type)
         piloten = await db.get_piloten()
 
         return {
@@ -137,25 +137,35 @@ async def aufbau(request):
                 'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
                 'protocol': protocol}
 
-
+@aiohttp_jinja2.template('abbau.html')
 async def abbau(request):
+    winde_id = request.match_info['winde_id']
+    type = 'abbau'
     if request.method == 'POST':
         form = await request.post()
         # ? validate       
-        # protocol = await db.get_abau_fragen(winde_id=winde_id)
-        #
-        #type = 'abbau'
-        #questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
-        #kommentar = form['kommentar']
-        #pilot_id = form['abgebaut-von']
+        protocol = await db.get_protocol_questions(winde_id=winde_id, type='abbau')
+        #        
+        questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
+        kommentar = form['kommentar']
+        pilot_id = form['abgebaut-von']
         # 
-        #await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
+        await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
 
-        await db.set_active_winde_status(WindeStatus.GARAGE)
+        await db.set_active_winde_status(WindeStatus.GARAGE) #
         # temp
         await db.close_day()
 
         raise web.HTTPFound('/')    
+    if request.method == 'GET':
+        # 
+        protocol = await db.get_protocol_questions(winde_id=winde_id, type=type)
+        piloten = await db.get_piloten()
+
+        return {
+                'winde_id': winde_id,
+                'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
+                'protocol': protocol}    
 
 @aiohttp_jinja2.template('admin.html')
 async def admin(request):

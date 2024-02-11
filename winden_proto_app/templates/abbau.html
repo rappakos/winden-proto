@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% set title = "Aufbau" %}
+{% set title = "Abbau" %}
 
 {% block content %}
 
 {% if protocol: %}
 <div class="w3-container" style="overflow-y: auto;-webkit-overflow-scrolling: touch;">
-    <form action="/winden/{{winde_id}}/aufbau" method="post" class="w3-auto">
+    <form action="/winden/{{winde_id}}/abbau" method="post" class="w3-auto">
         {% for frage in protocol %}
         <div class="w3-row-padding w3-mobile">
             <input id="{{frage.id}}" type="checkbox" name="{{frage.id}}"  class="w3-check" />
@@ -19,9 +19,9 @@
         </div>
         <div class="w3-row-padding w3-mobile">
             <div class="w3-half">
-                <label>Aufgebaut von:</label>
+                <label>Abgebaut von:</label>
                 <div class="autocomplete"  style="width: 100%;">
-                    <input type="text" name="aufgebaut-von"  class="w3-input" id="ax-piloten"  required  />
+                    <input type="text" name="abgebaut-von"  class="w3-input" id="ax-piloten" required />
                 </div>
             </div>
             <div class="w3-half">

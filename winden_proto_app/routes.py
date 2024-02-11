@@ -18,9 +18,10 @@ def setup_routes(app):
     app.router.add_post('/activate_winde', activate_winde)
     app.router.add_get('/calendar_list', calendar_list)
     app.router.add_post('/calendar_list/add_calendar_list', add_calendar_list)
-    app.router.add_get('/winden/{winde_id}/aufbau', aufbau, name='aufbau') # to load protocol questions
-    app.router.add_post('/winden/{winde_id}/aufbau', aufbau, name='aufbau') # to submit protocol
-    app.router.add_post('/winden/{winde_id}/abbau', abbau, name='abbau') # TODO implement
+    app.router.add_get('/winden/{winde_id}/aufbau', aufbau, name='aufbau')
+    app.router.add_post('/winden/{winde_id}/aufbau', aufbau, name='aufbau')
+    app.router.add_get('/winden/{winde_id}/abbau', abbau, name='abbau') 
+    app.router.add_post('/winden/{winde_id}/abbau', abbau, name='abbau') 
     app.router.add_get('/admin', admin)
 
     
