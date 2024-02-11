@@ -210,9 +210,18 @@ async def schlepp(request):
         await db.add_schlepp(winde_id, wf_id, ewf_id, pilot_id, zugkraft)
         # redirect
         router = request.app.router
-        url = router['schlepps/active'].url_for()
+        url = router['schlepp_active'].url_for()
         raise web.HTTPFound(location=url)
 
+@aiohttp_jinja2.template('schlepp_active.html')
+async def schlepp_active(request):
+    if request.method == 'GET':
+        pr = await db.get_process_status()
+        res = pr.to_dict()
+
+        res['schlepp'] = await db.get_active_schlepp()
+        
+        return res
 
 
 @aiohttp_jinja2.template('admin.html')

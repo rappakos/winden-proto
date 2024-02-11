@@ -170,6 +170,41 @@ async def get_wf_list():
     return res
 
 
+async def get_active_schlepp():
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d"), 'status':'started'}
+        res = []
+        async with db.execute("""
+                            SELECT  
+                                s.schlepp_id
+                                ,s.winde_id
+                                ,s.wf_id
+                                ,s.ewf_id
+                                ,s.pilot_id
+                                ,s.datum
+                                ,s.status
+                                , count(s2.schlepp_id) [schlepps_heute]
+                                , dense_rank() over(partition by s.pilot_id, s.datum order by s.schlepp_id ) [schlepp_no]
+                            FROM schlepps s
+                            LEFT JOIN schlepps s2 ON s2.pilot_id=s.pilot_id and s.datum=s2.datum
+                            WHERE s.[datum] = :datum and s.[status]=:status
+                            ORDER BY s.schlepp_id DESC
+                            LIMIT 1
+                            """, params) as cursor:
+            async for row in cursor:
+                res.append({
+                        'schlepp_id':row[0],
+                        'winde_id':row[1],
+                        'wf_id':row[2],
+                        'ewf_id':row[3],
+                        'pilot_id': row[4],
+                        'datum': row[5],
+                        'status': row[6],
+                        'schlepps_heute': row[7],
+                        'schlepp_no':  row[8]
+                    })
+    return res
+
 #
 # OLD PROCESS / DB SCHEMA
 #

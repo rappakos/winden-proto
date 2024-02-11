@@ -8,7 +8,7 @@
     {% if active_winde and active_wf and pilots %}
     <div class="action-area">
         {% if pilots %} 
-            <form class="w3-auto" action="/schlepps/active" method="post">
+            <form class="w3-auto" action="/schlepps" method="post">
                 <div class="w3-row">
                     <div class="w3-auto w3-col s7 w3-border"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
                     {% for pilot in pilots %}

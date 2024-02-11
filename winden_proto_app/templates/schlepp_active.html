@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% set title = "Neuer Schlepp" %}
+
+{% block content %}
+{% include "./_process_status.html" %}
+
+    {% if active_winde and active_wf and schlepp %}
+
+    <div class="action-area">
+            <!-- <form class="w3-auto" action="/schlepps/{{schlepp_id}}" method="post"> -->
+                <button class="action w3-btn w3-large w3-green" name="status" value="complete">Schlepp beendet</button>
+            <!-- </form> -->
+            <!-- <form class="w3-auto" action="/schlepps/{{schlepp_id}}" method="post"> -->
+                <button class="action w3-btn w3-large w3-border w3-border-red" name="status" value="canceled">Schlepp abgebrochen</button>
+            <!-- </form> -->
+    </div>
+
+    {% else  %}
+        Das sollte nicht passieren.
+    {% endif %}
+
+{% endblock %}
