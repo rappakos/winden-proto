@@ -15,7 +15,7 @@
 <div class="action-area">
     {% if wf_list %} 
         <form class="w3-auto"  action="/select_wf" method="post">
-            <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:1vh;max-height: 10vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+            <div class="w3-container w3-auto"  style="display:flex;flex-direction: column;gap:1vh;max-height: 40vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
             {% for wf in wf_list %}
             <p>
                 <input class="w3-radio" type="radio" name="active_wf" value="{{wf.id}}" {% if loop.index==1 %}checked{% endif %}>

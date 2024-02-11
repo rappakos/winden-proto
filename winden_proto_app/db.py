@@ -98,6 +98,14 @@ async def set_active_winde_status(status):
                         """, params)
         await db.commit() #    
     
+async def set_active_wf(pilot_id):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 'pilot_id':pilot_id}
+        await db.execute("""
+                            UPDATE [flying_days] SET active_wf=:pilot_id 
+                            WHERE [flying_day] = :flying_day and [canceled]=0
+                        """, params)
+        await db.commit() #    
 
 async def add_pilot_list(pilot_list):
     async with aiosqlite.connect(DB_NAME) as db:
@@ -147,11 +155,8 @@ async def get_wf_list():
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
         async with db.execute("""SELECT p.[pilot_id],p.[name],p.[status_txt]
-                                --, row_number() over(order by pro.protocol_id desc) [rank]
                               FROM piloten p
-                              --LEFT JOIN protocol pro ON p.[pilot_id]=pro.[pilot_id] and pro.[type]='aufbau'
                               WHERE p.[status_txt] in ('W','EWF','WIA') 
-                              --ORDER BY row_number() over(order by pro.protocol_id desc)
                               
                         """) as cursor:
             async for row in cursor:

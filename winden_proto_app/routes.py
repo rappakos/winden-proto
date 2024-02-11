@@ -23,7 +23,7 @@ def setup_routes(app):
     app.router.add_get('/winden/{winde_id}/abbau', abbau, name='abbau') 
     app.router.add_post('/winden/{winde_id}/abbau', abbau, name='abbau') 
     app.router.add_get('/select_wf', select_wf)
-    #app.router.add_post('/select_wf', select_wf)
+    app.router.add_post('/select_wf', select_wf)
     app.router.add_get('/admin', admin)
 
     
