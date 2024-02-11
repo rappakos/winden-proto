@@ -19,7 +19,8 @@
                         {% for pilot in calendar_list %} 
                             <span class="w3-tag w3-round w3-green">{{pilot.name}}</span>
                         {% endfor %}
-                
+                    {% else %}
+                        <span class="w3-tag w3-round w3-theme-l4">Keine angemeldeten Piloten.</span>                
                     {% endif %}
                 </div>
 
