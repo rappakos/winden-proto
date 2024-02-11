@@ -13,7 +13,7 @@
             {% for wf in wf_list %}
             <p>
                 <input class="w3-radio" type="radio" name="active_wf" value="{{wf.id}}" {% if loop.index==1 %}checked{% endif %}>
-                <label>{{loop.index}} {{wf.name}} {{wf.status}}</label>
+                <label>{{wf.name}} {{wf.status}}</label>
             </p>
             {% endfor %}
             </div>
