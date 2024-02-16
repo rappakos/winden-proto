@@ -7,23 +7,14 @@
 
 <div class="action-area">
     {% if not active_day %}
-        <div class="w3-container">
-            <form  class="w3-auto" action="/start_day" method="post" autocomplete="off">
-                <button class="action w3-btn w3-green">Flugtag starten</button>
-            </form>
-        </div>
-    {% elif pilot_list is none %} 
         <div class="w3-container w3-auto" style="display:flex;flex-direction: column;gap:5vh;">
                 <form class="w3-auto" action="/calendar_list" method="get" autocomplete="off">
-                    <button class="action w3-btn w3-green">Pilotenliste aus dem Kalender*</button>
+                    <button class="action w3-btn w3-green">Flugtag mit Pilotenliste aus dem Kalender</button>
                 </form>
                 <form class="w3-auto" action="/calendar_list" method="get" autocomplete="off">
                     <input type="hidden" name="skip" value="true" />
-                    <button class="action w3-btn w3-border">Pilotenliste überspringen</button>
+                    <button class="action w3-btn w3-border">Flugtag ohne Pilotenliste starten</button>
                 </form>                    
-                <form  class="w3-auto" action="/cancel_day" method="post" autocomplete="off">
-                    <button class="action w3-btn w3-border w3-border-red">Flugtag stornieren</button>
-                </form>
         </div>
     {% elif not active_winde %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">

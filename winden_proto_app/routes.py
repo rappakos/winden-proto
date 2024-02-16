@@ -1,6 +1,6 @@
 import pathlib
 
-from .views import index,start_day,cancel_day,activate_winde, \
+from .views import index,cancel_day,activate_winde, \
         aufbau, select_wf, schlepp_start,schlepp,schlepp_active, set_schlepp_status, abbau, \
         calendar_list,add_calendar_list, admin, \
         alle_winden, winde, piloten, schlepps
@@ -13,7 +13,6 @@ PROJECT_ROOT = pathlib.Path(__file__).parent
 
 def setup_routes(app):
     app.router.add_get('/', index)
-    app.router.add_post('/start_day', start_day)
     app.router.add_post('/cancel_day', cancel_day)
     app.router.add_post('/activate_winde', activate_winde)
     app.router.add_get('/calendar_list', calendar_list)

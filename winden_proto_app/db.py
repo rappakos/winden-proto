@@ -63,14 +63,6 @@ async def get_process_status() -> Process:
 
     return pr
 
-async def start_day():
-    async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
-        await db.execute_insert("""
-                            INSERT INTO [flying_days] ([flying_day])
-                            SELECT :flying_day
-                        """, params)
-        await db.commit() #
 
 async def cancel_day():
     async with aiosqlite.connect(DB_NAME) as db:
@@ -125,11 +117,11 @@ async def add_pilot_list(pilot_list):
                     'pilot_list': len(pilot_list) > 0
                 }
         await db.execute("""
-                            UPDATE [flying_days] SET pilot_list= :pilot_list 
-                            WHERE [flying_day] = :flying_day and canceled=0
+                            INSERT INTO [flying_days] ([flying_day],[pilot_list])
+                            SELECT :flying_day, :pilot_list 
                         """, params)
         
-        # TODO save also pilot_list for the day
+        # TODO save also pilot_list for the day ?
 
         await db.commit() #    
 

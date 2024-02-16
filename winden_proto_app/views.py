@@ -25,16 +25,6 @@ async def index(request):
 
     return res
 
-async def start_day(request):
-    if request.method == 'POST':
-        form = await request.post()
-        # 
-        await db.start_day()
-
-        raise web.HTTPFound('/')
-    else:
-        raise NotImplementedError("start_day should be POST")
-
 async def cancel_day(request):
     if request.method == 'POST':
         form = await request.post()
@@ -243,6 +233,33 @@ async def admin(request):
     }
 
 
+@aiohttp_jinja2.template('alle_winden.html')
+async def alle_winden(request):
+    winden = await db.get_winden()
+    return {'winden': winden}
+
+@aiohttp_jinja2.template('winde.html')
+async def winde(request):    
+    winde_id = request.match_info['winde_id']
+    #print('requested',winde_id)
+    for w in await db.get_winden():
+        if w['winde_id']==winde_id:
+            return {'winde': w}
+    else:
+       raise web.HTTPNotFound(text=f'{winde_id} not found')
+
+
+@aiohttp_jinja2.template('piloten.html')
+async def piloten(request):
+    return {'piloten': await db.get_piloten()}
+
+@aiohttp_jinja2.template('schlepps.html')
+async def schlepps(request):
+    return {
+        'schlepps': await db.get_schlepps()
+        }
+
+
 #
 #  old views below this
 #
@@ -286,30 +303,6 @@ async def calendar(request):
         }
 
 
-@aiohttp_jinja2.template('alle_winden.html')
-async def alle_winden(request):
-    winden = await db.get_winden()
-    return {'winden': winden}
 
-@aiohttp_jinja2.template('winde.html')
-async def winde(request):    
-    winde_id = request.match_info['winde_id']
-    #print('requested',winde_id)
-    for w in await db.get_winden():
-        if w['winde_id']==winde_id:
-            return {'winde': w}
-    else:
-       raise web.HTTPNotFound(text=f'{winde_id} not found')
-
-
-@aiohttp_jinja2.template('piloten.html')
-async def piloten(request):
-    return {'piloten': await db.get_piloten()}
-
-@aiohttp_jinja2.template('schlepps.html')
-async def schlepps(request):
-    return {
-        'schlepps': await db.get_schlepps()
-        }
 
 
