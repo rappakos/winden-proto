@@ -6,6 +6,8 @@ from .process_model import Process, WindeStatus
 DB_NAME = './winde-demo.db'
 INIT_SCRIPT = './winden_proto_app/init_db.sql'
 
+PAGE_SIZE = 20
+
 PILOT_STATUS = {
     'G': 'Gast',
     'NG': 'Nord-Gast',
@@ -252,7 +254,7 @@ async def get_piloten():
                 res.append({
                         'id':row[0],
                         'name':row[1],
-                        'status':row[2],
+                        'status':PILOT_STATUS[row[2]],
                         'zugkraft':row[3],
                         'schlepp_count': row[4]
                         })
@@ -274,9 +276,22 @@ async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommenta
             """, (protocol_id[0], q[0], q[1]))
 
 
-async def get_schlepps():
+async def get_schlepp_totals():
+    totals = 0
+    async with aiosqlite.connect(DB_NAME) as db:
+        async with db.execute("""SELECT count(*) FROM schlepps """) as cursor:
+            row = await cursor.fetchone()
+            totals = row[0]
+
+    return {
+        'totals': totals,
+        'page_size': PAGE_SIZE
+    }
+
+async def get_schlepps(page_index: int):
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
+        params = {'limit': PAGE_SIZE, 'offset': page_index*PAGE_SIZE}
         async with db.execute("""
                             SELECT 
                                 s.schlepp_id
@@ -285,6 +300,7 @@ async def get_schlepps():
                                 ,s.ewf_id
                                 ,s.pilot_id
                                 ,s.datum
+                                , dense_rank() over(partition by s.datum order by s.schlepp_id ) [schlepp_no_daily]
                                 ,s.status
                                 , count(s2.schlepp_id) [schlepps_heute]
                                 , dense_rank() over(partition by s.pilot_id, s.datum order by s.schlepp_id ) [schlepp_no]
@@ -298,8 +314,8 @@ async def get_schlepps():
                                 ,s.datum
                                 ,s.status
                             ORDER BY s.schlepp_id DESC
-                            LIMIT 20
-                            """) as cursor:
+                            LIMIT :limit OFFSET :offset
+                            """, params) as cursor:
             async for row in cursor:
                 #print(row)
                 res.append({
@@ -309,9 +325,10 @@ async def get_schlepps():
                         'ewf_id':row[3],
                         'pilot_id': row[4],
                         'datum': row[5],
-                        'status': row[6],
-                        'schlepps_heute': row[7],
-                        'schlepp_no':  row[8]
+                        'schlepp_no_daily': row[6],
+                        'status': row[7],
+                        'schlepps_heute': row[8],
+                        'schlepp_no':  row[9]
                     })
     return res
 

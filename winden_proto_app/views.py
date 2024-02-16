@@ -255,8 +255,11 @@ async def piloten(request):
 
 @aiohttp_jinja2.template('schlepps.html')
 async def schlepps(request):
+    page_index = int(request.rel_url.query.get('p',0))
+
     return {
-        'schlepps': await db.get_schlepps()
+        'totals': await db.get_schlepp_totals(),
+        'schlepps': await db.get_schlepps(page_index)
         }
 
 

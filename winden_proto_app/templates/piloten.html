@@ -5,6 +5,7 @@
 {% block content %}
 {% include "./_admin_menu.html" %}
 {% if piloten %}
+<div class="w3-container"  style="overflow-x: auto;-webkit-overflow-scrolling: touch;"> 
     <table class="w3-table w3-bordered">
         <tr>
             <th>ID</th>
@@ -19,6 +20,7 @@
         </tr>    
     {% endfor %}
     </table>
+    </div> 
 {% else %}
     <p>No pilots.</p>
 {% endif %}

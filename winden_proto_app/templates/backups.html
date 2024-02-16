@@ -6,6 +6,7 @@
 {% include "./_admin_menu.html" %}
 <a href="backups/create" class="w3-button w3-border w3-green">Backup erstellen</a>
 {% if files %}
+<div class="w3-container"  style="overflow-x: auto;-webkit-overflow-scrolling: touch;">
 <table class="w3-table w3-bordered">
     <tr>
         <th>Name</th>
@@ -25,6 +26,7 @@
     </tr>   
 {% endfor %}
 </table>
+</div>
 {% else %}
  <p>No backups found.</p>
 {% endif %}

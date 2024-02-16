@@ -4,10 +4,18 @@
 
 {% block content %}
 {% include "./_admin_menu.html" %}
-    {% if schlepps %}
+    {% if schlepps and totals %}
+    <div class="w3-container">
+        <p>Total: {{totals.totals}}</p>
+        {% for page in range(0,1+totals.totals//totals.page_size) %}
+            <span><a href="/schlepps?p={{page}}"># {{1 + page*totals.page_size }} - {{[totals.totals, (1 + page)*totals.page_size] | min }}</a></span>
+        {% endfor %}
+    </div>
+    <div class="w3-container"  style="overflow-x: auto;-webkit-overflow-scrolling: touch;">
     <table class="w3-table w3-bordered">
         <tr>
             <th>Flugtag</th>
+            <th>Nr</th>
             <th>Pilot</th>
             <th>Starts</th>
             <th>Winde</th>
@@ -15,21 +23,23 @@
             <th>EWF</th>
 
             <th>Status</th>
-            <th>Betrag</th>
+            <!-- <th>Betrag</th> -->
         </tr>        
         {% for schlepp in schlepps %}
         <tr>
             <td>{{ schlepp.datum }}</td>
+            <td>{{ schlepp.schlepp_no_daily }}</td>
             <td>{{ schlepp.pilot_id }}</td>    
             <td>#{{ schlepp.schlepp_no }} / {{ schlepp.schlepps_heute }}</td>            
             <td>{{ schlepp.winde_id }}</td>
             <td>{{ schlepp.wf_id }}</td>
             <td>{{ schlepp.ewf_id }}</td>
             <td>{{ schlepp.status }}</td>
-            <td>0</td>
+            <!-- <td>0</td> -->
         </tr>    
     {% endfor %}
     </table>
+    </div>
     {% else %}
         <p>No schlepps.</p>
     {% endif %}

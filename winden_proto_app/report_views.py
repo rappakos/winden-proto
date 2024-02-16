@@ -16,7 +16,7 @@ REPORTS = {
         'sql' : """SELECT s.wf_id, substr(s.[datum],1,4) , count(*) [count]
                 FROM schlepps s
                 GROUP BY s.wf_id, substr(s.[datum],1,4)
-                ORDER BY count(*) desc
+                ORDER BY substr(s.[datum],1,4) desc, count(*) desc
               """
     },
     'schlepps_pro_pilot': {
@@ -25,7 +25,7 @@ REPORTS = {
         'sql' : """SELECT s.pilot_id, substr(s.[datum],1,4), count(*) [count]
                 FROM schlepps s
                 GROUP BY s.pilot_id, substr(s.[datum],1,4)
-                ORDER BY count(*) desc
+                ORDER BY substr(s.[datum],1,4) desc, count(*) desc
               """
     }
 }

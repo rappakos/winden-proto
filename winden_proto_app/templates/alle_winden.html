@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% set title = "Winden" %}
-{% include "./_admin_menu.html" %}
+
 {% block content %}
+{% include "./_admin_menu.html" %}
 {% if winden %}
+    <div class="w3-container"  style="overflow-x: auto;-webkit-overflow-scrolling: touch;"> 
     <table class="w3-table w3-bordered">
         <tr>
             <th>ID</th>
@@ -20,13 +22,11 @@
             <td>{{ 'Aktiv' if winde.active else 'Inaktiv' }}</td>
             <td>
                 <a href="/winden/{{winde.winde_id}}" class="w3-button">Details</a>
-                <!-- {% if winde.active %}
-                    <a href="/winden/{{winde.winde_id}}/aufbau" class="w3-button">Start Flugtag</a>
-                {% endif %} -->
             </td>
         </tr>    
     {% endfor %}
     </table>
+    </div>
 {% else %}
     <p>No winches.</p>
 {% endif %}
