@@ -203,6 +203,12 @@ async def set_schlepp_status(request):
         raise web.HTTPFound('/')
 
 
+@aiohttp_jinja2.template('help.html')
+async def help(request):
+    pr = await db.get_process_status()
+
+    return pr.to_dict()
+
 @aiohttp_jinja2.template('schlepp_active.html')
 async def schlepp_active(request):
     if request.method == 'GET':
