@@ -77,7 +77,6 @@ async def cancel_day():
                         """, params)
         await db.commit() #
 
-# TODO this is temp solution 
 async def close_day():
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
