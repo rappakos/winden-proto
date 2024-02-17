@@ -1,7 +1,7 @@
 import pathlib
 
 from .views import index,cancel_day,activate_winde, \
-        aufbau, select_wf, schlepp_start,schlepp,schlepp_active, set_schlepp_status, abbau, \
+        aufbau, select_wf, schlepp_start,schlepp,schlepp_active, set_schlepp_status, abbau, gastpiloten, \
         calendar_list,add_calendar_list, admin, \
         alle_winden, winde, piloten, schlepps
 from .report_views import reports, report, export
@@ -12,6 +12,7 @@ PROJECT_ROOT = pathlib.Path(__file__).parent
 
 
 def setup_routes(app):
+    # Flugbetrieb
     app.router.add_get('/', index)
     app.router.add_post('/cancel_day', cancel_day)
     app.router.add_post('/activate_winde', activate_winde)
@@ -27,7 +28,9 @@ def setup_routes(app):
     app.router.add_post('/schlepps',schlepp, name='schlepp')
     app.router.add_get('/schlepps/active',schlepp_active, name='schlepp_active')
     app.router.add_post('/schlepps/{schlepp_id}',set_schlepp_status, name='set_schlepp_status')
+    app.router.add_get('/gastpiloten', gastpiloten)
 
+    # Admin menu 
     app.router.add_get('/admin', admin)
     app.router.add_get('/winden',alle_winden, name='winden')
     app.router.add_get('/winden/{winde_id}',winde, name='winde')

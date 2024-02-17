@@ -152,7 +152,7 @@ async def abbau(request):
     if request.method == 'POST':
         form = await request.post()
         # ? validate       
-        protocol = await db.get_protocol_questions(winde_id=winde_id, type='abbau')
+        protocol = await db.get_protocol_questions(winde_id=winde_id, type=type)
         #        
         questions = [ [q['question'], (form[q['id']]=='on') if q['id'] in form else False ] for q in protocol ]
         kommentar = form['kommentar']
@@ -160,9 +160,8 @@ async def abbau(request):
         # 
         await db.save_protocol(winde_id,pilot_id, type, questions, kommentar )
 
-        await db.set_active_winde_status(WindeStatus.GARAGE) #
-        # temp
-        await db.close_day()
+        await db.set_active_winde_status(WindeStatus.ABGEBAUT) #
+
 
         raise web.HTTPFound('/')    
     if request.method == 'GET':
@@ -174,6 +173,14 @@ async def abbau(request):
                 'winde_id': winde_id,
                 'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
                 'protocol': protocol}    
+
+@aiohttp_jinja2.template('gastpiloten.html')
+async def gastpiloten(request):
+
+    return {
+        'gastpiloten': await db.get_gastpiloten()
+    }
+
 
 @aiohttp_jinja2.template('schleppstart.html')
 async def schlepp_start(request):

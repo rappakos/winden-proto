@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% set title = "Gastpiloten" %}
+
+{% block content %}
+
+<div class="action-area">
+    <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
+    {% if gastpiloten %} 
+        <h1>Gastpiloten von heute</h1>
+            <table class="w3-table w3-bordered">
+                <tr>
+                    <th>Name</th>
+                    <th>Schlepps</th>
+                </tr>
+                {% for gast in gastpiloten %}
+                <tr>
+                    <td>{{gast.name}}</td>
+                    <td>{{gast.schlepp_count}}</td>
+                </tr>
+                {% endfor %}
+            </table>   
+    {% else %}
+        <h2>Keine Gastpiloten heute.</h2>
+    {% endif %}
+        <form class="w3-auto" action="/" method="get" autocomplete="off">
+            <button class="action w3-btn w3-large w3-border w3-border-red">Zurück</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

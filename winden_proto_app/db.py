@@ -40,9 +40,7 @@ async def setup_db(app):
 
 async def get_process_status() -> Process:
     pr = Process()
-    #pr.active_winde = 'Elowin'
-    #pr.winde_status = WindeStatus.AUFGEBAUT
-    #pr.active_wf = 'Akos'
+
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
@@ -60,7 +58,12 @@ async def get_process_status() -> Process:
                 pr.active_day = params['flying_day']
                 pr.pilot_list = row[1]
                 pr.active_winde = row[2]
-                pr.winde_status = WindeStatus.AUFGEBAUT if row[3] and not row[4] else WindeStatus.GARAGE
+                if row[4]:
+                    pr.winde_status = WindeStatus.ABGEBAUT
+                elif row[3]:
+                    pr.winde_status = WindeStatus.AUFGEBAUT
+                else:
+                    pr.winde_status = WindeStatus.GARAGE
                 pr.active_wf = row[5]
 
     return pr
@@ -95,8 +98,8 @@ async def activate_winde(winde_id):
 async def set_active_winde_status(status):
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 
-                    'winde_aufgebaut': status==WindeStatus.AUFGEBAUT,
-                    'winde_abgebaut': status==WindeStatus.GARAGE }
+                    'winde_aufgebaut': status==WindeStatus.AUFGEBAUT or status==WindeStatus.ABGEBAUT,
+                    'winde_abgebaut': status==WindeStatus.ABGEBAUT }
         await db.execute("""
                             UPDATE [flying_days] SET winde_aufgebaut=:winde_aufgebaut, winde_abgebaut=:winde_abgebaut 
                             WHERE [flying_day] = :flying_day and [canceled]=0
@@ -233,6 +236,29 @@ async def get_active_schlepp():
                     })
     return res
 
+
+async def get_gastpiloten():
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
+        async with db.execute("""SELECT
+                                    p.[pilot_id]
+                                    ,p.[name]
+                                    , count(s.schlepp_id) [schlepp_count]
+                              FROM piloten p 
+                              LEFT JOIN schlepps s ON  s.[pilot_id]=p.[pilot_id]
+                              WHERE p.[status_txt] in ('G') AND s.[datum]= :datum
+                              GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft]
+                              """,params) as cursor:
+            async for row in cursor:
+                #print(row)
+                res.append({
+                        'id':row[0],
+                        'name':row[1],
+                        'schlepp_count': row[2]
+                        })
+    return res
+
 #
 # OLD PROCESS / DB SCHEMA
 #
@@ -259,7 +285,6 @@ async def get_piloten():
                         'schlepp_count': row[4]
                         })
     return res
-
 
 async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):
     #print(winde_id, pilot_id, type, kommentar)
