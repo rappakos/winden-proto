@@ -1,3 +1,5 @@
+# db.py
+import os
 import aiosqlite
 from datetime import datetime
 
@@ -23,36 +25,48 @@ async def setup_db(app):
     app['DB_NAME'] = DB_NAME
     async with aiosqlite.connect(DB_NAME) as db:
         # only test
-        async with db.execute("SELECT 'check'") as cursor:
+        async with db.execute("SELECT 'check OK'") as cursor:
             async for row in cursor:
                 print(row[0])
 
+        # 
+        if os.environ.get("RESET_DB", 0)=='1':
+            print("resetting db")
+            for stmt in [   "DROP TABLE IF EXISTS flying_days;",
+                            "DROP TABLE IF EXISTS pilot_list;",
+                            "DROP TABLE IF EXISTS schlepps;",
+                            "DROP TABLE IF EXISTS protocolanswers;",
+                            "DROP TABLE IF EXISTS protocol;",
+                            "DROP TABLE IF EXISTS piloten;"]:
+                await db.execute(stmt)
+                await db.commit()            
         #
         with open(INIT_SCRIPT, 'r') as sql_file:
             sql_script = sql_file.read()
             await db.executescript(sql_script)
             await db.commit()
 
-        #async with db.execute("SELECT * FROM piloten") as cursor:
-        #    async for row in cursor:
-        #        print(row)
+        if os.environ.get("PRINT_PILOTS", 0)=='1':
+            async with db.execute("SELECT * FROM piloten") as cursor:
+                async for row in cursor:
+                    print(row)
 
 
 async def get_process_status() -> Process:
     pr = Process()
 
     async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
-                                [flying_day],
+                                [datum],
                                 [pilot_list],
                                 w.winde_id [active_winde_id],
                                 [winde_aufgebaut],
                                 [winde_abgebaut],
-                                [active_wf]
+                                [active_wf],
+                                [active_ewf]
                             FROM [flying_days] d
-                            LEFT JOIN winden w ON w.winde_id=d.active_winde_id --could be removed if FK is there
-                            WHERE d.[flying_day]=:flying_day and d.[canceled]=0
+                            WHERE d.[datum]=:datum and d.[closed] is not null
                               """,params ) as cursor:
             async for row in cursor:
                 pr.active_day = params['flying_day']

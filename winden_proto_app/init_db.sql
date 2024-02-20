@@ -1,17 +1,5 @@
 
---DROP TABLE flying_days;
-CREATE TABLE IF NOT EXISTS flying_days (
-	[flying_day] DATE NOT NULL 
-			CONSTRAINT CHK_flying_day CHECK (flying_day==strftime('%Y-%m-%d',flying_day)),
-	[pilot_list] BIT NULL,
-	[active_winde_id] TEXT NULL, -- FK
-	[winde_aufgebaut] BIT NOT NULL DEFAULT 0,
-	[winde_abgebaut] BIT NOT NULL DEFAULT 0,
-	[active_wf] TEXT NULL,
-	[canceled] BIT NOT NULL DEFAULT 0,
-	[create_timestamp] datetime not null default current_timestamp
-);
-
+/* RESET: add RESET_DB = 1 in .env */
 
 CREATE TABLE IF NOT EXISTS winden (
 	[winde_id] TEXT NOT NULL UNIQUE PRIMARY KEY,
@@ -25,71 +13,78 @@ VALUES
 ('ELOWIN','ELOWIN',1,2022)
 ,('Kella','Kella',0,1975);
 
-
-/*
-[{'id': 'f_133', 'name': 'Schleppbetrieb'},
-{'id': 'f_1', 'name': 'Flugwetter'},
-{'id': 'f_106', 'name': 'Gastpiloten'},
-{'id': 'f_26', 'name': 'Akos Rapp'}, 
-{'id': 'f_123', 'name': 'Charlotte P.'}, 
-{'id': 'f_120', 'name': 'Dietmar'}, 
-{'id': 'f_30', 'name': 'Manfred K.'}, 
-{'id': 'f_13', 'name': 'Matthias Beu.'},
-{'id': 'f_7', 'name': 'Michael Hae.'}, 
-{'id': 'f_25', 'name': 'Thomas Heimes'}, 
-{'id': 'f_90', 'name': 'Utz'}, 
-{'id': 'f_147', 'name': 'Wolfgang'}, 
-{'id': 'f_144', 'name': 'Anna G. GSC W.'}, 
-{'id': 'f_34', 'name': 'Beate W.'}, 
-{'id': 'f_125', 'name': 'Christian SZ'}, 
-{'id': 'f_21', 'name': 'Daniel B.'}, 
-{'id': 'f_141', 'name': 'Dirk F.'}, 
-{'id': 'f_55', 'name': 'Hans H. aus F.'}, 
-{'id': 'f_117', 'name': 'Helmut Fischer'}, 
-{'id': 'f_122', 'name': 'Jan'}, 
-{'id': 'f_146', 'name': 'Jan H. GSCL'}, 
-{'id': 'f_143', 'name': 'Jonathan Balke'}, 
-{'id': 'f_129', 'name': 'Jörg GSCL'}, 
-{'id': 'f_142', 'name': 'Martin G. Hannover'}, 
-{'id': 'f_85', 'name': 'Martin.F'}, 
-{'id': 'f_88', 'name': 'Michael Hannover'}, 
-{'id': 'f_27', 'name': 'Orsi P.'}, 
-{'id': 'f_17', 'name': 'Sabine Kl.'}, 
-{'id': 'f_131', 'name': 'Sebastian'}, 
-{'id': 'f_8', 'name': 'Silke F.'}, 
-{'id': 'f_65', 'name': 'Tandem Johannes Meyer'}, 
-{'id': 'f_145', 'name': 'Thomas G. GSC W.'}, 
-{'id': 'f_127', 'name': 'Thoralf'}, 
-{'id': 'f_14', 'name': 'Tina S.'}, 
-{'id': 'f_12', 'name': 'Tommi O.'}]
-
-*/
-
-
-
-/* OLD SCHEMA : */
-
 CREATE TABLE IF NOT EXISTS piloten (
 	pilot_id TEXT NOT NULL UNIQUE PRIMARY KEY,
 	[name] TEXT NOT NULL,
-	[status_txt] TEXT NOT NULL, -- could be FK to status 
-    [zugkraft] int null,
-	verein TEXT NULL
+	[status_txt] TEXT NOT NULL, -- could be FK to status G / NG / M / WIA / WF / EWF
+    [zugkraft] int null CONSTRAINT CHK_zugkraft CHECK (zugkraft is null or (zugkraft > 0 and zugkraft < 150)),
+	[verein] TEXT NULL, -- free text
+	[calendar_id] TEXT NULL,
+	[create_timestamp] datetime not null default current_timestamp
 );
 
-INSERT OR IGNORE INTO piloten (pilot_id,[name] ,[status_txt])
-VALUES
-('Akos','Akos','W')
-,('Orsi','Orsi','W')
-,('Helmut','Helmut','EWF')
-,('Michi','Michi','EWF')
-,('Beate','Beate','M')
-,('Martin','Martin','M')
-,('Tommi','Tommi','NG')
-,('Markus','Markus','G');
+INSERT OR IGNORE INTO piloten ([status_txt],[calendar_id],pilot_id,[name],[verein])
+VALUES 
+('W','f_26',   'Akos','Akos Rapp', null ), 
+('M','f_123',  'Charlotte','Charlotte P.', null ), 
+('M','f_120',  'DietmarS','Dietmar Strothmann', null ), 
+('WF','f_30',  'Manfred','Manfred K.', null ), 
+('WF','f_13',  'Matthias','Matthias Beu.', null ),
+('EWF','f_7',  'MichaelH','Michael Hae.', null ), 
+('WF','f_25',  'ThomasH','Thomas Heimes', null ), 
+('WF','f_90',  'UtzR','Utz', null ), 
+('WF','f_147', 'Wolfgang','Wolfgang', null ), 
+('NG','f_144', 'AnnaG','Anna Grube', 'GSC W.' ), 
+('M','f_34',   'BeateW','Beate W.', null ), 
+('WF','f_125', 'ChristianD','Christian Dörges', null ), 
+('WF','f_21',  'DanielB','Daniel B.', null ), 
+('M','f_141',  'DirkF','Dirk F.', null ), 
+('M','f_55',   'HansH','Hans H. aus F.', null ), 
+('EWF','f_117','HelmutF','Helmut Fischer', null ), 
+('M','f_122',  'JanS','Jan  Strothmann', null ), 
+('NG','f_146', 'JanH','Jan H. GSCL', 'GSCL' ), 
+('G','f_143',  'JonathanB','Jonathan Balke', null ), 
+('NG','f_129', 'JörgH ','Jörg Hiersemann', 'GSCL' ),  -- ?
+('G','f_142',  'MartinGeb ','Martin Gebhard', null ), 
+('M','f_85',   'MartinF ','Martin Frevert', null ), 
+('MG','f_88',  'MichaelK','Michael König', null ), -- ?
+('WF','f_27',  'Orsi','Orsi P.', null ), 
+('WF','f_17',  'Sabine','Sabine Kl.', null ), 
+('G','f_131',  'SebastianR','Sebastian Ritter', null ), 
+('WF','f_8',   'SilkeF','Silke F.', null ), 
+('M','f_65',   'JohannesM','Tandem Johannes Meyer', null ), 
+('NG','f_145', 'ThomasG','Thomas Grube', 'GSC W.'  ), 
+('M','f_127',  'Thoralf','Thoralf', null ), 
+('WF','f_14',  'TinaS','Tina S.', null ), 
+('NG','f_12',  'TommiO','Tommi O.', null );
 
 
---DROP TABLE schlepps; -- reset
+CREATE TABLE IF NOT EXISTS flying_days (
+	[datum] DATE NOT NULL 
+			CONSTRAINT CHK_flugtag_datum CHECK (datum==strftime('%Y-%m-%d',datum)),
+	[pilot_list] BIT NULL,
+	[active_winde_id] TEXT NULL,
+	[winde_aufgebaut] datetime null,
+	[winde_abgebaut] datetime null,
+	[winde_abgestellt] datetime null,
+	[active_wf] TEXT NULL,
+	[active_ewf] TEXT NULL,
+	[closed] datetime null,
+	[create_timestamp] datetime not null default current_timestamp,
+	FOREIGN KEY([active_wf]) REFERENCES piloten(pilot_id),
+	FOREIGN KEY([active_ewf]) REFERENCES piloten(pilot_id),
+	FOREIGN KEY([active_winde_id]) REFERENCES winden([winde_id])
+);
+
+CREATE TABLE IF NOT EXISTS pilot_list (
+		[datum] DATE NOT NULL 
+			CONSTRAINT CHK_pilot_list_datum CHECK (datum==strftime('%Y-%m-%d',datum)),
+		[pilot_id] TEXT NOT NULL,
+		[added_timestamp] datetime not null default current_timestamp,
+		FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id),
+		CONSTRAINT PK_protocolquestions UNIQUE([datum],[pilot_id])
+);
+
 
 CREATE TABLE IF NOT EXISTS schlepps (
 			[schlepp_id] integer primary key autoincrement,
@@ -97,19 +92,23 @@ CREATE TABLE IF NOT EXISTS schlepps (
             [wf_id] text not null,
             [ewf_id] text null,
             [pilot_id]  text not null,
-            [datum] text not null, -- ISO YYYY-MM-DD
-            [status] text not null default 'started',
+            [datum] text not null CONSTRAINT CHK_datum CHECK (datum==strftime('%Y-%m-%d',datum)), -- ISO YYYY-MM-DD
+            [status] text not null default 'started', -- started / completed / canceled
             [schlepp_start] datetime default current_timestamp,
             [status_date] datetime default current_timestamp,
-			FOREIGN KEY(winde_id) REFERENCES winden(winde_id)
-			FOREIGN KEY(wf_id) REFERENCES piloten(pilot_id)
+			[comment] text null,
+			FOREIGN KEY(winde_id) REFERENCES winden(winde_id),
+			FOREIGN KEY(wf_id) REFERENCES piloten(pilot_id),
+			FOREIGN KEY(ewf_id) REFERENCES piloten(pilot_id),
 			FOREIGN KEY(pilot_id) REFERENCES piloten(pilot_id)
 );
+
+/* OLD SCHEMA : */
 
 CREATE TABLE IF NOT EXISTS protocolquestions (
 	[id] integer primary key autoincrement,
 	[question_id] integer not null,
-	[type] text not null, -- aufbau / abbau
+	[type] text not null, -- aufbau / abbau / abstellen
 	[question] text not null,
 	CONSTRAINT PK_protocolquestions UNIQUE([question_id],[type])
 
@@ -145,8 +144,6 @@ VALUES
 (1,'abstellen','Ladezustand der Batterie ?'),
 (2,'abstellen','Hauptschalter aus ?'),
 (3,'abstellen','Ladeger&auml;t angeschlossen / aktiviert ?  Bei 70% F&uuml;llstand nicht laden');
-
---DROP TABLE protocol;
 
 CREATE TABLE IF NOT EXISTS protocol (
 	[protocol_id] integer primary key autoincrement,
