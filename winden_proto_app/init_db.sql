@@ -36,7 +36,7 @@ VALUES
 ('WF','f_147', 'Wolfgang','Wolfgang', null ), 
 ('NG','f_144', 'AnnaG','Anna Grube', 'GSC W.' ), 
 ('M','f_34',   'BeateW','Beate W.', null ), 
-('WF','f_125', 'ChristianD','Christian Dörges', null ), 
+('WF','f_125', 'ChristianD','Christian D&ouml;rges', null ), 
 ('WF','f_21',  'DanielB','Daniel B.', null ), 
 ('M','f_141',  'DirkF','Dirk F.', null ), 
 ('M','f_55',   'HansH','Hans H. aus F.', null ), 
@@ -44,10 +44,10 @@ VALUES
 ('M','f_122',  'JanS','Jan  Strothmann', null ), 
 ('NG','f_146', 'JanH','Jan H. GSCL', 'GSCL' ), 
 ('G','f_143',  'JonathanB','Jonathan Balke', null ), 
-('NG','f_129', 'JörgH ','Jörg Hiersemann', 'GSCL' ),  -- ?
+('NG','f_129', 'JoergH ','J&ouml;rg Hiersemann', 'GSCL' ),  -- ?
 ('G','f_142',  'MartinGeb ','Martin Gebhard', null ), 
 ('M','f_85',   'MartinF ','Martin Frevert', null ), 
-('MG','f_88',  'MichaelK','Michael König', null ), -- ?
+('G','f_88',   'MichaelK','Michael K&ouml;nig', null ), -- ?
 ('WF','f_27',  'Orsi','Orsi P.', null ), 
 ('WF','f_17',  'Sabine','Sabine Kl.', null ), 
 ('G','f_131',  'SebastianR','Sebastian Ritter', null ), 

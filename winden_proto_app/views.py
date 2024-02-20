@@ -8,7 +8,7 @@ import json
 from datetime import date
 
 from . import db
-from .process_model import WindeStatus
+from .models import WindeStatus
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -29,7 +29,7 @@ async def cancel_day(request):
     if request.method == 'POST':
         form = await request.post()
         # 
-        await db.cancel_day()
+        await db.close_day()
 
         raise web.HTTPFound('/')
     else:
@@ -196,7 +196,7 @@ async def set_schlepp_status(request):
     schlepp_id=request.match_info['schlepp_id']
     if request.method == 'POST':
         data = await request.post()
-        status = data['status']
+        status = data['status'] # validate
 
         await db.set_schlepp_status(schlepp_id, status)
 
@@ -259,7 +259,7 @@ async def schlepps(request):
 
 
 #
-#  old views below this
+#  obsolete
 #
 
 

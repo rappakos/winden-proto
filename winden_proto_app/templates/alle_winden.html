@@ -12,17 +12,13 @@
             <th>Name</th>
             <th>Baujahr</th>
             <th>Status</th>
-            <th>Aktion</th>
         </tr>
     {% for winde in winden %}
         <tr>
-            <td>{{ winde.winde_id }}</td>
+            <td><a href="/winden/{{winde.winde_id}}">{{ winde.winde_id }}</a></td>
             <td>{{ winde.name }}</td>
             <td>{{ winde.baujahr }}</td>
             <td>{{ 'Aktiv' if winde.active else 'Inaktiv' }}</td>
-            <td>
-                <a href="/winden/{{winde.winde_id}}" class="w3-button">Details</a>
-            </td>
         </tr>    
     {% endfor %}
     </table>

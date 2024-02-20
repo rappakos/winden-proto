@@ -2,26 +2,16 @@
 import os
 import aiosqlite
 from datetime import datetime
+from typing import List
 
-from .process_model import Process, WindeStatus
+from .models import Process, WindeStatus, PILOT_STATUS,Winde, Pilot
 
 DB_NAME = './winde-demo.db'
 INIT_SCRIPT = './winden_proto_app/init_db.sql'
 
 PAGE_SIZE = 20
 
-PILOT_STATUS = {
-    'G': 'Gast',
-    'NG': 'Nord-Gast',
-    'M': 'Mitglied',
-    'WIA': 'WindenFiA',
-    'W': 'Windenfahrer',
-    'WF': 'Windenfahrer',
-    'EWF': 'EWF',
-}
-
-
-async def setup_db(app):
+async def setup_db(app) -> None:
     app['DB_NAME'] = DB_NAME
     async with aiosqlite.connect(DB_NAME) as db:
         # only test
@@ -58,18 +48,18 @@ async def get_process_status() -> Process:
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
-                                [datum],
-                                [pilot_list],
-                                w.winde_id [active_winde_id],
-                                [winde_aufgebaut],
-                                [winde_abgebaut],
-                                [active_wf],
-                                [active_ewf]
+                                d.[datum],
+                                d.[pilot_list],
+                                d.[active_winde_id],
+                                d.[winde_aufgebaut],
+                                d.[winde_abgebaut],
+                                d.[active_wf],
+                                d.[active_ewf]
                             FROM [flying_days] d
                             WHERE d.[datum]=:datum and d.[closed] is not null
                               """,params ) as cursor:
             async for row in cursor:
-                pr.active_day = params['flying_day']
+                pr.active_day = params['datum']
                 pr.pilot_list = row[1]
                 pr.active_winde = row[2]
                 if row[4]:
@@ -79,63 +69,68 @@ async def get_process_status() -> Process:
                 else:
                     pr.winde_status = WindeStatus.GARAGE
                 pr.active_wf = row[5]
+                pr.active_ewf = row[6]
 
     return pr
 
 
-async def cancel_day():
+async def close_day() -> None:
     async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         await db.execute("""
-                            UPDATE [flying_days] SET canceled=1 WHERE [flying_day] = :flying_day
-                        """, params)
-        await db.commit() #
-
-async def close_day():
-    async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d")}
-        await db.execute("""
-                        UPDATE [flying_days] SET canceled=1  WHERE [flying_day] = :flying_day
+                        UPDATE [flying_days] SET closed=current_timestamp WHERE [datum] = :datum
                     """, params)
         await db.commit() #
 
-async def activate_winde(winde_id):
+async def activate_winde(winde_id:str) -> None:
     async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 'winde_id':winde_id}
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d"), 'winde_id':winde_id}
         await db.execute("""
                             UPDATE [flying_days] SET active_winde_id=:winde_id 
-                            WHERE [flying_day] = :flying_day and [canceled]=0
+                            WHERE [datum] = :datum and [closed] is null
                         """, params)
         await db.commit() #
 
-async def set_active_winde_status(status):
+async def set_active_winde_status(status:WindeStatus) -> None:
     async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d"), 
                     'winde_aufgebaut': status==WindeStatus.AUFGEBAUT or status==WindeStatus.ABGEBAUT,
                     'winde_abgebaut': status==WindeStatus.ABGEBAUT }
         await db.execute("""
-                            UPDATE [flying_days] SET winde_aufgebaut=:winde_aufgebaut, winde_abgebaut=:winde_abgebaut 
-                            WHERE [flying_day] = :flying_day and [canceled]=0
+                            UPDATE [flying_days] SET winde_aufgebaut=current_timestamp
+                            WHERE [datum] = :datum and [closed] is null and :winde_aufgebaut=1;
+                            UPDATE [flying_days] SET winde_abgebaut=current_timestamp
+                            WHERE [datum] = :datum and [closed] is null and :winde_abgebaut=1;
                         """, params)
         await db.commit() #    
     
-async def set_active_wf(pilot_id):
+async def set_active_wf(pilot_id:str) -> None:
     async with aiosqlite.connect(DB_NAME) as db:
-        params  = {'flying_day': datetime.now().strftime("%Y-%m-%d"), 'pilot_id':pilot_id}
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d"), 'pilot_id':pilot_id}
         await db.execute("""
                             UPDATE [flying_days] SET active_wf=:pilot_id 
-                            WHERE [flying_day] = :flying_day and [canceled]=0
+                            WHERE [datum] = :datum and [closed] is null
+                        """, params)
+        await db.commit() # 
+
+async def set_active_ewf(pilot_id:str) -> None:
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d"), 'pilot_id':pilot_id}
+        await db.execute("""
+                            UPDATE [flying_days] SET active_ewf=:pilot_id 
+                            WHERE [datum] = :datum and [closed] is null
                         """, params)
         await db.commit() #    
 
-async def add_pilot_list(pilot_list):
+
+async def add_pilot_list(pilot_list:List[str]):
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {
-                    'flying_day': datetime.now().strftime("%Y-%m-%d"),
+                    'datum': datetime.now().strftime("%Y-%m-%d"),
                     'pilot_list': len(pilot_list) > 0
                 }
         await db.execute("""
-                            INSERT INTO [flying_days] ([flying_day],[pilot_list])
+                            INSERT INTO [flying_days] ([datum],[pilot_list])
                             SELECT :flying_day, :pilot_list 
                         """, params)
         
@@ -143,18 +138,18 @@ async def add_pilot_list(pilot_list):
 
         await db.commit() #    
 
-async def get_winden():
+async def get_winden() -> List[Winde] :
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
         async with db.execute("SELECT * FROM winden") as cursor:
             async for row in cursor:
-                #print(row)
-                res.append({
-                        'winde_id':row[0],
-                        'name':row[1],
-                        'active':row[2],
-                        'baujahr':row[3]
-                        })
+                w  = Winde()
+                w.winde_id = row[0]
+                w.name = row[1]
+                w.active = row[2]
+                w.baujahr = row[3]
+                
+                res.append(w)
     return res
 
 async def get_protocol_questions(winde_id:str, type:str):
@@ -177,7 +172,7 @@ async def get_wf_list():
     async with aiosqlite.connect(DB_NAME) as db:
         async with db.execute("""SELECT p.[pilot_id],p.[name],p.[status_txt]
                               FROM piloten p
-                              WHERE p.[status_txt] in ('W','EWF','WIA') 
+                              WHERE p.[status_txt] in ('W','WF','EWF','WIA') 
                               
                         """) as cursor:
             async for row in cursor:
@@ -190,7 +185,7 @@ async def get_wf_list():
                         })
     return res
 
-async def set_schlepp_status(schlepp_id, status):
+async def set_schlepp_status(schlepp_id, status) -> None:
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'schlepp_id': schlepp_id, 'status':status}
         await db.execute("""
@@ -276,28 +271,63 @@ async def get_gastpiloten():
 # OLD PROCESS / DB SCHEMA
 #
 
-async def get_piloten():
+async def get_piloten() -> List[Pilot]:
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
                                p.[pilot_id],p.[name],p.[status_txt]
                                 , IFNULL(p.[zugkraft] ,0) [zugkraft] 
+                                , p.[calendar_id]
+                                , p.[verein]
                                , count(s.schlepp_id) [schlepp_count]
                               FROM piloten p 
                               LEFT JOIN schlepps s ON s.[datum]= :datum and s.[pilot_id]=p.[pilot_id]
-                              GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft]
+                              GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft] , p.[calendar_id], p.[verein]
                               """,params) as cursor:
             async for row in cursor:
-                #print(row)
-                res.append({
-                        'id':row[0],
-                        'name':row[1],
-                        'status':PILOT_STATUS[row[2]],
-                        'zugkraft':row[3],
-                        'schlepp_count': row[4]
-                        })
+                p = Pilot()
+                p.id = row[0]
+                p.name = row[1]
+                p.status = PILOT_STATUS[row[2]]
+                p.zugkraft = row[3]
+                p.calendar_id = row[4]
+                p.verein = row[5]
+                p.schlepp_count = row[6]
+                
+                res.append(p)
     return res
+
+async def get_pilot(pilot_id:str) -> Pilot:
+    res = Pilot()
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d"),'pilot_id': pilot_id}
+        async with db.execute("""SELECT
+                               p.[pilot_id],p.[name],p.[status_txt]
+                                , IFNULL(p.[zugkraft] ,0) [zugkraft] 
+                                , p.[calendar_id]
+                                , p.[verein]
+                               , count(s.schlepp_id) [schlepp_count]
+                              FROM piloten p 
+                              LEFT JOIN schlepps s ON s.[datum]= :datum and s.[pilot_id]=p.[pilot_id]
+                              WHERE pilot_id = :pilot_id
+                              GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft] , p.[calendar_id], p.[verein]
+                              """,params) as cursor:
+            row = await cursor.fetchone()
+            p = Pilot()
+            p.id = row[0]
+            p.name = row[1]
+            p.status = PILOT_STATUS[row[2]]
+            p.zugkraft = row[3]
+            p.calendar_id = row[4]
+            p.verein = row[5]
+            p.schlepp_count = row[6]
+                
+                
+    return res
+
+
+
 
 async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):
     #print(winde_id, pilot_id, type, kommentar)
@@ -370,7 +400,7 @@ async def get_schlepps(page_index: int):
                     })
     return res
 
-
+# UNUSED?
 async def get_last_schlepp_data():
     async with aiosqlite.connect(DB_NAME) as db:
         winde_id, wf_id=None, None

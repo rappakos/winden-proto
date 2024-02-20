@@ -14,8 +14,8 @@
         </tr>
     {% for pilot in piloten %}
         <tr>
-            <td>{{ pilot.id }}</td>
-            <td>{{ pilot.name }}</td>
+            <td><a href='/piloten/{{pilot.id}}'>{{ pilot.id }}</a></td>
+            <td>{{ pilot.name | safe }}</td>
             <td>{{ pilot.status }}</td>
         </tr>    
     {% endfor %}
