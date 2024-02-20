@@ -310,18 +310,17 @@ async def get_pilot(pilot_id:str) -> Pilot:
                                , count(s.schlepp_id) [schlepp_count]
                               FROM piloten p 
                               LEFT JOIN schlepps s ON s.[datum]= :datum and s.[pilot_id]=p.[pilot_id]
-                              WHERE pilot_id = :pilot_id
+                              WHERE p.pilot_id = :pilot_id
                               GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft] , p.[calendar_id], p.[verein]
                               """,params) as cursor:
             row = await cursor.fetchone()
-            p = Pilot()
-            p.id = row[0]
-            p.name = row[1]
-            p.status = PILOT_STATUS[row[2]]
-            p.zugkraft = row[3]
-            p.calendar_id = row[4]
-            p.verein = row[5]
-            p.schlepp_count = row[6]
+            res.id = row[0]
+            res.name = row[1]
+            res.status = PILOT_STATUS[row[2]]
+            res.zugkraft = row[3]
+            res.calendar_id = row[4]
+            res.verein = row[5]
+            res.schlepp_count = row[6]
                 
                 
     return res

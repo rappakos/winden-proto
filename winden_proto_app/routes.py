@@ -2,11 +2,11 @@ import pathlib
 
 from .views import index,cancel_day,activate_winde, \
         protocol, select_wf, schlepp_start,schlepp,schlepp_active, set_schlepp_status, gastpiloten, \
-        calendar_list,add_calendar_list, admin, \
-        alle_winden, winde, piloten, schlepps, \
+        calendar_list,add_calendar_list,  \
+        schlepps, \
         help
 from .report_views import reports, report, export
-from .admin_views import backups, create_backup, remove_backup
+from .admin_views import admin, alle_winden, winde, piloten,pilot, backups, create_backup, remove_backup
 
 
 PROJECT_ROOT = pathlib.Path(__file__).parent
@@ -37,6 +37,7 @@ def setup_routes(app):
     app.router.add_get('/winden',alle_winden, name='winden')
     app.router.add_get('/winden/{winde_id}',winde, name='winde')
     app.router.add_get('/piloten',piloten, name='piloten')
+    app.router.add_get('/piloten/{pilot_id}',pilot, name='pilot')
     app.router.add_get('/schlepps',schlepps, name='schlepps')
     
     app.router.add_get('/reports',reports, name='reports')

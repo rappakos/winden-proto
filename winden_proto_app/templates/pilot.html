@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% set title =  pilot.name %}
+
+{% block content %}
+    {% include "./_admin_menu.html" %}  
+    {% if pilot %}
+        <div class="w3-container">
+            <h1>{{pilot.id}}</h1>
+            <form>
+                <div class="w3-row-padding w3-mobile">
+                    <label>Name</label>
+                    <input type="text" name="name" class="w3-input w3-right-align" value="{{pilot.name | safe}}" />
+                </div>
+                <div class="w3-row-padding w3-mobile">
+                    <label>Status</label>
+                    <select name="status" class="w3-select w3-right-align" >
+                        {% for status in ['Gast','Mitglied','Windenfahrer','EWF'] %}
+                            <option  class="w3-option w3-right-align" value="{{status}}" {% if status == pilot.status %} selected {% endif %}>{{status}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="w3-row-padding w3-mobile">
+                    <label>Zugkraft</label>
+                    <input type="number" name="zugkraft" class="w3-input w3-right-align" value="{{pilot.zugkraft}}" min=0 max=150 step=10 />
+                </div>
+                <div class="w3-row-padding w3-mobile">
+                    <label>Kalender ID</label>
+                    <input type="text" name="calendar_id" class="w3-input w3-right-align" value="{{pilot.calendar_id}}" />
+                </div>
+                <div class="w3-row-padding w3-mobile">
+                    <label>Verein</label>
+                    <input type="text" name="verein" class="w3-input w3-right-align" value="{{pilot.verein | safe}}" />
+                </div>                
+
+            </form>
+
+        </div>
+   {% endif %}
+
+{% endblock %}
