@@ -179,13 +179,18 @@ async def add_pilot_list(pilot_list:List[str]):
                     'datum': datetime.now().strftime("%Y-%m-%d"),
                     'pilot_list': len(pilot_list) > 0
                 }
-        print('add_pilot_list', params)
+        #print('add_pilot_list', params)
         await db.execute_insert("""
                             INSERT INTO [flying_days] ([datum],[pilot_list])
                             SELECT :datum, :pilot_list 
                         """, params)
         
-        # TODO save also pilot_list for the day ?
+        for pilot_id in pilot_list:
+            params['pilot_id'] = pilot_id
+            await db.execute_insert("""
+                            INSERT OR IGNORE INTO [pilot_list] ([datum],[pilot_id])
+                            SELECT :datum, :pilot_id 
+                        """, params)
 
         await db.commit() #    
 
