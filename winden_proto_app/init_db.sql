@@ -50,7 +50,7 @@ VALUES
 ('G','f_88',   'MichaelK','Michael K&ouml;nig', null ), -- ?
 ('WF','f_27',  'Orsi','Orsi P.', null ), 
 ('WF','f_17',  'Sabine','Sabine Kl.', null ), 
-('G','f_131',  'SebastianR','Sebastian Ritter', null ), 
+--('G','f_131',  'SebastianR','Sebastian Ritter', null ), -- test
 ('WF','f_8',   'SilkeF','Silke F.', null ), 
 ('M','f_65',   'JohannesM','Tandem Johannes Meyer', null ), 
 ('NG','f_145', 'ThomasG','Thomas Grube', 'GSC W.'  ), 

@@ -54,3 +54,4 @@ class Pilot():
 class CalPilot():
     calendar_id: str = None
     name:str = None
+    identified:bool = False

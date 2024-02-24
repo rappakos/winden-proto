@@ -26,6 +26,7 @@ class GscSuedheideLoader(CalendarLoader):
         return entry['datum']==today and not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] )
 
     def get_cal_pilot(self, f) -> CalPilot:
+        #print(f)
         p = CalPilot()
         p.calendar_id = f['fahrer']['id']
         p.name = f['fahrer']['name']

@@ -11,16 +11,18 @@
                 <div class="w3-container">
                     {% if calendar_list %}
                         {% for pilot in calendar_list %} 
-                            <span class="w3-tag w3-round w3-green">{{pilot.name}}</span>
+                            <span class="w3-tag w3-round {%if pilot.identified %}w3-green{% else %}w3-yellow{% endif %}">{{pilot.name}}</span>
                         {% endfor %}
+                        {% if calendar_list|length != calendar_list|selectattr('identified')|list|length %} 
+                            <span class="w3-tag w3-round w3-theme-l4">Gelbe: Unerkannt, werden als neuen Gastpiloten angelegt!</span> 
+                        {% endif %}
                     {% else %}
                         <span class="w3-tag w3-round w3-theme-l4">Keine angemeldeten Piloten.</span>                
                     {% endif %}
                 </div>
 
                 <form class="w3-auto" action="/calendar_list/add_calendar_list" method="post" autocomplete="off">
-                    <!-- TODO send actual list -->
-                    <input type="hidden" name="pilot_list" value="Akos, Orsi" />
+                    <input type="hidden" name="pilot_list" value="{{calendar_list}}" />
                     <button class="action w3-btn w3-large w3-green">Pilotenliste übernehmen</button>
                 </form>
                 <form class="w3-auto" action="/calendar_list/add_calendar_list" method="post" autocomplete="off">

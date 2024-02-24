@@ -46,6 +46,15 @@ async def activate_winde(request):
     else:
         raise NotImplementedError("cancel_day should be POST")
 
+# useful?
+def guess_pilot_id(display_name:str):
+    res = None
+    parts = display_name.split(' ')
+    if len(parts) > 1:
+        res = parts[0][0].upper() + parts[0][1:].lower() + parts[1][0].upper()
+
+    print(display_name, res)
+    return res
 
 @aiohttp_jinja2.template('calendar_list.html')
 async def calendar_list(request):
@@ -56,14 +65,19 @@ async def calendar_list(request):
         await db.add_pilot_list([])
         raise web.HTTPFound('/')
 
-
-
     pr = await db.get_process_status()
     calendar_list = []
     if pr.pilot_list is None and not skip_pilot_list:
         calendar_list = GscSuedheideLoader().load_pilots()
+        pilots = await db.get_piloten()
+        pilot_cal_ids = {p.calendar_id:p.id for p in pilots}
+        for cp in calendar_list:
+            cp.identified = cp.calendar_id in pilot_cal_ids
+            # TODO try to map by name ?
+            guess_pilot_id(cp.name)
 
-    print(calendar_list) # TODO map
+
+    print(calendar_list)
     res = pr.to_dict()
     res['calendar_list'] = [p.to_dict() for p in calendar_list]
     return res
@@ -71,8 +85,9 @@ async def calendar_list(request):
 async def add_calendar_list(request):
     if request.method == 'POST':
         form = await request.post()
+        print(form['pilot_list'])
         # 
-        await db.add_pilot_list(form['pilot_list'])
+        #await db.add_pilot_list(form['pilot_list'])
 
         raise web.HTTPFound('/')
     else:
