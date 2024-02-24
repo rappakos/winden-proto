@@ -14,8 +14,8 @@
                     {% for pilot in pilots %}
                     <p>
                         <!-- later this should be change to a list + text input -->
-                        <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" onclick="set_infos({{pilot}});" >
-                        <label>{{pilot.name}} - {{pilot.status}}</label>
+                        <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" onclick="set_infos({{pilot.zugkraft}},{{pilot.schlepp_count}});" />
+                        <label>{{pilot.name | safe }} - {{pilot.status}}</label>
                     </p>
                     {% endfor %}
                     </div>
@@ -40,13 +40,11 @@
         {% endif %}
     </div>
     <script>
-        function set_infos(pilot) {    
-            //console.log(pilot);
+        function set_infos(zugkraft,schlepp_count ) {    
             const cntr = document.getElementById('spn-schlepp-count');
-            cntr.innerText = pilot.schlepp_count;
+            cntr.innerText = schlepp_count;
             const el = document.getElementById('txt-zugkraft');            
-            el.value = pilot.zugkraft;
-
+            el.value = zugkraft;
         }
 
     </script>    

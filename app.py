@@ -60,7 +60,7 @@ def main(argv):
 
     web.run_app(app,
                 host='localhost',
-                port=CONFIG.PORT)
+                port=int(CONFIG.PORT))
 
 
 if __name__ == '__main__':

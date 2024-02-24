@@ -40,6 +40,10 @@ async def setup_db(app) -> None:
             async with db.execute("SELECT * FROM piloten") as cursor:
                 async for row in cursor:
                     print(row)
+        if os.environ.get("PRINT_DAYS", 0)=='1':
+            async with db.execute("SELECT * FROM [flying_days] ORDER BY [create_timestamp] DESC LIMIT 10 ") as cursor:
+                async for row in cursor:
+                    print(row)                    
 
 
 async def get_process_status() -> Process:
@@ -56,7 +60,7 @@ async def get_process_status() -> Process:
                                 d.[active_wf],
                                 d.[active_ewf]
                             FROM [flying_days] d
-                            WHERE d.[datum]=:datum and d.[closed] is not null
+                            WHERE d.[datum]=:datum and d.[closed] is null
                               """,params ) as cursor:
             async for row in cursor:
                 pr.active_day = params['datum']
@@ -78,7 +82,7 @@ async def close_day() -> None:
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         await db.execute("""
-                        UPDATE [flying_days] SET closed=current_timestamp WHERE [datum] = :datum
+                        UPDATE [flying_days] SET closed=current_timestamp WHERE [datum] = :datum -- all !
                     """, params)
         await db.commit() #
 
@@ -99,6 +103,8 @@ async def set_active_winde_status(status:WindeStatus) -> None:
         await db.execute("""
                             UPDATE [flying_days] SET winde_aufgebaut=current_timestamp
                             WHERE [datum] = :datum and [closed] is null and :winde_aufgebaut=1;
+                         """, params)
+        await db.execute("""        
                             UPDATE [flying_days] SET winde_abgebaut=current_timestamp
                             WHERE [datum] = :datum and [closed] is null and :winde_abgebaut=1;
                         """, params)
@@ -129,9 +135,10 @@ async def add_pilot_list(pilot_list:List[str]):
                     'datum': datetime.now().strftime("%Y-%m-%d"),
                     'pilot_list': len(pilot_list) > 0
                 }
-        await db.execute("""
+        print('add_pilot_list', params)
+        await db.execute_insert("""
                             INSERT INTO [flying_days] ([datum],[pilot_list])
-                            SELECT :flying_day, :pilot_list 
+                            SELECT :datum, :pilot_list 
                         """, params)
         
         # TODO save also pilot_list for the day ?
@@ -212,6 +219,7 @@ async def get_active_schlepp():
                                 , dense_rank() over(partition by s.pilot_id, s.datum order by s.schlepp_id ) [schlepp_no]
                                 , p.zugkraft
                                 ,  p.status_txt
+                               , p.name
                             FROM schlepps s
                             INNER JOIN piloten p ON s.pilot_id=p.pilot_id
                             LEFT JOIN schlepps s2 ON s2.pilot_id=s.pilot_id and s.datum=s2.datum
@@ -240,7 +248,8 @@ async def get_active_schlepp():
                         'schlepps_heute': row[7],
                         'schlepp_no':  row[8],
                         'zugkraft': row[9],
-                        'pilot_status': PILOT_STATUS[row[10]]
+                        'pilot_status': PILOT_STATUS[row[10]],
+                        'pilot_name': row[11]
                     })
     return res
 

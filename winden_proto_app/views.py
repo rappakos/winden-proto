@@ -152,7 +152,7 @@ async def protocol(request):
         return {
                 'type': type,
                 'winde_id': winde_id,
-                'piloten': [p for p in piloten if p['status'] in ['W','EWF','WIA','M'] ],
+                'piloten': [p for p in piloten if p.status in ['W','EWF','WIA','M'] ],
                 'protocol': protocol}       
 
 
@@ -168,7 +168,7 @@ async def gastpiloten(request):
 async def schlepp_start(request):
     pr = await db.get_process_status()
     res = pr.to_dict()
-    res['pilots'] = [p for p in await db.get_piloten() if p['id'] != pr.active_wf] # WF should be removed
+    res['pilots'] = [p.to_dict() for p in await db.get_piloten() if p.id != pr.active_wf] # WF should be removed
     
     return res
 
@@ -252,10 +252,10 @@ async def calendar(request):
                     daypart,
                     p,
                     np.random.choice(statuses, p=[0.5,0.3,0.2])
-                ) for p in np.random.choice([p['id'] for p in piloten],5,replace=False)
+                ) for p in np.random.choice([p.id for p in piloten],5,replace=False)
             ])
     # 
-    pilot_map = {p['id']: p['status'] for p in piloten }
+    pilot_map = {p.id: p.status for p in piloten }
     df = pd.DataFrame(entries,columns=['day','daypart','pilot_id','status'])    
     df['pilot_type'] = df.apply(lambda p: pilot_map[p['pilot_id']] ,axis=1 )
     #print(df.head())
