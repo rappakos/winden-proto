@@ -412,6 +412,21 @@ async def get_pilot(pilot_id:str) -> Pilot:
                 
     return res
 
+async def save_pilot(pilot:Pilot) -> None:
+    async with aiosqlite.connect(DB_NAME) as db:
+        params = pilot.to_dict()
+        await db.execute(""" UPDATE piloten SET
+                                [name] = :name,
+                                [status_txt] = :status,
+                                [calendar_id] = :calendar_id,
+                                [verein] = :verein,
+                                [zugkraft] = :zugkraft
+                             WHERE pilot_id= :id 
+                """, params)
+        
+        await db.commit()
+
+
 async def delete_guest_pilot(pilot_id:str) -> None:
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'pilot_id': pilot_id}

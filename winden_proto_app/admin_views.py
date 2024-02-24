@@ -9,6 +9,7 @@ from shutil import copy
 
 from .views import redirect
 from . import db
+from .models import Pilot,PILOT_STATUS
 
 BACKUP_FOLDER = 'backups'
 
@@ -49,8 +50,24 @@ async def pilot(request):
         pilot = await db.get_pilot(pilot_id)
         #print(pilot)
         return {'pilot': pilot }
-    else:
-        raise NotImplementedError("POST (update pilot) is not implemented yet") 
+    if request.method == 'POST':
+        form = await request.post()
+        # validate ...
+        if 'name' not in form or not form['name'] or form['name']=='':
+            raise ValueError("Pilot name must not be empty")
+
+        p = Pilot()
+        p.id=pilot_id
+        p.name=form['name']
+        p.status = [k for k,v in PILOT_STATUS.items() if v==form['status']][0]
+        p.zugkraft = form['zugkraft'] if int(form['zugkraft']) > 0 else None
+        p.calendar_id = form['calendar_id']
+        p.verein = form['verein']
+
+        # save
+        await db.save_pilot(p)
+
+    raise web.HTTPFound(f'/piloten/{pilot_id}')
     
 async def delete_pilot(request):
     pilot_id =  request.match_info['pilot_id']
