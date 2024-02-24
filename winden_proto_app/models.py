@@ -48,3 +48,9 @@ class Pilot():
     calendar_id: str= None
     verein: str = None
     schlepp_count: int = 0
+
+@dataclass_json
+@dataclass 
+class CalPilot():
+    calendar_id: str = None
+    name:str = None

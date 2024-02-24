@@ -5,10 +5,10 @@ from aiohttp import web
 import numpy as np
 import pandas as pd
 import json
-from datetime import date
 
 from . import db
 from .models import WindeStatus
+from .calendar_loader import GscSuedheideLoader
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -46,43 +46,26 @@ async def activate_winde(request):
     else:
         raise NotImplementedError("cancel_day should be POST")
 
-def filter_reg(f):
-    today, SET_OKMAYBE= date.today().isoformat(), set(["+","~"])
-    entry = f['tage'][0]
-    #
-    return entry['datum']==today and not SET_OKMAYBE.isdisjoint([entry['frueh'],entry['spaet']] )
-
 
 @aiohttp_jinja2.template('calendar_list.html')
 async def calendar_list(request):
-    import requests
-    from bs4 import BeautifulSoup
+
 
     skip_pilot_list = request.rel_url.query.get('skip',False)
     if skip_pilot_list:
         await db.add_pilot_list([])
         raise web.HTTPFound('/')
 
-    url = os.environ.get('CALENDAR_URL',None)
+
 
     pr = await db.get_process_status()
     calendar_list = []
     if pr.pilot_list is None and not skip_pilot_list:
-        if url:
-            #print(url)
-            resp = requests.get(url)
-            soup = BeautifulSoup(resp.content, "html.parser")
+        calendar_list = GscSuedheideLoader().load_pilots()
 
-            script_data = soup.find('script',attrs={'src': None}) # data not in the table
-            table_data_str=script_data.get_text().replace("var jsonPlanStr='",'').strip()[:-2] # remove  "var ...='" & "';"
-            table_data_json = json.loads(table_data_str)
-
-        calendar_list = [ {'id':f['fahrer']['id'],'name':f['fahrer']['name']} for f in table_data_json['bereitschaften'] if filter_reg(f) ]    
-
-
-    #print(calendar_list) # TODO map
+    print(calendar_list) # TODO map
     res = pr.to_dict()
-    res['calendar_list'] = calendar_list
+    res['calendar_list'] = [p.to_dict() for p in calendar_list]
     return res
 
 async def add_calendar_list(request):
