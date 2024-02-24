@@ -7,7 +7,7 @@ import pandas as pd
 import json
 
 from . import db
-from .models import WindeStatus
+from .models import CalPilot, WindeStatus
 from .calendar_loader import GscSuedheideLoader
 
 def redirect(router, route_name):
@@ -77,17 +77,30 @@ async def calendar_list(request):
             guess_pilot_id(cp.name)
 
 
-    print(calendar_list)
+    #print(calendar_list)
     res = pr.to_dict()
     res['calendar_list'] = [p.to_dict() for p in calendar_list]
+    res['calendar_list_json'] = CalPilot.schema().dumps(calendar_list, many=True)
     return res
 
 async def add_calendar_list(request):
     if request.method == 'POST':
         form = await request.post()
-        print(form['pilot_list'])
-        # 
-        #await db.add_pilot_list(form['pilot_list'])
+        calendar_list = CalPilot.schema().loads(form['pilot_list'], many=True)
+        #print(calendar_list)
+        pilots = await db.get_piloten()
+        pilot_cal_ids = {p.calendar_id:p.id for p in pilots}        
+        pilot_list = []
+        for cp in calendar_list:
+            if cp.calendar_id in pilot_cal_ids:
+                pilot_list.append(pilot_cal_ids[cp.calendar_id])
+            else:
+                print(cp)
+                #new_id = await db.add_guest_pilot(cp.name, cp.calendar_id)
+                #pilot_list.append(new_id)
+
+        print(pilot_list)
+        #await db.add_pilot_list(pilot_list)
 
         raise web.HTTPFound('/')
     else:
