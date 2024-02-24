@@ -90,7 +90,7 @@ async def add_calendar_list(request):
                     pilot_list.append(new_id)
 
         print(pilot_list)
-        #await db.add_pilot_list(pilot_list)
+        await db.add_pilot_list(pilot_list)
 
         raise web.HTTPFound('/')
     else:

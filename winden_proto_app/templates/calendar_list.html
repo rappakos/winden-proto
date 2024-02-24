@@ -11,10 +11,10 @@
                 <div class="w3-container">
                     {% if calendar_list %}
                         {% for pilot in calendar_list %} 
-                            <span class="w3-tag w3-round {%if pilot.identified %}w3-green{% else %}w3-yellow{% endif %}">{{pilot.name}}</span>
+                            <span class="w3-tag w3-round {%if pilot.identified %}w3-green{% else %}w3-theme-l4 w3-border w3-border-red{% endif %}">{{pilot.name}}</span>
                         {% endfor %}
                         {% if calendar_list|length != calendar_list|selectattr('identified')|list|length %} 
-                            <span class="w3-tag w3-round w3-theme-l4">Gelbe: Unerkannt, werden als neuen Gastpiloten angelegt!</span> 
+                            <div class="w3-tag w3-round w3-theme-l4 w3-border w3-border-red" style="margin: 5px;">Leichtgrün: Unerkannt, werden als neuen Gastpiloten angelegt!</div> 
                         {% endif %}
                     {% else %}
                         <span class="w3-tag w3-round w3-theme-l4">Keine angemeldeten Piloten.</span>                

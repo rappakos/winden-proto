@@ -138,7 +138,7 @@ def guess_pilot_id(display_name:str):
     if len(parts)==1:
         res = parts[0][0].upper() + parts[0][1:].lower()
 
-    print(display_name, res)
+    #print(display_name, res)
     return res
 
 async def add_guest_pilot(name:str, calendar_id:str=None) -> str:
@@ -165,9 +165,9 @@ async def add_guest_pilot(name:str, calendar_id:str=None) -> str:
                 if rowid[0] > 0:
                     res=new_id
 
-                await db.rollback()
+                await db.commit()
             else:
-                print('oh oh')
+                raise ValueError("We cannot use this user id")
 
     return res
 
