@@ -450,6 +450,7 @@ async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommenta
                 INSERT INTO protocolanswers (protocol_id, question, answer)
                 VALUES (?,?,?)
             """, (protocol_id[0], q[0], q[1]))
+        await db.commit()
 
 
 async def get_schlepp_totals():

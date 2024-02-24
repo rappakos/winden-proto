@@ -27,7 +27,16 @@ REPORTS = {
                 GROUP BY s.pilot_id, substr(s.[datum],1,4)
                 ORDER BY substr(s.[datum],1,4) desc, count(*) desc
               """
+    },
+    'protocol_data': {
+         'display_name': 'Auf- und Abbau',
+         'columns': ['Winde','Pilot','Type','Komment','Uhrzeit'],
+         'sql' : """ SELECT p.winde_id, p.pilot_id, p.[type], p.[kommentar], p.[timestamp]
+                    FROM protocol p
+                    ORDER BY p.protocol_id DESC
+                """
     }
+
 }
 
 @aiohttp_jinja2.template('reports.html')
