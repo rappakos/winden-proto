@@ -46,16 +46,6 @@ async def activate_winde(request):
     else:
         raise NotImplementedError("cancel_day should be POST")
 
-# useful?
-def guess_pilot_id(display_name:str):
-    res = None
-    parts = display_name.split(' ')
-    if len(parts) > 1:
-        res = parts[0][0].upper() + parts[0][1:].lower() + parts[1][0].upper()
-
-    print(display_name, res)
-    return res
-
 @aiohttp_jinja2.template('calendar_list.html')
 async def calendar_list(request):
 
@@ -73,8 +63,7 @@ async def calendar_list(request):
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}
         for cp in calendar_list:
             cp.identified = cp.calendar_id in pilot_cal_ids
-            # TODO try to map by name ?
-            guess_pilot_id(cp.name)
+            db.guess_pilot_id(cp.name)
 
 
     #print(calendar_list)
@@ -95,9 +84,10 @@ async def add_calendar_list(request):
             if cp.calendar_id in pilot_cal_ids:
                 pilot_list.append(pilot_cal_ids[cp.calendar_id])
             else:
-                print(cp)
-                #new_id = await db.add_guest_pilot(cp.name, cp.calendar_id)
-                #pilot_list.append(new_id)
+                #print(cp)
+                new_id = await db.add_guest_pilot(cp.name, cp.calendar_id)
+                if new_id:
+                    pilot_list.append(new_id)
 
         print(pilot_list)
         #await db.add_pilot_list(pilot_list)

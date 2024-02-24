@@ -129,6 +129,50 @@ async def set_active_ewf(pilot_id:str) -> None:
         await db.commit() #    
 
 
+# useful?
+def guess_pilot_id(display_name:str):
+    res = None
+    parts = display_name.split(' ')
+    if len(parts) > 1:
+        res = parts[0][0].upper() + parts[0][1:].lower() + parts[1][0].upper()
+    if len(parts)==1:
+        res = parts[0][0].upper() + parts[0][1:].lower()
+
+    print(display_name, res)
+    return res
+
+async def add_guest_pilot(name:str, calendar_id:str=None) -> str:
+    res = None
+    if not name or name=='':
+        raise ValueError("Pilot name must not be empty!")
+    
+    new_id = guess_pilot_id(name)
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {
+            'pilot_id': new_id,
+            'name': name,
+            'status_txt': 'G',
+            'calendar_id': calendar_id
+        }
+        async with db.execute("""SELECT count(*) FROM piloten WHERE pilot_id= :pilot_id""", params) as cursor:
+            row = await cursor.fetchone()
+            if row[0]==0:
+                # all cool, add
+                rowid = await db.execute_insert(""" 
+                            INSERT INTO [piloten](pilot_id,name,status_txt,calendar_id)
+                            SELECT :pilot_id,:name,:status_txt,:calendar_id
+                        """, params )
+                if rowid[0] > 0:
+                    res=new_id
+
+                await db.rollback()
+            else:
+                print('oh oh')
+
+    return res
+
+
+
 async def add_pilot_list(pilot_list:List[str]):
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {
