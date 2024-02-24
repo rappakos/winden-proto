@@ -226,11 +226,15 @@ async def get_protocol_questions(winde_id:str, type:str):
 async def get_wf_list():
     res = []
     async with aiosqlite.connect(DB_NAME) as db:
+        params  = {
+                    'datum': datetime.now().strftime("%Y-%m-%d")
+                }
         async with db.execute("""SELECT p.[pilot_id],p.[name],p.[status_txt]
                               FROM piloten p
-                              WHERE p.[status_txt] in ('W','WF','EWF','WIA') 
+                              INNER JOIN [pilot_list] l ON l.[pilot_id]=p.[pilot_id]
+                              WHERE p.[status_txt] in ('W','WF','EWF','WIA') and l.[datum] = :datum
                               
-                        """) as cursor:
+                        """,params) as cursor:
             async for row in cursor:
                 #print(row)
                 res.append({
@@ -325,9 +329,34 @@ async def get_gastpiloten():
                         })
     return res
 
-#
-# OLD PROCESS / DB SCHEMA
-#
+async def get_pilot_list() -> List[Pilot]:
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
+        async with db.execute("""SELECT
+                                 p.[pilot_id],p.[name],p.[status_txt]
+                                , IFNULL(p.[zugkraft] ,0) [zugkraft] 
+                                , p.[calendar_id]
+                                , p.[verein]
+                               , count(s.schlepp_id) [schlepp_count]
+                              FROM piloten p 
+                              INNER JOIN [pilot_list] l ON l.[pilot_id]=p.[pilot_id]
+                              LEFT JOIN schlepps s ON s.[datum]= :datum and s.[pilot_id]=p.[pilot_id]
+                              WHERE l.[datum] = :datum
+                              GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft] , p.[calendar_id], p.[verein]
+                              """,params) as cursor:
+            async for row in cursor:
+                p = Pilot()
+                p.id = row[0]
+                p.name = row[1]
+                p.status = PILOT_STATUS[row[2]]
+                p.zugkraft = row[3]
+                p.calendar_id = row[4]
+                p.verein = row[5]
+                p.schlepp_count = row[6]
+                
+                res.append(p)
+    return res
 
 async def get_piloten() -> List[Pilot]:
     res = []
@@ -382,8 +411,6 @@ async def get_pilot(pilot_id:str) -> Pilot:
                 
                 
     return res
-
-
 
 
 async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):

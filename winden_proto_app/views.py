@@ -59,7 +59,7 @@ async def calendar_list(request):
     calendar_list = []
     if pr.pilot_list is None and not skip_pilot_list:
         calendar_list = GscSuedheideLoader().load_pilots()
-        pilots = await db.get_piloten()
+        pilots = await db.get_piloten() # all
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}
         for cp in calendar_list:
             cp.identified = cp.calendar_id in pilot_cal_ids
@@ -77,7 +77,7 @@ async def add_calendar_list(request):
         form = await request.post()
         calendar_list = CalPilot.schema().loads(form['pilot_list'], many=True)
         #print(calendar_list)
-        pilots = await db.get_piloten()
+        pilots = await db.get_piloten() # all 
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}        
         pilot_list = []
         for cp in calendar_list:
@@ -148,7 +148,7 @@ async def protocol(request):
     if request.method == 'GET':
         # 
         protocol = await db.get_protocol_questions(winde_id=winde_id, type=type)
-        piloten = await db.get_piloten()
+        piloten = await db.get_pilot_list() # those who are there
 
         return {
                 'type': type,
@@ -169,7 +169,8 @@ async def gastpiloten(request):
 async def schlepp_start(request):
     pr = await db.get_process_status()
     res = pr.to_dict()
-    res['pilots'] = [p.to_dict() for p in await db.get_piloten() if p.id != pr.active_wf] # WF should be removed
+    # those who are there plut WF should be removed
+    res['pilots'] = [p.to_dict() for p in await db.get_pilot_list() if p.id != pr.active_wf] # 
     
     return res
 
