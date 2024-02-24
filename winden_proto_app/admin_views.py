@@ -51,6 +51,14 @@ async def pilot(request):
         return {'pilot': pilot }
     else:
         raise NotImplementedError("POST (update pilot) is not implemented yet") 
+    
+async def delete_pilot(request):
+    pilot_id =  request.match_info['pilot_id']
+    if request.method == 'POST':
+        # only if they have no starts!
+        await db.delete_guest_pilot(pilot_id)
+
+    raise web.HTTPFound('/piloten')
 
 @aiohttp_jinja2.template('backups.html')
 async def backups(request):    

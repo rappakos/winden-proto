@@ -44,9 +44,9 @@ VALUES
 ('M','f_122',  'JanS','Jan  Strothmann', null ), 
 ('NG','f_146', 'JanH','Jan H. GSCL', 'GSCL' ), 
 ('G','f_143',  'JonathanB','Jonathan Balke', null ), 
-('NG','f_129', 'JoergH ','J&ouml;rg Hiersemann', 'GSCL' ),  -- ?
-('G','f_142',  'MartinGeb ','Martin Gebhard', null ), 
-('M','f_85',   'MartinF ','Martin Frevert', null ), 
+('NG','f_129', 'JoergH','J&ouml;rg Hiersemann', 'GSCL' ),  -- ?
+('G','f_142',  'MartinGeb','Martin Gebhard', null ), 
+('M','f_85',   'MartinF','Martin Frevert', null ), 
 ('G','f_88',   'MichaelK','Michael K&ouml;nig', null ), -- ?
 ('WF','f_27',  'Orsi','Orsi P.', null ), 
 ('WF','f_17',  'Sabine','Sabine Kl.', null ), 

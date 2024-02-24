@@ -412,6 +412,15 @@ async def get_pilot(pilot_id:str) -> Pilot:
                 
     return res
 
+async def delete_guest_pilot(pilot_id:str) -> None:
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'pilot_id': pilot_id}
+        await db.execute(""" DELETE FROM piloten
+                             WHERE pilot_id=:pilot_id and status_txt='G' 
+                                    and not exists (select 1 from schlepps s where s.pilot_id= piloten.pilot_id)
+                """, params)
+        
+        await db.commit()
 
 async def save_protocol(winde_id:str,pilot_id:str, type:str, questions, kommentar:str ):
     #print(winde_id, pilot_id, type, kommentar)
