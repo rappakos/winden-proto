@@ -8,7 +8,7 @@ import json
 
 from . import db
 from .models import CalPilot, WindeStatus
-from .calendar_loader import GscSuedheideLoader
+from .calendar_loader import GscSuedheideLoader, DummyCalendarLoader
 
 def redirect(router, route_name):
     location = router[route_name].url_for()
@@ -58,7 +58,7 @@ async def calendar_list(request):
     pr = await db.get_process_status()
     calendar_list = []
     if pr.pilot_list is None and not skip_pilot_list:
-        calendar_list = GscSuedheideLoader().load_pilots()
+        calendar_list = DummyCalendarLoader().load_pilots() if os.environ.get("USE_DUMMY_CALENDAR",0)=="1" else GscSuedheideLoader().load_pilots()
         pilots = await db.get_piloten() # all
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}
         for cp in calendar_list:

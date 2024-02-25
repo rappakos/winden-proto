@@ -15,6 +15,22 @@ class CalendarLoader(ABC):
     def load_pilots() -> List[CalPilot]:
         pass
 
+class DummyCalendarLoader(CalendarLoader):
+
+    def load_pilots(self) -> List[CalPilot]:
+        res = []
+        for pi in [
+            ['Akos','f_26'],
+            ['Orsi','f_27'],
+            ['Sabine','f_17'],
+            ['MichaelH', 'f_7']
+        ]:
+            p = CalPilot()
+            p.calendar_id=pi[1]
+            p.name=pi[0]
+            res.append(p)
+
+        return res
 
 
 class GscSuedheideLoader(CalendarLoader):
