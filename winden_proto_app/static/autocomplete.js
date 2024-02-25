@@ -27,6 +27,7 @@
                   if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase() || val.length == 0) {
                     /*create a DIV element for each matching element:*/
                     b = document.createElement("DIV");
+                    b.setAttribute("class","w3-dropdown-content w3-bar-block w3-border")
                     /*make the matching letters bold:*/
                     b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
                     b.innerHTML += arr[i].substr(val.length);
@@ -48,6 +49,7 @@
             });
             /*execute a function presses a key on the keyboard:*/
             inp.addEventListener("keydown", function(e) {
+                //console.log(e);
                 var x = document.getElementById(this.id + "autocomplete-list");
                 if (x) x = x.getElementsByTagName("div");
                 if (e.keyCode == 40) {

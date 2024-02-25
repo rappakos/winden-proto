@@ -7,7 +7,7 @@ import pandas as pd
 import json
 
 from . import db
-from .models import CalPilot, WindeStatus
+from .models import CalPilot, WindeStatus, PILOT_STATUS
 from .calendar_loader import GscSuedheideLoader, DummyCalendarLoader
 
 def redirect(router, route_name):
@@ -149,11 +149,12 @@ async def protocol(request):
         # 
         protocol = await db.get_protocol_questions(winde_id=winde_id, type=type)
         piloten = await db.get_pilot_list() # those who are there
+        #print(piloten)
 
         return {
                 'type': type,
                 'winde_id': winde_id,
-                'piloten': [p for p in piloten if p.status in ['W','EWF','WIA','M'] ],
+                'piloten': [p for p in piloten if p.status not in [PILOT_STATUS['G'],PILOT_STATUS['NG']] ],
                 'protocol': protocol}       
 
 
