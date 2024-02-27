@@ -24,7 +24,7 @@ class WindeStatus(Enum):
 @dataclass
 class Process():
     active_day:str = None
-    pilot_list:bool = None
+    pilot_list:int = 0
     active_winde:str = None
     winde_status:WindeStatus = WindeStatus.GARAGE
     active_wf:str = None

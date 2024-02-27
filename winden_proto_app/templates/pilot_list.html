@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% set title = "Pilotenliste" %}
+
+{% block content %}
+{% include "./_process_status.html" %}
+
+<div class="action-area">
+    {% if pilot_list > 0 %} 
+        <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
+                <div class="w3-container">
+                        {% for pilot in pilots %} 
+                            <span class="w3-tag w3-round w3-green">{{pilot.name}}</span>
+                        {% endfor %}
+                </div>
+
+
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -53,13 +53,14 @@ async def get_process_status() -> Process:
         params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
                                 d.[datum],
-                                d.[pilot_list],
+                                count(l.pilot_id)  [pilot_list],
                                 d.[active_winde_id],
                                 d.[winde_aufgebaut],
                                 d.[winde_abgebaut],
                                 d.[active_wf],
                                 d.[active_ewf]
                             FROM [flying_days] d
+                            LEFT JOIN [pilot_list] l ON d.[datum]=l.[datum]
                             WHERE d.[datum]=:datum and d.[closed] is null
                               """,params ) as cursor:
             async for row in cursor:

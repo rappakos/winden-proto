@@ -23,6 +23,8 @@ async def index(request):
     # always?
     res['winden'] = await db.get_winden()
 
+    print(res)
+
     return res
 
 async def cancel_day(request):
@@ -46,6 +48,17 @@ async def activate_winde(request):
     else:
         raise NotImplementedError("cancel_day should be POST")
 
+@aiohttp_jinja2.template('pilot_list.html')
+async def pilot_list(request):
+    if request.method=='GET':   
+        pr = await db.get_process_status()
+        res = pr.to_dict()
+        res['pilots'] = await db.get_pilot_list()
+
+        return res
+    else:   
+        raise NotImplementedError("POST is not yet implemented")
+
 @aiohttp_jinja2.template('calendar_list.html')
 async def calendar_list(request):
 
@@ -57,7 +70,7 @@ async def calendar_list(request):
 
     pr = await db.get_process_status()
     calendar_list = []
-    if pr.pilot_list is None and not skip_pilot_list:
+    if not pr.pilot_list and not skip_pilot_list:
         calendar_list = DummyCalendarLoader().load_pilots() if os.environ.get("USE_DUMMY_CALENDAR",0)=="1" else GscSuedheideLoader().load_pilots()
         pilots = await db.get_piloten() # all
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}
