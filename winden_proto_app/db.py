@@ -52,16 +52,18 @@ async def get_process_status() -> Process:
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
-                                d.[datum],
-                                count(l.pilot_id)  [pilot_list],
+                                d.[datum],                                
+                                count(*) [pilot_list],
                                 d.[active_winde_id],
                                 d.[winde_aufgebaut],
                                 d.[winde_abgebaut],
                                 d.[active_wf],
                                 d.[active_ewf]
                             FROM [flying_days] d
-                            LEFT JOIN [pilot_list] l ON d.[datum]=l.[datum]
+                            INNER JOIN [pilot_list] l ON d.[datum]=l.[datum]
                             WHERE d.[datum]=:datum and d.[closed] is null
+                            GROUP BY d.[datum],d.[active_winde_id], d.[winde_aufgebaut],
+                                d.[winde_abgebaut],d.[active_wf],d.[active_ewf], d.[closed]
                               """,params ) as cursor:
             async for row in cursor:
                 pr.active_day = params['datum']

@@ -6,7 +6,7 @@
 {% include "./_process_status.html" %}
 
 <div class="action-area">
-    {% if pilot_list is none %} 
+    {% if pilot_list == 0 %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
                 <div class="w3-container">
                     {% if calendar_list %}
