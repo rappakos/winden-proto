@@ -30,8 +30,8 @@ async def winde(request):
     winde_id = request.match_info['winde_id']
     #print('requested',winde_id)
     for w in await db.get_winden():
-        if w['winde_id']==winde_id:
-            return {'winde': w}
+        if w.winde_id==winde_id:
+            return {'winde': w.to_dict()}
     else:
        raise web.HTTPNotFound(text=f'{winde_id} not found')
 
