@@ -174,7 +174,18 @@ async def add_guest_pilot(name:str, calendar_id:str=None) -> str:
 
     return res
 
+async def add_pilot_to_list(pilot_id:str):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {
+                    'datum': datetime.now().strftime("%Y-%m-%d"),
+                    'pilot_id': pilot_id
+        }
+        await db.execute_insert("""
+                            INSERT OR IGNORE INTO [pilot_list] ([datum],[pilot_id])
+                            SELECT :datum, :pilot_id 
+                        """, params)
 
+        await db.commit() #            
 
 async def add_pilot_list(pilot_list:List[str]):
     async with aiosqlite.connect(DB_NAME) as db:
@@ -347,6 +358,34 @@ async def get_pilot_list() -> List[Pilot]:
                               LEFT JOIN schlepps s ON s.[datum]= :datum and s.[pilot_id]=p.[pilot_id]
                               WHERE l.[datum] = :datum
                               GROUP BY p.[pilot_id],p.[name],p.[status_txt], p.[zugkraft] , p.[calendar_id], p.[verein]
+                              """,params) as cursor:
+            async for row in cursor:
+                p = Pilot()
+                p.id = row[0]
+                p.name = row[1]
+                p.status = PILOT_STATUS[row[2]]
+                p.zugkraft = row[3]
+                p.calendar_id = row[4]
+                p.verein = row[5]
+                p.schlepp_count = row[6]
+                
+                res.append(p)
+    return res
+
+
+async def get_not_registered_pilots() -> List[Pilot]:
+    res = []
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
+        async with db.execute("""SELECT
+                                 p.[pilot_id],p.[name],p.[status_txt]
+                                , IFNULL(p.[zugkraft] ,0) [zugkraft] 
+                                , p.[calendar_id]
+                                , p.[verein]
+                                , 0 [schlepp_count]
+                              FROM piloten p
+                              WHERE NOT EXISTS(SELECT 1 FROM  [pilot_list] l WHERE l.[pilot_id]=p.[pilot_id] AND  l.[datum] = :datum)
+                              ORDER BY p.[pilot_id]
                               """,params) as cursor:
             async for row in cursor:
                 p = Pilot()

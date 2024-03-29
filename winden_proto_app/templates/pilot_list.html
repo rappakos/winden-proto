@@ -5,13 +5,36 @@
 {% block content %}
 {% include "./_process_status.html" %}
 
+<script type="text/javascript">
+    function add_pilot(pilot_id) {
+        //console.log('adding', pilot_id);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange= function(){
+            if (xhttp.readyState ===4 && xhttp.status ===200){
+                // this somehow reloads the page too
+                window.location.reload();
+            } 
+        }
+        xhttp.open("POST", "/pilot_list");
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhttp.send("pilot_id="+pilot_id);
+    }
+</script>
 <div class="action-area">
     {% if pilot_list > 0 %} 
         <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
                 <div class="w3-container">
+                        <h3>Angemeldete piloten</h3>
                         {% for pilot in pilots %} 
-                            <span class="w3-tag w3-round w3-green">{{pilot.name}}</span>
+                            <span class="w3-tag w3-round w3-green" style="margin:3px">{{pilot.name}}</span>
                         {% endfor %}
+                        <h3>Hinzufügen</h3>
+                        <div class="w3-container" style="overflow-y: auto;-webkit-overflow-scrolling: touch;">
+                        {% for pilot in not_registered %} 
+                        <span class="w3-tag w3-round w3-theme-l4 w3-border w3-border-red" style="margin:6px"
+                            onclick="add_pilot('{{pilot.id}}');">{{pilot.name}}</span>
+                        {% endfor %}                        
+                        </div>
                 </div>
 
 

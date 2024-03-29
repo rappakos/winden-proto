@@ -46,7 +46,8 @@ async def activate_winde(request):
 
         raise web.HTTPFound('/')
     else:
-        raise NotImplementedError("cancel_day should be POST")
+        raise NotImplementedError("activate_winde should be POST")
+
 
 @aiohttp_jinja2.template('pilot_list.html')
 async def pilot_list(request):
@@ -54,10 +55,17 @@ async def pilot_list(request):
         pr = await db.get_process_status()
         res = pr.to_dict()
         res['pilots'] = await db.get_pilot_list()
-
+        res['not_registered'] = await db.get_not_registered_pilots()
         return res
-    else:   
-        raise NotImplementedError("POST is not yet implemented")
+    elif request.method=='POST':
+        form = await request.post()
+        pilot_id = form['pilot_id']
+        # 
+        await db.add_pilot_to_list(pilot_id)
+
+        return web.Response(status=200)
+    else:
+        raise NotImplementedError("pilot_list should be GET or POST")    
 
 @aiohttp_jinja2.template('calendar_list.html')
 async def calendar_list(request):
