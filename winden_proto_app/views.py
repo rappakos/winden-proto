@@ -60,8 +60,12 @@ async def pilot_list(request):
     elif request.method=='POST':
         form = await request.post()
         pilot_id = form['pilot_id']
+        remove = 'remove' in form
         # 
-        await db.add_pilot_to_list(pilot_id)
+        if remove:
+            await db.remove_pilot_from_list(pilot_id)
+        else:
+            await db.add_pilot_to_list(pilot_id)
 
         return web.Response(status=200)
     else:

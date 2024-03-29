@@ -7,6 +7,13 @@
 
 <script type="text/javascript">
     function add_pilot(pilot_id) {
+        handle_change(pilot_id, false);
+    }
+    function remove_pilot(pilot_id) {
+        handle_change(pilot_id, true);
+    }
+
+    function handle_change(pilot_id, remove) {
         //console.log('adding', pilot_id);
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange= function(){
@@ -17,7 +24,11 @@
         }
         xhttp.open("POST", "/pilot_list");
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhttp.send("pilot_id="+pilot_id);
+        if(remove) {
+            xhttp.send("pilot_id="+pilot_id+"&remove=true");
+        } else {
+            xhttp.send("pilot_id="+pilot_id);
+        }
     }
 </script>
 <div class="action-area">
@@ -26,13 +37,14 @@
                 <div class="w3-container">
                         <h3>Angemeldete piloten</h3>
                         {% for pilot in pilots %} 
-                            <span class="w3-tag w3-round w3-green" style="margin:3px">{{pilot.name}}</span>
+                            <span class="w3-tag w3-round w3-green" style="margin:6px"
+                                 onclick="remove_pilot('{{pilot.id}}');" >{{pilot.name}}</span>
                         {% endfor %}
                         <h3>Hinzufügen</h3>
                         <div class="w3-container" style="overflow-y: auto;-webkit-overflow-scrolling: touch;">
                         {% for pilot in not_registered %} 
                         <span class="w3-tag w3-round w3-theme-l4 w3-border w3-border-red" style="margin:6px"
-                            onclick="add_pilot('{{pilot.id}}');">{{pilot.name}}</span>
+                                 onclick="add_pilot('{{pilot.id}}');">{{pilot.name}}</span>
                         {% endfor %}                        
                         </div>
                 </div>

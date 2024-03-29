@@ -187,6 +187,18 @@ async def add_pilot_to_list(pilot_id:str):
 
         await db.commit() #            
 
+async def remove_pilot_from_list(pilot_id:str):
+    async with aiosqlite.connect(DB_NAME) as db:
+        params  = {
+                    'datum': datetime.now().strftime("%Y-%m-%d"),
+                    'pilot_id': pilot_id
+        }
+        await db.execute("""
+                            DELETE FROM [pilot_list] WHERE [datum] = :datum AND pilot_id = :pilot_id 
+                        """, params)
+
+        await db.commit() #     
+
 async def add_pilot_list(pilot_list:List[str]):
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {
