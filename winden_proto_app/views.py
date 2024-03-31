@@ -23,7 +23,7 @@ async def index(request):
     # always?
     res['winden'] = await db.get_winden()
 
-    print(res)
+    #print(res)
 
     return res
 
@@ -84,6 +84,7 @@ async def calendar_list(request):
     calendar_list = []
     if not pr.pilot_list and not skip_pilot_list:
         calendar_list = DummyCalendarLoader().load_pilots() if os.environ.get("USE_DUMMY_CALENDAR",0)=="1" else GscSuedheideLoader().load_pilots()
+        #print(calendar_list)
         pilots = await db.get_piloten() # all
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}
         for cp in calendar_list:
@@ -100,7 +101,7 @@ async def calendar_list(request):
 async def add_calendar_list(request):
     if request.method == 'POST':
         form = await request.post()
-        calendar_list = CalPilot.schema().loads(form['pilot_list'], many=True)
+        calendar_list = CalPilot.schema().loads(form['pilot_list'], many=True) if 'pilot_list' in form and form['pilot_list'] else []
         #print(calendar_list)
         pilots = await db.get_piloten() # all 
         pilot_cal_ids = {p.calendar_id:p.id for p in pilots}        

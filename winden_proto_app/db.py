@@ -53,14 +53,14 @@ async def get_process_status() -> Process:
         params  = {'datum': datetime.now().strftime("%Y-%m-%d")}
         async with db.execute("""SELECT
                                 d.[datum],                                
-                                count(*) [pilot_list],
+                                count(distinct l.pilot_id) [pilot_list],
                                 d.[active_winde_id],
                                 d.[winde_aufgebaut],
                                 d.[winde_abgebaut],
                                 d.[active_wf],
                                 d.[active_ewf]
                             FROM [flying_days] d
-                            INNER JOIN [pilot_list] l ON d.[datum]=l.[datum]
+                            LEFT JOIN [pilot_list] l ON d.[datum]=l.[datum]
                             WHERE d.[datum]=:datum and d.[closed] is null
                             GROUP BY d.[datum],d.[active_winde_id], d.[winde_aufgebaut],
                                 d.[winde_abgebaut],d.[active_wf],d.[active_ewf], d.[closed]
@@ -205,7 +205,7 @@ async def add_pilot_list(pilot_list:List[str]):
                     'datum': datetime.now().strftime("%Y-%m-%d"),
                     'pilot_list': len(pilot_list) > 0
                 }
-        #print('add_pilot_list', params)
+        #print('add_pilot_list', params, pilot_list)
         await db.execute_insert("""
                             INSERT INTO [flying_days] ([datum],[pilot_list])
                             SELECT :datum, :pilot_list 

@@ -36,6 +36,10 @@ class DummyCalendarLoader(CalendarLoader):
 class GscSuedheideLoader(CalendarLoader):
 
     def filter_reg(self, f):
+        # 'Flugwetter', 'Schleppbetrieb', 'Gastpiloten
+        if f['fahrer']['id'] in ['f_1', 'f_133','f_106']:
+            return False
+
         today, SET_OKMAYBE= date.today().isoformat(), set(["+","~"])
         entry = f['tage'][0]
         #
