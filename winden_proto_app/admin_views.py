@@ -39,8 +39,19 @@ async def winde(request):
 async def piloten(request):
     if request.method == 'GET':
         return {'piloten': await db.get_piloten()}
+    elif request.method == 'POST':
+        form = await request.post()
+        # validate ...
+        if 'newid' not in form or not form['newid'] or form['newid']=='':
+            raise ValueError("Pilot Id must not be empty")
+        
+        new_id = ''.join([x.title() for x in  form['newid'].split()])
+
+        await db.add_guest_pilot_by_id(new_id)
+        
+        raise web.HTTPFound(f'/piloten')
     else:
-        raise NotImplementedError("POST (add pilot) is not implemented yet") 
+        raise NotImplementedError("only GET and POST are implemented") 
 
 
 @aiohttp_jinja2.template('pilot.html')

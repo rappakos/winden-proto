@@ -37,6 +37,7 @@ def setup_routes(app):
     app.router.add_get('/winden',alle_winden, name='winden')
     app.router.add_get('/winden/{winde_id}',winde, name='winde')
     app.router.add_get('/piloten',piloten, name='piloten')
+    app.router.add_post('/piloten',piloten, name='piloten')
     app.router.add_get('/piloten/{pilot_id}',pilot, name='pilot')
     app.router.add_post('/piloten/{pilot_id}',pilot, name='pilot')
     app.router.add_post('/piloten/{pilot_id}/delete',delete_pilot, name='delete_pilot')

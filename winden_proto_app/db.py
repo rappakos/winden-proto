@@ -137,11 +137,11 @@ def guess_pilot_id(display_name:str):
     res = None
     parts = display_name.split(' ')
     if len(parts) > 1:
-        res = parts[0][0].upper() + parts[0][1:].lower() + parts[1][0].upper()
+        res = parts[0].title() + parts[1][0].upper()
     if len(parts)==1:
-        res = parts[0][0].upper() + parts[0][1:].lower()
+        res = parts[0].title()
 
-    #print(display_name, res)
+    print(display_name, res)
     return res
 
 async def add_guest_pilot(name:str, calendar_id:str=None) -> str:
@@ -150,6 +150,22 @@ async def add_guest_pilot(name:str, calendar_id:str=None) -> str:
         raise ValueError("Pilot name must not be empty!")
     
     new_id = guess_pilot_id(name)
+
+    res = await _add_guest_pilot(new_id, name, calendar_id)
+
+    return res 
+
+async def add_guest_pilot_by_id(new_id:str) -> str:
+    if not new_id or new_id=='':
+        raise ValueError("Pilot Id name must not be empty!")
+
+    res = await _add_guest_pilot(new_id, new_id, None)
+
+    return res 
+
+
+
+async def _add_guest_pilot(new_id:str, name:str, calendar_id:str=None) -> str:    
     async with aiosqlite.connect(DB_NAME) as db:
         params  = {
             'pilot_id': new_id,

@@ -23,7 +23,8 @@ class DummyCalendarLoader(CalendarLoader):
             ['Akos','f_26'],
             ['Orsi','f_27'],
             ['Sabine','f_17'],
-            ['MichaelH', 'f_7']
+            ['MichaelH', 'f_7'],
+            ['Kai F','f_153']
         ]:
             p = CalPilot()
             p.calendar_id=pi[1]
