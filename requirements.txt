@@ -5,3 +5,6 @@ xlsxwriter
 python-dotenv
 GitPython
 dataclasses-json
+requests
+pandas
+numpy
