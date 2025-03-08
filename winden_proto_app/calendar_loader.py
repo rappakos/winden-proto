@@ -38,7 +38,8 @@ class GscSuedheideLoader(CalendarLoader):
 
     def filter_reg(self, f):
         # 'Flugwetter', 'Schleppbetrieb', 'Gastpiloten
-        if f['fahrer']['id'] in ['f_1', 'f_133','f_106']:
+        #if f['fahrer']['id'] in ['f_1', 'f_133','f_106']:
+        if f['fahrer']['name'] in ['Flugwetter', 'Schleppbetrieb', 'Gastpiloten']:
             return False
 
         today, SET_OKMAYBE= date.today().isoformat(), set(["+","~"])
@@ -61,8 +62,43 @@ class GscSuedheideLoader(CalendarLoader):
             soup = BeautifulSoup(resp.content, "html.parser")
 
             script_data = soup.find('script',attrs={'src': None}) # data not in the table
-            table_data_str=script_data.get_text().replace("var jsonPlanStr='",'').strip()[:-2] # remove  "var ...='" & "';"
+            table_data_str=script_data.get_text().split(';')[0].replace("var jsonPlanStr='",'').strip()[:-1]
             table_data_json = json.loads(table_data_str)
 
         return [self.get_cal_pilot(f) for f in table_data_json['bereitschaften'] if self.filter_reg(f) ]    
 
+
+class TestLoader(CalendarLoader):
+
+     def filter_reg(self, f):
+        if f['fahrer']['name'] in ['Flugwetter', 'Schleppbetrieb', 'Gastpiloten']:
+            return False
+        
+        return True
+
+     def load_pilots(self):
+        url =  os.environ.get('CALENDAR_URL',None)
+        if url:
+            resp = requests.get(url)
+            soup = BeautifulSoup(resp.content, "html.parser")
+            #print(soup)
+            script_data = soup.find('script',attrs={'src': None})
+            table_data_str=script_data.get_text().split(';')[0].replace("var jsonPlanStr='",'').strip()[:-1]
+            print(table_data_str[:10],' ..... ', table_data_str[-10:])
+            table_data_json = json.loads(table_data_str)
+            print([[f['fahrer']['name'], f['tage'][0]] for f in table_data_json['bereitschaften'] if self.filter_reg(f)])
+        else:
+            raise ValueError("URL for the calendar is undefined")
+
+        return []
+     
+
+if __name__=='__main__':
+    from dotenv import load_dotenv
+    load_dotenv('../.env')
+
+    #loader = TestLoader()
+    loader = GscSuedheideLoader()
+
+    x = loader.load_pilots()
+    print(x)
