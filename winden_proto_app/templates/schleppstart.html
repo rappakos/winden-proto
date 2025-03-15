@@ -10,29 +10,33 @@
         {% if pilots %} 
             <form class="w3-auto" action="/schlepps" method="post">
                 <div class="w3-row">
-                    <div class="w3-auto w3-col s7 w3-border"  style="display:flex;flex-direction: column;gap:0.5vh;max-height:30vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
+                    <div class="w3-auto w3-col w3-border s8"  style="display:flex;flex-direction: column;gap:0.5vh;height:75vh;overflow-y: auto;-webkit-overflow-scrolling: touch;">
                     {% for pilot in pilots %}
                     <p>
                         <!-- later this should be change to a list + text input -->
-                        <input class="w3-radio" type="radio" name="pilot_id" value="{{pilot.id}}" onclick="set_infos({{pilot.zugkraft}},{{pilot.schlepp_count}});" />
-                        <label>{{pilot.name | safe }} - {{pilot.status}}</label>
+                        <input class="w3-radio" type="radio" name="pilot_id" 
+                                    value="{{pilot.id}}" id="pilot-{{pilot.id}}"
+                                    onclick="set_infos({{pilot.zugkraft}},{{pilot.schlepp_count}});" />
+                        <label for="pilot-{{pilot.id}}" >{{pilot.name | safe }} - {{pilot.status}}</label>
                     </p>
                     {% endfor %}
                     </div>
-                    <div class="w3-auto w3-col s5"  style="display:flex;flex-direction: column;padding:8px;">
+                    <div class="w3-auto w3-col s4"  style="display:flex;flex-direction: column;padding:8px;align-items: center;">
                         <label style="white-space: nowrap;">Schlepps heute</label>
-                        <span id="spn-schlepp-count" style="font-size: 24pt; text-align: center;">0</span>
+                        <span id="spn-schlepp-count" style="font-size: 6vw; text-align: center;margin:1vw">0</span>
 
                         <label>Zugkraft</label>
                         <input id="txt-zugkraft"
                             class="w3-input w3-border w3-round-medium "
-                            style="font-size: 24pt; text-align: center;"
+                            style="font-size: 6vw; text-align: center;margin:1vw"
                             min="0" max="130" step="10"
                             type="number" name="zugkraft" value="" />
+
+                        <button class="action w3-btn w3-green" style="margin:1vw">Start schlepp</button>                            
                     </div>
                 </div>
                 <div class="w3-row">
-                    <button class="action w3-btn w3-large w3-green w3-col s12">Start schlepp</button>
+                    
                 </div>
             </form>
         {% else %}
@@ -46,6 +50,7 @@
             const el = document.getElementById('txt-zugkraft');            
             el.value = zugkraft;
         }
+
 
     </script>    
     {% else  %}

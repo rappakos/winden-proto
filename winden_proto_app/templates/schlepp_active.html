@@ -17,10 +17,10 @@
                     <div style="font-size: 24pt; text-align: center;">{{schlepp[0].zugkraft}}</div>                    
                 </div>
                 <form class="w3-auto" action="/schlepps/{{schlepp[0].schlepp_id}}" method="post">
-                    <button class="action w3-btn w3-large w3-green" name="status" value="completed">Schlepp beendet</button>
+                    <button class="action w3-btn w3-green" name="status" value="completed">Schlepp beendet</button>
                 </form>
                 <form class="w3-auto" action="/schlepps/{{schlepp[0].schlepp_id}}" method="post">
-                    <button class="action w3-btn w3-large w3-border w3-border-red" name="status" value="canceled">Schlepp abbrechen</button>
+                    <button class="action w3-btn w3-border w3-border-red" name="status" value="canceled">Schlepp abbrechen</button>
                 </form>
             </div>
     </div>

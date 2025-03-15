@@ -1,10 +1,22 @@
- 
+
+  
+  h3 {
+    font-size: 4vw;
+  }
+  
+@media only screen and (min-width:769px) and (max-width: 1023px) {
+    a, button, span, label {
+        font-size: 3vw;
+    }
+}
    .action-area {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 30vh;
    }
+
+   input[type=checkbox]:checked + label {color:red;}
 
   
    /*the container must be positioned relative:*/

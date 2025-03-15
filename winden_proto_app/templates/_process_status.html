@@ -2,7 +2,7 @@
 
 <div class="w3-row">
     <div class="w3-col s3 {%if active_day %}w3-green{% endif %}">
-        <span><i class="glyphicon glyphicon-calendar"></i></span>&nbsp;<span>{{active_day}}</span>
+        <span><i class="bi bi-calendar"></i></span>&nbsp;<span>{{active_day}}</span>
     </div>
     <div class="w3-col s3 
             {%if active_winde %}w3-green{% endif %}
@@ -13,9 +13,16 @@
         <span>WF</span>&nbsp;<span>{{active_wf}}</span>
     </div>
     <div class="w3-col s3 w3-container">
-        <span><i class="glyphicon glyphicon-user"></i></span>&nbsp;
+        {% if pilot_list==0 %}
+            <span><i class="bi bi-person-dash"></i></span>&nbsp;
+                <a href="/pilot_list">
+                    <span class="w3-badge  w3-margin-left w3-red" >{{pilot_list}}</span>
+                </a>
+        {% else %}
+            <span class=""><i class="bi bi-people-fill"></i></span>&nbsp;
             <a href="/pilot_list">
-                <span class="w3-badge  w3-margin-left {% if pilot_list==0 %}w3-red{% endif %}" >{{pilot_list}}</span>
+                <span class="w3-badge w3-margin-left" >{{pilot_list}}</span>
             </a>
+        {% endif %}
     </div>
 </div>

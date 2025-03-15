@@ -36,11 +36,15 @@
         <div class="w3-container" style="display:flex;flex-direction: column;gap:5vh;">
                 <div class="w3-container">
                         <h3>Angemeldete piloten</h3>
+                        {%if pilots: %}
                         {% for pilot in pilots %} 
                             <span class="w3-tag w3-round w3-green" style="margin:6px"
                                  onclick="remove_pilot('{{pilot.id}}');" >{{pilot.name}}</span>
                         {% endfor %}
-                        <h3>Hinzufügen</h3>
+                        {% else %}
+                            <p>Es gibt noch keine Piloten für heute. Mit "Tap" können sie aus der unteren Liste hinzügefügt werden.</p>
+                        {% endif %}
+                        <h3>Piloten hinzufügen</h3>
                         <div class="w3-container" style="overflow-y: auto;-webkit-overflow-scrolling: touch;">
                         {% for pilot in not_registered %} 
                         <span class="w3-tag w3-round w3-theme-l4 w3-border w3-border-red" style="margin:6px"
@@ -48,7 +52,10 @@
                         {% endfor %}                        
                         </div>
                 </div>
-
+                <form class="w3-auto" action="/calendar_list" method="get" autocomplete="off">
+                    <input type="hidden" name="skip" value="true" />
+                    <button class="action w3-btn w3-border w3-green">Flugtag starten</button>
+                </form>     
 
         </div>
     {% endif %}
